@@ -31,7 +31,9 @@
     "migrate-to-atlas": "node scripts/migrate-to-atlas.js",
     "migrate-data-to-atlas": "node scripts/migrate-data-to-atlas.js",
     "push-github": "powershell -ExecutionPolicy Bypass -File push-to-github.ps1",
-    "verify-deployment": "node scripts/verify-vercel-deployment.js"
+    "verify-deployment": "node scripts/verify-vercel-deployment.js",
+    "auto-fix-deployment": "node scripts/auto-fix-deployment.js",
+    "check-vercel-env": "node scripts/check-vercel-env.js"
   },
   "dependencies": {
     "lucide-react": "^0.553.0",
