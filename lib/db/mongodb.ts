@@ -41,7 +41,9 @@ async function connectDB(): Promise<typeof mongoose> {
     cached.promise = mongoose.connect(MONGODB_URI, opts)
       .then((mongoose) => {
         console.log('✅ MongoDB Connected Successfully')
-        console.log(`📊 Database: ${mongoose.connection.db.databaseName}`)
+        if (mongoose.connection.db) {
+          console.log(`📊 Database: ${mongoose.connection.db.databaseName}`)
+        }
         return mongoose
       })
       .catch((error) => {
