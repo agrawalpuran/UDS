@@ -393,9 +393,26 @@ export async function getAllEmployees(): Promise<any[]> {
 export async function getEmployeeByEmail(email: string): Promise<any | null> {
   await connectDB()
   
-  const employee = await Employee.findOne({ email })
+  if (!email) {
+    return null
+  }
+  
+  // Trim whitespace and make case-insensitive search
+  const trimmedEmail = email.trim()
+  
+  // Try exact match first
+  let employee = await Employee.findOne({ email: trimmedEmail })
     .populate('companyId', 'id name')
     .lean()
+  
+  // If not found, try case-insensitive search
+  if (!employee) {
+    employee = await Employee.findOne({ 
+      email: { $regex: new RegExp(`^${trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') } 
+    })
+      .populate('companyId', 'id name')
+      .lean()
+  }
 
   return employee ? toPlainObject(employee) : null
 }
