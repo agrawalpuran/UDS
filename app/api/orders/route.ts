@@ -51,8 +51,17 @@ export async function GET(request: Request) {
     const orders = await getAllOrders()
     return NextResponse.json(orders)
   } catch (error: any) {
-    console.error('API Error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('API Error in /api/orders GET:', error)
+    console.error('Error stack:', error.stack)
+    
+    const errorMessage = error.message || 'Unknown error occurred'
+    const isConnectionError = errorMessage.includes('Mongo') || errorMessage.includes('connection')
+    
+    return NextResponse.json({ 
+      error: errorMessage,
+      type: isConnectionError ? 'database_connection_error' : 'api_error',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, { status: 500 })
   }
 }
 
@@ -77,8 +86,17 @@ export async function POST(request: Request) {
     const order = await createOrder(body)
     return NextResponse.json(order, { status: 201 })
   } catch (error: any) {
-    console.error('API Error:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('API Error in /api/orders POST:', error)
+    console.error('Error stack:', error.stack)
+    
+    const errorMessage = error.message || 'Unknown error occurred'
+    const isConnectionError = errorMessage.includes('Mongo') || errorMessage.includes('connection')
+    
+    return NextResponse.json({ 
+      error: errorMessage,
+      type: isConnectionError ? 'database_connection_error' : 'api_error',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, { status: 500 })
   }
 }
 

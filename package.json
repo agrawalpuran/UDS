@@ -26,9 +26,12 @@
     "backup-db": "node scripts/backup-database.js",
     "backup-full": "powershell -ExecutionPolicy Bypass -File scripts/create-full-backup.ps1",
     "backup-today": "powershell -ExecutionPolicy Bypass -File scripts/create-backup-with-date.ps1",
+    "backup-code": "powershell -ExecutionPolicy Bypass -File scripts/create-code-backup.ps1",
     "restore-db": "node scripts/restore-database.js",
     "migrate-to-atlas": "node scripts/migrate-to-atlas.js",
-    "push-github": "powershell -ExecutionPolicy Bypass -File push-to-github.ps1"
+    "migrate-data-to-atlas": "node scripts/migrate-data-to-atlas.js",
+    "push-github": "powershell -ExecutionPolicy Bypass -File push-to-github.ps1",
+    "verify-deployment": "node scripts/verify-vercel-deployment.js"
   },
   "dependencies": {
     "lucide-react": "^0.553.0",
