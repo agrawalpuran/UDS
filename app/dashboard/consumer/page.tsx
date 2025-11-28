@@ -110,12 +110,28 @@ export default function ConsumerDashboard() {
             
             setCurrentEmployee(employee)
             
-            // Ensure companyId is a string (handle populated objects)
-            const companyId = typeof employee.companyId === 'object' && employee.companyId?.id 
-              ? employee.companyId.id 
-              : employee.companyId
+            // Ensure companyId is a string (handle populated objects, ObjectIds, and strings)
+            let companyId: string | undefined
+            if (employee.companyId) {
+              if (typeof employee.companyId === 'object') {
+                // Populated object with id field
+                companyId = employee.companyId.id || employee.companyId._id?.toString()
+              } else {
+                // Already a string (ObjectId string or company id string)
+                companyId = employee.companyId.toString()
+              }
+            }
             
-            console.log('Consumer Dashboard - Company ID:', companyId, 'Type:', typeof companyId)
+            console.log('Consumer Dashboard - Employee companyId raw:', employee.companyId)
+            console.log('Consumer Dashboard - Company ID extracted:', companyId, 'Type:', typeof companyId)
+            console.log('Consumer Dashboard - Company Name:', employee.companyName)
+            
+            if (!companyId) {
+              console.error('Consumer Dashboard - No companyId found for employee:', employee.id)
+              setError('Employee is not associated with a company. Please contact your administrator.')
+              setLoading(false)
+              return
+            }
             
             // Get employee ID for consumed eligibility
             const employeeId = typeof employee.id === 'string' 
@@ -616,7 +632,12 @@ export default function ConsumerDashboard() {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-yellow-900 mb-2">Debug Information</h3>
             <div className="text-sm text-yellow-800 space-y-1">
-              <p>Company ID: <strong>{currentEmployee.companyId}</strong></p>
+              <p>Company ID: <strong>{(() => {
+                const cid = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
+                  ? currentEmployee.companyId.id 
+                  : currentEmployee.companyId
+                return cid || 'Not found'
+              })()}</strong></p>
               <p>Company Name: <strong>{currentEmployee.companyName}</strong></p>
               <p>Employee Email: <strong>{currentEmployee.email}</strong></p>
               <p className="mt-2">Check browser console (F12) for detailed debug logs.</p>

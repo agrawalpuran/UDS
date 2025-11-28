@@ -103,17 +103,31 @@ export default function ConsumerCatalogPage() {
         // Set employee first
         setCurrentEmployee(employee)
         
-        // Ensure companyId is a string (handle populated objects)
-        const companyId = typeof employee.companyId === 'object' && employee.companyId?.id 
-          ? employee.companyId.id 
-          : employee.companyId
+        // Ensure companyId is a string (handle populated objects, ObjectIds, and strings)
+        let companyId: string | undefined
+        if (employee.companyId) {
+          if (typeof employee.companyId === 'object') {
+            // Populated object with id field
+            companyId = employee.companyId.id || employee.companyId._id?.toString()
+          } else {
+            // Already a string (ObjectId string or company id string)
+            companyId = employee.companyId.toString()
+          }
+        }
         
         // Get employee ID for consumed eligibility
         const employeeId = typeof employee.id === 'string' 
           ? employee.id 
           : employee._id?.toString() || employee.id
         
-        console.log('Consumer Catalog - Company ID:', companyId, 'Company Name:', employee.companyName)
+        console.log('Consumer Catalog - Employee companyId raw:', employee.companyId)
+        console.log('Consumer Catalog - Company ID extracted:', companyId, 'Company Name:', employee.companyName)
+        
+        if (!companyId) {
+          console.error('Consumer Catalog - No companyId found for employee:', employee.id)
+          setLoading(false)
+          return
+        }
         
         // Load products and consumed eligibility in parallel
         const [products, consumed] = await Promise.all([

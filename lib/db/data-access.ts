@@ -49,12 +49,20 @@ function toPlainObject(doc: any): any {
     // Handle populated companyId (object with id and name) or ObjectId
     if (obj.companyId && typeof obj.companyId === 'object') {
       if (obj.companyId.id) {
-        // Populated object - use the id field
+        // Populated object - use the id field (this is the company's string 'id' field)
         obj.companyId = obj.companyId.id
+      } else if (obj.companyId._id) {
+        // Populated object with _id - try to get the company's string 'id' field
+        // If not available, use _id as fallback
+        obj.companyId = obj.companyId.id || obj.companyId._id.toString()
       } else if (obj.companyId.toString) {
-        // ObjectId - convert to string
+        // ObjectId - need to find the company to get its string 'id' field
+        // For now, convert to string and we'll handle it in the calling code
         obj.companyId = obj.companyId.toString()
       }
+    } else {
+      // Already a string - keep it as is
+      obj.companyId = obj.companyId
     }
   }
   if (obj.employeeId) {
@@ -85,10 +93,25 @@ function toPlainObject(doc: any): any {
 export async function getProductsByCompany(companyId: string): Promise<any[]> {
   await connectDB()
   
-  // Find company by string ID
-  const company = await Company.findOne({ id: companyId })
+  if (!companyId) {
+    console.warn('getProductsByCompany: companyId is empty or undefined')
+    return []
+  }
+  
+  // Find company by string ID first
+  let company = await Company.findOne({ id: companyId })
+  
+  // If not found by string ID, try finding by ObjectId (in case companyId is an ObjectId string)
+  if (!company && mongoose.Types.ObjectId.isValid(companyId)) {
+    company = await Company.findById(companyId)
+    if (company) {
+      console.log(`getProductsByCompany: Found company by ObjectId, using company.id: ${company.id}`)
+      companyId = company.id // Use the string id for the rest of the function
+    }
+  }
+  
   if (!company) {
-    console.warn(`Company ${companyId} not found`)
+    console.warn(`getProductsByCompany: Company not found for companyId: ${companyId}`)
     return []
   }
 
