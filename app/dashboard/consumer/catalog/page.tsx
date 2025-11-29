@@ -195,8 +195,21 @@ export default function ConsumerCatalogPage() {
   }, [currentEmployee?.id, currentEmployee?.companyId])
   
   // Set default gender filter based on user's profile gender
-  const defaultGenderFilter = currentEmployee?.gender === 'male' ? 'male' : currentEmployee?.gender === 'female' ? 'female' : 'all'
-  const [filterGender, setFilterGender] = useState<'all' | 'male' | 'female' | 'unisex'>(defaultGenderFilter)
+  const [filterGender, setFilterGender] = useState<'all' | 'male' | 'female' | 'unisex'>(() => {
+    // Initialize with 'all' - will be updated when employee loads
+    return 'all'
+  })
+  
+  // Update gender filter when employee data loads
+  useEffect(() => {
+    if (currentEmployee?.gender) {
+      const employeeGender = currentEmployee.gender.toLowerCase()
+      if (employeeGender === 'male' || employeeGender === 'female') {
+        setFilterGender(employeeGender as 'male' | 'female')
+        console.log('Consumer Catalog - Auto-filtering by gender:', employeeGender)
+      }
+    }
+  }, [currentEmployee?.gender])
   const [filterCategory, setFilterCategory] = useState<string>('all')
   const [cart, setCart] = useState<Record<string, { size: string; quantity: number }>>({})
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({})
@@ -452,9 +465,6 @@ export default function ConsumerCatalogPage() {
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </select>
-              {filterGender !== 'all' && filterGender === currentEmployee?.gender && (
-                <p className="text-xs text-blue-600 mt-1">Filtered by your profile ({currentEmployee?.gender})</p>
-              )}
             </div>
             <select
               value={filterCategory}
