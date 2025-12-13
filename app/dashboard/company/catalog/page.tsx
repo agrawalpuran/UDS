@@ -84,8 +84,8 @@ export default function CatalogPage() {
           if (userEmail) {
             const { getCompanyByAdminEmail } = await import('@/lib/data-mongodb')
             const company = await getCompanyByAdminEmail(userEmail)
-            if (company) {
-              targetCompanyId = company.id
+            if (company && company.id) {
+              targetCompanyId = String(company.id)
               localStorage.setItem('companyId', targetCompanyId)
             }
           }

@@ -49,13 +49,7 @@ function toPlainObject(doc: any): any {
       return id.toString()
     })
   }
-  if (obj.vendorId) {
-    if (obj.vendorId && typeof obj.vendorId === 'object' && obj.vendorId.id) {
-      obj.vendorId = obj.vendorId.id // If populated, use the id field
-    } else {
-      obj.vendorId = obj.vendorId.toString()
-    }
-  }
+  // vendorId removed from Uniform model - use ProductVendor collection instead
   if (obj.branchId) {
     // Handle populated branchId (object with id and name) or ObjectId
     if (obj.branchId && typeof obj.branchId === 'object') {
@@ -281,17 +275,7 @@ export async function getProductsByCompany(companyId: string | number): Promise<
       if (product._id) {
         product._id = new mongoose.Types.ObjectId(product._id.toString())
       }
-      // Try to populate vendorId from raw data if available
-      if (product.vendorId && typeof product.vendorId === 'object' && product.vendorId.id) {
-        // Already populated, keep it
-      } else if (product.vendorId) {
-        // It's an ObjectId, look it up from vendorMap
-        const vendorIdStr = product.vendorId.toString ? product.vendorId.toString() : String(product.vendorId)
-        const vendor = vendorMap.get(vendorIdStr)
-        if (vendor) {
-          product.vendorId = vendor
-        }
-      }
+      // vendorId removed from Uniform model - use ProductVendor collection instead
       return product
     })
   }
@@ -394,10 +378,7 @@ export async function getProductsByCompany(companyId: string | number): Promise<
     // Convert to plain object and add vendors array
     const plainProduct = toPlainObject(product)
     plainProduct.vendors = availableVendors
-    // Keep vendorId for backward compatibility (use first vendor if available)
-    if (availableVendors.length > 0 && !plainProduct.vendorId) {
-      plainProduct.vendorId = availableVendors[0].id
-    }
+    // vendorId removed - use vendors array from ProductVendor collection instead
     
     return plainProduct
   })
@@ -554,17 +535,7 @@ export async function getAllProductsByCompany(companyId: string | number): Promi
       if (product._id) {
         product._id = new mongoose.Types.ObjectId(product._id.toString())
       }
-      // Try to populate vendorId from raw data if available
-      if (product.vendorId && typeof product.vendorId === 'object' && product.vendorId.id) {
-        // Already populated, keep it
-      } else if (product.vendorId) {
-        // It's an ObjectId, look it up from vendorMap
-        const vendorIdStr = product.vendorId.toString ? product.vendorId.toString() : String(product.vendorId)
-        const vendor = vendorMap.get(vendorIdStr)
-        if (vendor) {
-          product.vendorId = vendor
-        }
-      }
+      // vendorId removed from Uniform model - use ProductVendor collection instead
       return product
     })
   }
@@ -687,15 +658,7 @@ export async function createProduct(productData: {
   }
   
   // Handle vendor if provided (optional - can be linked later via relationships)
-  let vendorObjectId: mongoose.Types.ObjectId | undefined
-  if (productData.vendorId) {
-    const vendor = await Vendor.findOne({ id: productData.vendorId })
-    if (!vendor) {
-      throw new Error(`Vendor not found: ${productData.vendorId}`)
-    }
-    vendorObjectId = vendor._id
-  }
-  // If no vendor provided, product can be created without vendor and linked later
+  // vendorId removed from Uniform model - use ProductVendor collection to link products to vendors
   
   const productDataToCreate: any = {
     id: productId,
@@ -708,11 +671,6 @@ export async function createProduct(productData: {
     sku: productData.sku,
     stock: productData.stock || 0,
     companyIds: [],
-  }
-  
-  // Only add vendorId if provided
-  if (vendorObjectId) {
-    productDataToCreate.vendorId = vendorObjectId
   }
   
   const newProduct = await Uniform.create(productDataToCreate)
@@ -770,14 +728,8 @@ export async function updateProduct(
     product.sku = updateData.sku
   }
   
-  // Handle vendor update
-  if (updateData.vendorId !== undefined) {
-    const vendor = await Vendor.findOne({ id: updateData.vendorId })
-    if (!vendor) {
-      throw new Error(`Vendor not found: ${updateData.vendorId}`)
-    }
-    product.vendorId = vendor._id
-  }
+  // vendorId removed from Uniform model - use ProductVendor collection to manage vendor relationships
+  // To update vendor relationships, use createProductVendor or deleteProductVendor functions
   
   await product.save()
   

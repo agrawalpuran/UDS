@@ -358,10 +358,10 @@ export default function DesignationEligibilityPage() {
       // Check for item eligibility in various field names (handle aliases)
       if (eligibility.itemEligibility) {
         elig = eligibility.itemEligibility[categoryId] || 
-               eligibility.itemEligibility[categoryId === 'trouser' ? 'pant' : categoryId] ||
-               eligibility.itemEligibility[categoryId === 'blazer' ? 'jacket' : categoryId] ||
-               eligibility.itemEligibility[categoryId === 'pant' ? 'trouser' : null] ||
-               eligibility.itemEligibility[categoryId === 'jacket' ? 'blazer' : null]
+                eligibility.itemEligibility[categoryId === 'trouser' ? 'pant' : categoryId] ||
+                eligibility.itemEligibility[categoryId === 'blazer' ? 'jacket' : categoryId] ||
+                (categoryId === 'pant' ? eligibility.itemEligibility['trouser'] : undefined) ||
+                (categoryId === 'jacket' ? eligibility.itemEligibility['blazer'] : undefined)
         
         console.log(`  🔍 Looking for ${categoryId}:`, {
           direct: eligibility.itemEligibility[categoryId],
@@ -542,7 +542,7 @@ export default function DesignationEligibilityPage() {
   const handleCancel = () => {
     setEditingId(null)
     setShowAddForm(false)
-    setFormData({ designation: '', gender: 'all', allowedProductCategories: [], itemEligibility: {} })
+    setFormData({ designation: '', gender: 'unisex', allowedProductCategories: [], itemEligibility: {} })
   }
 
   const getItemEligibilityDisplay = (eligibility: any, categoryId: string) => {
@@ -550,8 +550,8 @@ export default function DesignationEligibilityPage() {
     const itemElig = eligibility.itemEligibility?.[categoryId] || 
                     eligibility.itemEligibility?.[categoryId === 'trouser' ? 'pant' : categoryId] ||
                     eligibility.itemEligibility?.[categoryId === 'blazer' ? 'jacket' : categoryId] ||
-                    eligibility.itemEligibility?.[categoryId === 'pant' ? 'trouser' : null] ||
-                    eligibility.itemEligibility?.[categoryId === 'jacket' ? 'blazer' : null]
+                    (categoryId === 'pant' ? eligibility.itemEligibility?.['trouser'] : undefined) ||
+                    (categoryId === 'jacket' ? eligibility.itemEligibility?.['blazer'] : undefined)
     
     if (!itemElig || typeof itemElig !== 'object') {
       console.log(`⚠️ No itemEligibility found for ${categoryId} in eligibility ${eligibility.id}:`, {

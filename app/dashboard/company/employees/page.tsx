@@ -66,8 +66,8 @@ export default function EmployeesPage() {
             if (userEmail) {
               const { getCompanyByAdminEmail } = await import('@/lib/data-mongodb')
               const company = await getCompanyByAdminEmail(userEmail)
-              if (company) {
-                targetCompanyId = company.id
+              if (company && company.id) {
+                targetCompanyId = String(company.id)
                 localStorage.setItem('companyId', targetCompanyId)
               }
             }
@@ -327,6 +327,7 @@ export default function EmployeesPage() {
         await updateEmployee(editingEmployee.id, {
           ...formData,
           branchName: selectedBranch ? selectedBranch.name : formData.branchName,
+          dateOfJoining: formData.dateOfJoining ? new Date(formData.dateOfJoining) : undefined,
         })
         alert('Employee updated successfully')
         setShowEditModal(false)
@@ -343,6 +344,7 @@ export default function EmployeesPage() {
           companyId,
           companyName,
           branchName: selectedBranch ? selectedBranch.name : formData.branchName,
+          dateOfJoining: formData.dateOfJoining ? new Date(formData.dateOfJoining) : undefined,
         })
         alert('Employee created successfully')
         setShowAddModal(false)

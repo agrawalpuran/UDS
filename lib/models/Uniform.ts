@@ -9,7 +9,6 @@ export interface IUniform extends Document {
   price: number
   image: string
   sku: string
-  vendorId: mongoose.Types.ObjectId
   stock: number
   companyIds: mongoose.Types.ObjectId[]
   createdAt?: Date
@@ -55,12 +54,6 @@ const UniformSchema = new Schema<IUniform>(
       required: true,
       unique: true,
     },
-    vendorId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Vendor',
-      required: false,
-      index: true,
-    },
     stock: {
       type: Number,
       required: true,
@@ -79,7 +72,6 @@ const UniformSchema = new Schema<IUniform>(
 )
 
 // Create indexes for better query performance
-UniformSchema.index({ vendorId: 1 })
 UniformSchema.index({ companyIds: 1 })
 UniformSchema.index({ category: 1, gender: 1 })
 UniformSchema.index({ sku: 1 })

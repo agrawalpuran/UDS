@@ -225,10 +225,11 @@ export default function ConsumerCatalogPage() {
           companyId = currentEmployee.companyId
         }
       }
-      console.log('Consumer Catalog - Employee changed, reloading products for:', companyId)
-      const products = await getProductsByCompany(companyId, currentEmployee?.designation, currentEmployee?.gender as 'male' | 'female')
-      console.log('Consumer Catalog - Reloaded products:', products.length)
-      setUniforms(products)
+      if (companyId) {
+        console.log('Consumer Catalog - Employee changed, reloading products for:', companyId)
+        const products = await getProductsByCompany(companyId, currentEmployee?.designation || '', currentEmployee?.gender as 'male' | 'female')
+        setUniforms(products)
+      }
     }
     
     reloadProducts()

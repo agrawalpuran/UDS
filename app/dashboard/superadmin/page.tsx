@@ -159,7 +159,6 @@ export default function SuperAdminPage() {
           price: product.price,
           image: product.image,
           sku: product.sku,
-          vendorId: product.vendorId,
           stock: product.stock,
         })
         
