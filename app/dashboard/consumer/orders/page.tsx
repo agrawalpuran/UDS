@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Package, CheckCircle, Clock, Truck } from 'lucide-react'
-import { getEmployeeByEmail, getOrdersByEmployee } from '@/lib/data-mongodb'
+import { getEmployeeByEmail, getOrdersByEmployee, getCompanyById } from '@/lib/data-mongodb'
 import Link from 'next/link'
+import { maskAddress } from '@/lib/utils/data-masking'
 
 export default function ConsumerOrdersPage() {
   const [currentEmployee, setCurrentEmployee] = useState<any>(null)
   const [myOrders, setMyOrders] = useState<any[]>([])
+  const [company, setCompany] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   
   // Get current employee from localStorage (email stored during login)
@@ -26,9 +28,18 @@ export default function ConsumerOrdersPage() {
           const employee = await getEmployeeByEmail(userEmail)
           if (employee) {
             setCurrentEmployee(employee)
-            // Get orders for this employee
-            const employeeOrders = await getOrdersByEmployee(employee.id)
+            // Get company ID
+            const companyId = typeof employee.companyId === 'object' && employee.companyId?.id 
+              ? employee.companyId.id 
+              : employee.companyId
+            
+            // Get orders and company settings in parallel
+            const [employeeOrders, companyData] = await Promise.all([
+              getOrdersByEmployee(employee.employeeId || employee.id),
+              companyId ? getCompanyById(companyId) : Promise.resolve(null)
+            ])
             setMyOrders(employeeOrders)
+            setCompany(companyData)
           }
         } catch (error) {
           console.error('Error loading orders:', error)
@@ -48,7 +59,7 @@ export default function ConsumerOrdersPage() {
       case 'Dispatched':
         return <Truck className="h-5 w-5 text-purple-600" />
       case 'Awaiting fulfilment':
-        return <Package className="h-5 w-5 text-blue-600" />
+        return <Package className="h-5 w-5" style={{ color: company?.primaryColor || '#f76b1c' }} />
       case 'Awaiting approval':
         return <Clock className="h-5 w-5 text-yellow-600" />
       default:
@@ -59,15 +70,23 @@ export default function ConsumerOrdersPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Delivered':
-        return 'bg-green-100 text-green-700'
+        return { className: 'bg-green-100 text-green-700' }
       case 'Dispatched':
-        return 'bg-purple-100 text-purple-700'
+        return { className: 'bg-purple-100 text-purple-700' }
       case 'Awaiting fulfilment':
-        return 'bg-blue-100 text-blue-700'
+        return company?.primaryColor 
+          ? { 
+              style: { 
+                backgroundColor: `${company.primaryColor}20`, 
+                color: company.primaryColor 
+              },
+              className: ''
+            }
+          : { className: 'bg-orange-100 text-[#f76b1c]' }
       case 'Awaiting approval':
-        return 'bg-yellow-100 text-yellow-700'
+        return { className: 'bg-yellow-100 text-yellow-700' }
       default:
-        return 'bg-gray-100 text-gray-700'
+        return { className: 'bg-gray-100 text-gray-700' }
     }
   }
 
@@ -96,7 +115,7 @@ export default function ConsumerOrdersPage() {
           <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
           <Link
             href="/dashboard/consumer/catalog"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
+            className="bg-[#f76b1c] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#dc5514] transition-colors shadow-md"
           >
             Place New Order
           </Link>
@@ -109,7 +128,8 @@ export default function ConsumerOrdersPage() {
             <p className="text-gray-600 mb-6">Start browsing our catalog to place your first order.</p>
             <Link
               href="/dashboard/consumer/catalog"
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md"
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="inline-block text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-md"
             >
               Browse Catalog
             </Link>
@@ -125,16 +145,49 @@ export default function ConsumerOrdersPage() {
                     <div className="flex items-center space-x-4">
                       {getStatusIcon(order.status || 'Awaiting approval')}
                       <div>
-                        <h3 className="text-lg font-bold text-gray-900">Order #{order.id}</h3>
+                        <h3 className="text-lg font-bold text-gray-900">
+                          Order #{order.id}
+                          {order.isSplitOrder && (
+                            <span className="ml-2 text-xs font-normal text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                              Split Order ({order.vendorCount} vendor{order.vendorCount > 1 ? 's' : ''})
+                            </span>
+                          )}
+                        </h3>
                         <p className="text-sm text-gray-600">
                           Placed on {formatDate(order.orderDate)}
+                          {order.vendors && order.vendors.length > 0 && (
+                            <span className="ml-2 text-xs text-gray-500">
+                              • Vendors: {order.vendors.join(', ')}
+                            </span>
+                          )}
                         </p>
                       </div>
                     </div>
-                    <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(order.status || 'Awaiting approval')}`}>
+                    <span 
+                      className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(order.status || 'Awaiting approval').className || ''}`}
+                      style={getStatusColor(order.status || 'Awaiting approval').style}
+                    >
                       {order.status || 'Awaiting approval'}
                     </span>
                   </div>
+                  
+                  {/* Show split order details if applicable */}
+                  {order.isSplitOrder && order.splitOrders && order.splitOrders.length > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm font-semibold text-blue-900 mb-2">Order Split by Vendor:</p>
+                      <div className="space-y-1">
+                        {order.splitOrders.map((split: any, idx: number) => (
+                          <div key={idx} className="text-xs text-blue-800">
+                            <span className="font-medium">{split.vendorName}:</span>
+                            <span className="ml-2">
+                              {split.itemCount} item(s)
+                              {company?.showPrices && ` - ₹${split.total.toFixed(2)}`}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="border-t pt-4 mb-4">
                     <h4 className="font-semibold text-gray-900 mb-3">Order Items:</h4>
@@ -172,7 +225,7 @@ export default function ConsumerOrdersPage() {
                     {order.deliveryAddress && (
                       <div className="mt-3">
                         <p className="text-sm text-gray-600">Delivery Address:</p>
-                        <p className="font-semibold text-gray-900">{order.deliveryAddress}</p>
+                        <p className="font-semibold text-gray-900">{maskAddress(order.deliveryAddress)}</p>
                       </div>
                     )}
                     {order.estimatedDeliveryTime && (

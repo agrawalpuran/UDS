@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
   LayoutDashboard, Package, Users, FileText, BarChart3, 
-  Settings, LogOut, MapPin, ShoppingCart, Upload
+  Settings, LogOut, MapPin, ShoppingCart, Upload, Shield
 } from 'lucide-react'
 import { mockEmployees, mockCompanies, getVendorById, getCompanyById, getEmployeeByEmail } from '@/lib/data'
+import { getCompanyById as getCompanyByIdAPI } from '@/lib/data-mongodb'
 import Image from 'next/image'
 
 interface DashboardLayoutProps {
@@ -21,34 +22,55 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
   const [currentVendor, setCurrentVendor] = useState<any>(null)
 
   useEffect(() => {
-    if (actorType === 'consumer') {
-      // Get current employee from localStorage
-      const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null
-      const currentEmployee = userEmail ? getEmployeeByEmail(userEmail) : (mockEmployees[0] || null)
-      if (currentEmployee?.companyId) {
-        const company = getCompanyById(currentEmployee.companyId)
-        setCurrentCompany(company || null)
-      }
-    } else if (actorType === 'company') {
-      // Get company from localStorage
-      const companyId = typeof window !== 'undefined' ? localStorage.getItem('companyId') : null
-      if (companyId) {
-        const company = getCompanyById(companyId)
-        setCurrentCompany(company || null)
-      } else {
-        setCurrentCompany(mockCompanies[0] || null)
-      }
-    } else if (actorType === 'vendor') {
-      // Get vendor from localStorage
-      const vendorId = typeof window !== 'undefined' ? localStorage.getItem('vendorId') : null
-      if (vendorId) {
-        const vendor = getVendorById(vendorId)
-        setCurrentVendor(vendor || null)
-      } else {
-        const vendor = getVendorById('VEND-001')
-        setCurrentVendor(vendor || null)
+    // Use tab-specific authentication storage
+    const loadAuthData = async () => {
+      const { getUserEmail, getCompanyId, getVendorId } = await import('@/lib/utils/auth-storage')
+      
+      if (actorType === 'consumer') {
+        // Get current employee from tab-specific storage
+        const userEmail = getUserEmail('consumer') || (typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null)
+        const currentEmployee = userEmail ? getEmployeeByEmail(userEmail) : (mockEmployees[0] || null)
+        if (currentEmployee?.companyId) {
+          const company = getCompanyById(currentEmployee.companyId)
+          setCurrentCompany(company || null)
+        }
+      } else if (actorType === 'company') {
+        // Get company from tab-specific storage
+        const companyId = getCompanyId() || (typeof window !== 'undefined' ? localStorage.getItem('companyId') : null)
+        if (companyId) {
+          // Fetch company from API to get latest branding
+          getCompanyByIdAPI(companyId)
+            .then(company => {
+              if (company) {
+                setCurrentCompany(company)
+              } else {
+                // Fallback to mock data
+                const mockCompany = getCompanyById(companyId)
+                setCurrentCompany(mockCompany || mockCompanies[0] || null)
+              }
+            })
+            .catch(() => {
+              // Fallback to mock data on error
+              const mockCompany = getCompanyById(companyId)
+              setCurrentCompany(mockCompany || mockCompanies[0] || null)
+            })
+        } else {
+          setCurrentCompany(mockCompanies[0] || null)
+        }
+      } else if (actorType === 'vendor') {
+        // Get vendor from tab-specific storage
+        const vendorId = getVendorId() || (typeof window !== 'undefined' ? localStorage.getItem('vendorId') : null)
+        if (vendorId) {
+          const vendor = getVendorById(vendorId)
+          setCurrentVendor(vendor || null)
+        } else {
+          const vendor = getVendorById('VEND-001')
+          setCurrentVendor(vendor || null)
+        }
       }
     }
+    
+    loadAuthData()
   }, [actorType])
 
   const vendorMenu = [
@@ -64,9 +86,11 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
     { name: 'Catalog', href: '/dashboard/company/catalog', icon: Package },
     { name: 'Orders', href: '/dashboard/company/orders', icon: ShoppingCart },
     { name: 'Approvals', href: '/dashboard/company/approvals', icon: FileText },
+    { name: 'Designation Eligibility', href: '/dashboard/company/designation-eligibility', icon: Shield },
     { name: 'Locations', href: '/dashboard/company/locations', icon: MapPin },
     { name: 'Batch Upload', href: '/dashboard/company/batch-upload', icon: Upload },
     { name: 'Reports', href: '/dashboard/company/reports', icon: BarChart3 },
+    { name: 'Settings', href: '/dashboard/company/settings', icon: Settings },
   ]
 
   const consumerMenu = [
@@ -96,7 +120,9 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
     if (actorType === 'vendor') {
       return currentVendor?.primaryColor || '#2563eb'
     }
-    if (actorType === 'company') return 'purple'
+    if (actorType === 'company') {
+      return currentCompany?.primaryColor || '#f76b1c'
+    }
     return 'green'
   }
 
@@ -104,15 +130,23 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
     if (actorType === 'vendor') {
       return currentVendor?.primaryColor || '#2563eb'
     }
-    if (actorType === 'company') return 'bg-purple-600'
+    if (actorType === 'company') {
+      return currentCompany?.primaryColor || '#f76b1c'
+    }
     if (actorType === 'superadmin') return 'bg-red-600'
-    return 'bg-green-600'
+    return 'bg-[#f76b1c]'
   }
   
   const getHeaderStyle = () => {
     if (actorType === 'vendor' && currentVendor) {
       return {
         backgroundColor: currentVendor.primaryColor,
+        color: 'white'
+      }
+    }
+    if (actorType === 'company' && currentCompany) {
+      return {
+        backgroundColor: currentCompany.primaryColor || '#f76b1c',
         color: 'white'
       }
     }
@@ -130,9 +164,12 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
       const primaryColor = currentVendor?.primaryColor || '#2563eb'
       return `font-semibold`
     }
-    if (actorType === 'company') return 'bg-purple-50 text-purple-700 font-semibold'
+    if (actorType === 'company') {
+      // Use dynamic color classes based on company's secondary color
+      return 'font-semibold'
+    }
     if (actorType === 'superadmin') return 'bg-red-50 text-red-700 font-semibold'
-    return 'bg-green-50 text-green-700 font-semibold'
+    return 'bg-orange-50 text-orange-700 font-semibold'
   }
   
   const getActiveLinkStyle = (isActive: boolean) => {
@@ -142,14 +179,21 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
         color: currentVendor.primaryColor
       }
     }
+    if (actorType === 'company' && currentCompany && isActive) {
+      const secondaryColor = currentCompany.secondaryColor || currentCompany.primaryColor || '#f76b1c'
+      return {
+        backgroundColor: `${secondaryColor}20`,
+        color: currentCompany.primaryColor || '#f76b1c'
+      }
+    }
     return {}
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+    <div className="min-h-screen bg-gradient-to-br from-white via-orange-50/20 to-slate-50">
       {/* Sidebar */}
       <div className="fixed inset-y-0 left-0 w-64 glass border-r border-slate-200/50 shadow-modern-lg z-10">
-        <div className="h-20 flex items-center justify-between px-6 gradient-primary" style={getHeaderStyle()}>
+        <div className="h-20 flex items-center justify-between px-6" style={getHeaderStyle()}>
           {actorType === 'vendor' && currentVendor ? (
             <div className="flex items-center space-x-3">
               <div className="relative w-10 h-10 bg-white rounded flex items-center justify-center overflow-hidden">
@@ -169,11 +213,11 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
           ) : currentCompany && (actorType === 'consumer' || actorType === 'company') ? (
             <div className="flex items-center space-x-3">
               <div className="relative w-10 h-10 bg-white rounded-lg flex items-center justify-center overflow-hidden shadow-modern">
-                {currentCompany.name === 'Indigo' ? (
-                  // Custom Indigo logo
+                {currentCompany.name === 'ICICI Bank' ? (
+                  // Custom ICICI Bank logo - Orange theme
                   <svg width="32" height="32" viewBox="0 0 32 32" className="rounded">
-                    <circle cx="16" cy="16" r="14" fill="#004080"/>
-                    <text x="16" y="21" fontSize="16" fontWeight="bold" fill="white" textAnchor="middle" fontFamily="Arial, sans-serif">6E</text>
+                    <rect width="32" height="32" rx="4" fill="#f76b1c"/>
+                    <text x="16" y="22" fontSize="10" fontWeight="bold" fill="white" textAnchor="middle" fontFamily="Arial, sans-serif">ICICI</text>
                   </svg>
                 ) : currentCompany.logo ? (
                   <Image
@@ -184,7 +228,7 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
                     className="object-contain p-1"
                   />
                 ) : (
-                  <span className="text-xs font-bold" style={{ color: currentCompany.primaryColor || '#004080' }}>
+                  <span className="text-xs font-bold" style={{ color: currentCompany.primaryColor || '#f76b1c' }}>
                     {currentCompany.name.charAt(0)}
                   </span>
                 )}
@@ -214,7 +258,15 @@ export default function DashboardLayout({ children, actorType }: DashboardLayout
                 }`}
                 style={linkStyle}
               >
-                <Icon className={`h-5 w-5 ${isActive ? 'text-primary-600' : ''}`} />
+                <Icon 
+                  className="h-5 w-5" 
+                  style={isActive && actorType === 'company' && currentCompany 
+                    ? { color: currentCompany.primaryColor || '#f76b1c' }
+                    : isActive && actorType === 'vendor' && currentVendor
+                    ? { color: currentVendor.primaryColor || '#2563eb' }
+                    : {}
+                  }
+                />
                 <span className="font-medium">{item.name}</span>
               </Link>
             )

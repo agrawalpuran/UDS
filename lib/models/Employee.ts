@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose'
+import { encrypt, decrypt } from '../utils/encryption'
 
 export interface IEmployee extends Document {
   id: string
@@ -15,7 +16,9 @@ export interface IEmployee extends Document {
   shoeSize: string
   address: string
   companyId: mongoose.Types.ObjectId
-  companyName: string
+  companyName?: string // Optional - derived from companyId, stored for display only
+  branchId?: mongoose.Types.ObjectId
+  branchName?: string
   eligibility: {
     shirt: number
     pant: number
@@ -105,7 +108,15 @@ const EmployeeSchema = new Schema<IEmployee>(
     },
     companyName: {
       type: String,
-      required: true,
+      required: false, // Optional - derived from companyId lookup, stored for display only
+    },
+    branchId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Branch',
+      index: true,
+    },
+    branchName: {
+      type: String,
     },
     eligibility: {
       shirt: { type: Number, required: true, default: 0 },
@@ -142,6 +153,7 @@ const EmployeeSchema = new Schema<IEmployee>(
   },
   {
     timestamps: true,
+    strictPopulate: false, // Allow populating fields that may not be strictly defined
   }
 )
 
@@ -149,6 +161,47 @@ EmployeeSchema.index({ companyId: 1, status: 1 })
 EmployeeSchema.index({ email: 1 })
 EmployeeSchema.index({ id: 1 })
 EmployeeSchema.index({ employeeId: 1 })
+
+// Encrypt sensitive fields before saving
+EmployeeSchema.pre('save', function (next) {
+  // Encrypt sensitive PII fields
+  const sensitiveFields: (keyof IEmployee)[] = ['email', 'mobile', 'address', 'firstName', 'lastName', 'designation']
+  
+  for (const field of sensitiveFields) {
+    if (this[field] && typeof this[field] === 'string') {
+      // Only encrypt if not already encrypted (doesn't contain ':')
+      const value = this[field] as string
+      if (value && !value.includes(':')) {
+        this[field] = encrypt(value) as any
+      }
+    }
+  }
+  
+  next()
+})
+
+// Decrypt sensitive fields after retrieving
+EmployeeSchema.post(['find', 'findOne', 'findOneAndUpdate'], function (docs) {
+  if (!docs) return
+  
+  const documents = Array.isArray(docs) ? docs : [docs]
+  const sensitiveFields: (keyof IEmployee)[] = ['email', 'mobile', 'address', 'firstName', 'lastName', 'designation']
+  
+  documents.forEach((doc: any) => {
+    if (doc && typeof doc === 'object') {
+      for (const field of sensitiveFields) {
+        if (doc[field] && typeof doc[field] === 'string') {
+          try {
+            doc[field] = decrypt(doc[field])
+          } catch (error) {
+            // If decryption fails, keep original value
+            console.warn(`Failed to decrypt field ${field}:`, error)
+          }
+        }
+      }
+    }
+  })
+})
 
 const Employee = mongoose.models.Employee || mongoose.model<IEmployee>('Employee', EmployeeSchema)
 

@@ -19,22 +19,54 @@ export default function LoginPage() {
     }
   }
 
-  const handleOTPVerify = (otp: string) => {
-    // Store actor type in session/localStorage
-    localStorage.setItem('actorType', actorType)
-    localStorage.setItem('userEmail', emailOrPhone)
+  const handleOTPVerify = async (otp: string) => {
+    // Use tab-specific authentication storage
+    const { setAuthData } = await import('@/lib/utils/auth-storage')
     
     // Store vendor/company IDs based on actor type
     if (actorType === 'vendor') {
       // For demo: assign vendor based on email domain or default
       const vendorId = emailOrPhone.includes('uniformpro') ? 'VEND-001' : 
                       emailOrPhone.includes('footwear') ? 'VEND-002' : 'VEND-001'
-      localStorage.setItem('vendorId', vendorId)
+      setAuthData('vendor', {
+        userEmail: emailOrPhone,
+        vendorId
+      })
     } else if (actorType === 'company') {
       // For demo: assign company based on email domain or default
-      const companyId = emailOrPhone.includes('indigo') ? 'COMP-INDIGO' :
-                        emailOrPhone.includes('akasa') ? 'COMP-AKASA' : 'COMP-INDIGO'
-      localStorage.setItem('companyId', companyId)
+      // Company IDs are now numeric: 1=Air India, 2=Akasa Air, 3=Indigo
+      const companyId = emailOrPhone.includes('icicibank') ? 3 :
+                        emailOrPhone.includes('akasa') ? 2 : 3
+      setAuthData('company', {
+        userEmail: emailOrPhone,
+        companyId
+      })
+    } else if (actorType === 'superadmin') {
+      setAuthData('superadmin', {
+        userEmail: emailOrPhone
+      })
+    } else {
+      setAuthData('consumer', {
+        userEmail: emailOrPhone
+      })
+    }
+    
+    // Also set in localStorage for backward compatibility (but don't overwrite other tabs)
+    const currentActorType = sessionStorage.getItem('currentActorType')
+    if (!currentActorType || currentActorType === actorType) {
+      localStorage.setItem('actorType', actorType)
+      localStorage.setItem('userEmail', emailOrPhone)
+      if (actorType === 'vendor') {
+        const vendorId = emailOrPhone.includes('uniformpro') ? 'VEND-001' : 
+                        emailOrPhone.includes('footwear') ? 'VEND-002' : 'VEND-001'
+        localStorage.setItem('vendorId', vendorId)
+      } else if (actorType === 'company') {
+        // Company IDs are now numeric: 1=Air India, 2=Akasa Air, 3=Indigo
+        const companyId = emailOrPhone.includes('icicibank') ? 3 :
+                          emailOrPhone.includes('akasa') ? 2 : 3
+        localStorage.setItem('companyId', String(companyId))
+      }
+      sessionStorage.setItem('currentActorType', actorType)
     }
     
     // Redirect to appropriate dashboard
@@ -58,7 +90,7 @@ export default function LoginPage() {
 
   if (showOTP) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-white via-orange-50/30 to-slate-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <Link href="/login" className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -94,14 +126,14 @@ export default function LoginPage() {
                 value={emailOrPhone}
                 onChange={(e) => setEmailOrPhone(e.target.value)}
                 placeholder="Enter email or phone number"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#f76b1c] focus:border-transparent"
                 required
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="w-full bg-[#f76b1c] text-white py-3 rounded-lg font-semibold hover:bg-[#dc5514] transition-colors"
             >
               Send OTP
             </button>

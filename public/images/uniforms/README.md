@@ -53,3 +53,5 @@ Based on the catalog categories and genders, you need the following images:
 
 ❌ All other images need to be added
 
+
+

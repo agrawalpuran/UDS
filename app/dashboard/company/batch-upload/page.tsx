@@ -1,10 +1,29 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Upload, Download, FileText, CheckCircle } from 'lucide-react'
+import { getCompanyById } from '@/lib/data-mongodb'
 
 export default function BatchUploadPage() {
+  const [companyPrimaryColor, setCompanyPrimaryColor] = useState<string>('#f76b1c')
+  const [companySecondaryColor, setCompanySecondaryColor] = useState<string>('#f76b1c')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const loadCompanyColors = async () => {
+        const storedCompanyId = localStorage.getItem('companyId')
+        if (storedCompanyId) {
+          const companyDetails = await getCompanyById(storedCompanyId)
+          if (companyDetails) {
+            setCompanyPrimaryColor(companyDetails.primaryColor || '#f76b1c')
+            setCompanySecondaryColor(companyDetails.secondaryColor || companyDetails.primaryColor || '#f76b1c')
+          }
+        }
+      }
+      loadCompanyColors()
+    }
+  }, [])
   const [file, setFile] = useState<File | null>(null)
   const [uploaded, setUploaded] = useState(false)
   const [orderFile, setOrderFile] = useState<File | null>(null)
@@ -96,7 +115,21 @@ IND-001,PROD-003,Formal Shoes,9,1,123 Main St New York NY 10001`
                   <div>
                     <p className="text-gray-600 mb-2">Drag and drop your CSV file here</p>
                     <p className="text-gray-500 text-sm mb-4">or</p>
-                    <label className="inline-block bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer">
+                    <label 
+                      className="inline-block text-white px-6 py-2 rounded-lg font-semibold transition-colors cursor-pointer"
+                      style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+                      onMouseEnter={(e) => {
+                        const color = companyPrimaryColor || '#f76b1c'
+                        const r = parseInt(color.slice(1, 3), 16)
+                        const g = parseInt(color.slice(3, 5), 16)
+                        const b = parseInt(color.slice(5, 7), 16)
+                        const darker = `#${Math.max(0, r - 25).toString(16).padStart(2, '0')}${Math.max(0, g - 25).toString(16).padStart(2, '0')}${Math.max(0, b - 25).toString(16).padStart(2, '0')}`
+                        e.currentTarget.style.backgroundColor = darker
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = companyPrimaryColor || '#f76b1c'
+                      }}
+                    >
                       Browse Files
                       <input
                         type="file"
@@ -113,7 +146,19 @@ IND-001,PROD-003,Formal Shoes,9,1,123 Main St New York NY 10001`
             {file && !uploaded && (
               <button
                 onClick={handleUpload}
-                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                className="w-full text-white py-3 rounded-lg font-semibold transition-colors"
+                style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+                onMouseEnter={(e) => {
+                  const color = companyPrimaryColor || '#f76b1c'
+                  const r = parseInt(color.slice(1, 3), 16)
+                  const g = parseInt(color.slice(3, 5), 16)
+                  const b = parseInt(color.slice(5, 7), 16)
+                  const darker = `#${Math.max(0, r - 25).toString(16).padStart(2, '0')}${Math.max(0, g - 25).toString(16).padStart(2, '0')}${Math.max(0, b - 25).toString(16).padStart(2, '0')}`
+                  e.currentTarget.style.backgroundColor = darker
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = companyPrimaryColor || '#f76b1c'
+                }}
               >
                 Upload and Process
               </button>

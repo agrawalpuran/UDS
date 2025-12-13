@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { User, Mail, Phone, MapPin, Edit } from 'lucide-react'
 import { getEmployeeByEmail, Employee } from '@/lib/data-mongodb'
+import { maskEmployeeData } from '@/lib/utils/data-masking'
 
 export default function ConsumerProfilePage() {
   const [employee, setEmployee] = useState<Employee | null>(null)
@@ -45,6 +46,8 @@ export default function ConsumerProfilePage() {
     )
   }
 
+  const masked = maskEmployeeData(employee)
+
   return (
     <DashboardLayout actorType="consumer">
       <div>
@@ -65,7 +68,7 @@ export default function ConsumerProfilePage() {
                 <User className="h-5 w-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-600">Full Name</p>
-                  <p className="font-semibold text-gray-900">{employee.firstName} {employee.lastName}</p>
+                  <p className="font-semibold text-gray-900">{masked.firstName} {masked.lastName}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -76,24 +79,31 @@ export default function ConsumerProfilePage() {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
+                <User className="h-5 w-5 text-gray-400" />
+                <div>
+                  <p className="text-sm text-gray-600">Gender</p>
+                  <p className="font-semibold text-gray-900 capitalize">{employee.gender || 'N/A'}</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-600">Email</p>
-                  <p className="font-semibold text-gray-900">{employee.email}</p>
+                  <p className="font-semibold text-gray-900">{masked.email}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-600">Mobile</p>
-                  <p className="font-semibold text-gray-900">{employee.mobile}</p>
+                  <p className="font-semibold text-gray-900">{masked.mobile}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-gray-400" />
                 <div>
                   <p className="text-sm text-gray-600">Address</p>
-                  <p className="font-semibold text-gray-900">{employee.address}</p>
+                  <p className="font-semibold text-gray-900">{masked.address}</p>
                 </div>
               </div>
             </div>

@@ -42,9 +42,22 @@ export default function CompanyLogin() {
         return
       }
       
-      localStorage.setItem('actorType', 'company')
-      localStorage.setItem('userEmail', emailOrPhone)
-      localStorage.setItem('companyId', company.id)
+      // Use tab-specific authentication storage
+      const { setAuthData } = await import('@/lib/utils/auth-storage')
+      setAuthData('company', {
+        userEmail: emailOrPhone,
+        companyId: company.id
+      })
+      
+      // Also set in localStorage for backward compatibility (but don't overwrite other tabs)
+      // Only update if this tab's current actor type matches
+      const currentActorType = sessionStorage.getItem('currentActorType')
+      if (!currentActorType || currentActorType === 'company') {
+        localStorage.setItem('actorType', 'company')
+        localStorage.setItem('userEmail', emailOrPhone)
+        localStorage.setItem('companyId', company.id)
+        sessionStorage.setItem('currentActorType', 'company')
+      }
       
       setTimeout(() => {
         router.push('/dashboard/company')

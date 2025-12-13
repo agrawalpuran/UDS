@@ -5,6 +5,7 @@ import {
   addCompanyAdmin, 
   removeCompanyAdmin, 
   updateCompanyAdminPrivileges,
+  updateCompanySettings,
   getCompanyAdmins,
   isCompanyAdmin, 
   getCompanyByAdminEmail,
@@ -30,7 +31,14 @@ export async function GET(request: Request) {
     // Get company admins
     if (getAdmins === 'true' && companyId) {
       const admins = await getCompanyAdmins(companyId)
-      return NextResponse.json(admins)
+      console.log(`[API] Returning ${admins.length} admins for company ${companyId}`)
+      return NextResponse.json(admins, {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      })
     }
 
     // Check if user is admin of a company
@@ -63,7 +71,7 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const body = await request.json()
-    const { companyId, employeeId, action, canApproveOrders } = body
+    const { companyId, employeeId, action, canApproveOrders, showPrices, allowPersonalPayments, logo, primaryColor, secondaryColor, name } = body
 
     if (!companyId) {
       return NextResponse.json({ error: 'Company ID is required' }, { status: 400 })
@@ -90,6 +98,53 @@ export async function PATCH(request: Request) {
       }
       await updateCompanyAdminPrivileges(companyId, employeeId, canApproveOrders)
       return NextResponse.json({ success: true, message: 'Admin privileges updated successfully' })
+    } else if (action === 'updateSettings') {
+      const settings: { 
+        showPrices?: boolean
+        allowPersonalPayments?: boolean
+        logo?: string
+        primaryColor?: string
+        secondaryColor?: string
+        name?: string
+      } = {}
+      if (showPrices !== undefined) {
+        if (typeof showPrices !== 'boolean') {
+          return NextResponse.json({ error: 'showPrices must be a boolean' }, { status: 400 })
+        }
+        settings.showPrices = showPrices
+      }
+      if (allowPersonalPayments !== undefined) {
+        if (typeof allowPersonalPayments !== 'boolean') {
+          return NextResponse.json({ error: 'allowPersonalPayments must be a boolean' }, { status: 400 })
+        }
+        settings.allowPersonalPayments = allowPersonalPayments
+      }
+      if (logo !== undefined) {
+        if (typeof logo !== 'string') {
+          return NextResponse.json({ error: 'logo must be a string' }, { status: 400 })
+        }
+        settings.logo = logo
+      }
+      if (primaryColor !== undefined) {
+        if (typeof primaryColor !== 'string') {
+          return NextResponse.json({ error: 'primaryColor must be a string' }, { status: 400 })
+        }
+        settings.primaryColor = primaryColor
+      }
+      if (secondaryColor !== undefined) {
+        if (typeof secondaryColor !== 'string') {
+          return NextResponse.json({ error: 'secondaryColor must be a string' }, { status: 400 })
+        }
+        settings.secondaryColor = secondaryColor
+      }
+      if (name !== undefined) {
+        if (typeof name !== 'string') {
+          return NextResponse.json({ error: 'name must be a string' }, { status: 400 })
+        }
+        settings.name = name
+      }
+      const updated = await updateCompanySettings(companyId, settings)
+      return NextResponse.json({ success: true, company: updated, message: 'Company settings updated successfully' })
     } else {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }

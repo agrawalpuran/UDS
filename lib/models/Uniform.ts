@@ -58,7 +58,7 @@ const UniformSchema = new Schema<IUniform>(
     vendorId: {
       type: Schema.Types.ObjectId,
       ref: 'Vendor',
-      required: true,
+      required: false,
       index: true,
     },
     stock: {
@@ -74,6 +74,7 @@ const UniformSchema = new Schema<IUniform>(
   },
   {
     timestamps: true,
+    strictPopulate: false, // Allow populating optional fields
   }
 )
 
@@ -86,6 +87,7 @@ UniformSchema.index({ sku: 1 })
 const Uniform = mongoose.models.Uniform || mongoose.model<IUniform>('Uniform', UniformSchema)
 
 export default Uniform
+
 
 
 

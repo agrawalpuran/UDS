@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ICompany extends Document {
-  id: string
+  id: number
   name: string
   logo: string
   website: string
   primaryColor: string
+  secondaryColor?: string
   showPrices: boolean
+  allowPersonalPayments: boolean
   adminId?: mongoose.Types.ObjectId
   createdAt?: Date
   updatedAt?: Date
@@ -15,7 +17,7 @@ export interface ICompany extends Document {
 const CompanySchema = new Schema<ICompany>(
   {
     id: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
       index: true,
@@ -36,7 +38,16 @@ const CompanySchema = new Schema<ICompany>(
       type: String,
       required: true,
     },
+    secondaryColor: {
+      type: String,
+      default: '#f76b1c', // Default orange color
+    },
     showPrices: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    allowPersonalPayments: {
       type: Boolean,
       default: false,
       required: true,

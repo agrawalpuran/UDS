@@ -2,6 +2,28 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const path = require('path')
 
+// Load environment variables from env.local
+const envPath = path.join(__dirname, '..', 'env.local')
+if (fs.existsSync(envPath)) {
+  const envFile = fs.readFileSync(envPath, 'utf8')
+  envFile.split('\n').forEach(line => {
+    // Skip comments and empty lines
+    const trimmedLine = line.trim()
+    if (trimmedLine && !trimmedLine.startsWith('#')) {
+      const match = trimmedLine.match(/^([^=]+)=(.*)$/)
+      if (match) {
+        const key = match[1].trim()
+        let value = match[2].trim()
+        // Remove quotes if present
+        value = value.replace(/^["']|["']$/g, '')
+        if (!process.env[key]) {
+          process.env[key] = value
+        }
+      }
+    }
+  })
+}
+
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/uniform-distribution'
 
 // Get backup file path from command line argument
@@ -63,6 +85,8 @@ async function restoreDatabase() {
 }
 
 restoreDatabase()
+
+
 
 
 

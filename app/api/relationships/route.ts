@@ -2,13 +2,10 @@ import { NextResponse } from 'next/server'
 import {
   getProductCompanies,
   getProductVendors,
-  getVendorCompanies,
   createProductCompany,
   deleteProductCompany,
   createProductVendor,
   deleteProductVendor,
-  createVendorCompany,
-  deleteVendorCompany,
 } from '@/lib/db/data-access'
 
 export async function GET(request: Request) {
@@ -26,15 +23,9 @@ export async function GET(request: Request) {
       return NextResponse.json(relationships)
     }
 
-    if (type === 'vendorCompany') {
-      const relationships = await getVendorCompanies()
-      return NextResponse.json(relationships)
-    }
-
     return NextResponse.json({
       productCompanies: await getProductCompanies(),
       productVendors: await getProductVendors(),
-      vendorCompanies: await getVendorCompanies(),
     })
   } catch (error: any) {
     console.error('API Error:', error)
@@ -52,14 +43,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true })
     }
 
-    if (type === 'productVendor' && productId && vendorId) {
-      await createProductVendor(productId, vendorId)
+    if (type === 'productVendor' && productId && vendorId && companyId) {
+      await createProductVendor(productId, vendorId, companyId)
       return NextResponse.json({ success: true })
     }
 
     if (type === 'vendorCompany' && vendorId && companyId) {
-      await createVendorCompany(vendorId, companyId)
-      return NextResponse.json({ success: true })
+      // Vendor-company relationships are no longer used
+      return NextResponse.json({ 
+        error: 'Vendor-company relationships are no longer used. Products are linked to companies directly, and vendors supply products. No explicit vendor-company relationship is needed.'
+      }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
@@ -82,14 +75,16 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ success: true })
     }
 
-    if (type === 'productVendor' && productId && vendorId) {
-      await deleteProductVendor(productId, vendorId)
+    if (type === 'productVendor' && productId && vendorId && companyId) {
+      await deleteProductVendor(productId, vendorId, companyId)
       return NextResponse.json({ success: true })
     }
 
     if (type === 'vendorCompany' && vendorId && companyId) {
-      await deleteVendorCompany(vendorId, companyId)
-      return NextResponse.json({ success: true })
+      // Vendor-company relationships are no longer used
+      return NextResponse.json({ 
+        error: 'Vendor-company relationships are no longer used. Products are linked to companies directly, and vendors supply products. No explicit vendor-company relationship exists to delete.'
+      }, { status: 400 })
     }
 
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
@@ -98,6 +93,8 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+
+
 
 
 

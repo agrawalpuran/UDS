@@ -18,9 +18,20 @@ export default function ConsumerLogin() {
     }
   }
 
-  const handleOTPVerify = (otp: string) => {
-    localStorage.setItem('actorType', 'consumer')
-    localStorage.setItem('userEmail', emailOrPhone)
+  const handleOTPVerify = async (otp: string) => {
+    // Use tab-specific authentication storage
+    const { setAuthData } = await import('@/lib/utils/auth-storage')
+    setAuthData('consumer', {
+      userEmail: emailOrPhone
+    })
+    
+    // Also set in localStorage for backward compatibility (but don't overwrite other tabs)
+    const currentActorType = sessionStorage.getItem('currentActorType')
+    if (!currentActorType || currentActorType === 'consumer') {
+      localStorage.setItem('actorType', 'consumer')
+      localStorage.setItem('userEmail', emailOrPhone)
+      sessionStorage.setItem('currentActorType', 'consumer')
+    }
     
     setTimeout(() => {
       router.push('/dashboard/consumer')

@@ -18,9 +18,20 @@ export default function SuperAdminLogin() {
     }
   }
 
-  const handleOTPVerify = (otp: string) => {
-    localStorage.setItem('actorType', 'superadmin')
-    localStorage.setItem('userEmail', emailOrPhone)
+  const handleOTPVerify = async (otp: string) => {
+    // Use tab-specific authentication storage
+    const { setAuthData } = await import('@/lib/utils/auth-storage')
+    setAuthData('superadmin', {
+      userEmail: emailOrPhone
+    })
+    
+    // Also set in localStorage for backward compatibility (but don't overwrite other tabs)
+    const currentActorType = sessionStorage.getItem('currentActorType')
+    if (!currentActorType || currentActorType === 'superadmin') {
+      localStorage.setItem('actorType', 'superadmin')
+      localStorage.setItem('userEmail', emailOrPhone)
+      sessionStorage.setItem('currentActorType', 'superadmin')
+    }
     
     setTimeout(() => {
       router.push('/dashboard/superadmin')
@@ -101,6 +112,8 @@ export default function SuperAdminLogin() {
     </div>
   )
 }
+
+
 
 
 

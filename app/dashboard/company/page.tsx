@@ -5,10 +5,15 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Users, ShoppingCart, DollarSign, TrendingUp, FileText, CheckCircle, IndianRupee } from 'lucide-react'
-import { getEmployeesByCompany, getOrdersByCompany, getProductsByCompany, getCompanyByAdminEmail, isCompanyAdmin, getPendingApprovalCount, getPendingApprovals } from '@/lib/data-mongodb'
+import { getEmployeesByCompany, getOrdersByCompany, getProductsByCompany, getCompanyByAdminEmail, isCompanyAdmin, getPendingApprovalCount, getPendingApprovals, getCompanyById, getEmployeeByEmail } from '@/lib/data-mongodb'
+import { maskEmployeeData, maskEmployeeName, maskAddress } from '@/lib/utils/data-masking'
 
 export default function CompanyDashboard() {
   const [companyId, setCompanyId] = useState<string>('')
+  const [companyName, setCompanyName] = useState<string>('')
+  const [companyPrimaryColor, setCompanyPrimaryColor] = useState<string>('#f76b1c')
+  const [companySecondaryColor, setCompanySecondaryColor] = useState<string>('#f76b1c')
+  const [adminName, setAdminName] = useState<string>('')
   const [companyEmployees, setCompanyEmployees] = useState<any[]>([])
   const [companyOrders, setCompanyOrders] = useState<any[]>([])
   const [pendingApprovalCount, setPendingApprovalCount] = useState<number>(0)
@@ -17,6 +22,13 @@ export default function CompanyDashboard() {
   const [loading, setLoading] = useState(true)
   const [accessDenied, setAccessDenied] = useState(false)
   const router = useRouter()
+
+  // Helper function to remove "ICICI Bank - " prefix from branch names
+  const getBranchName = (employee: any): string => {
+    const branchName = employee.branchName || (employee.branchId && typeof employee.branchId === 'object' && employee.branchId.name) || 'N/A'
+    if (branchName === 'N/A') return 'N/A'
+    return branchName.replace(/^ICICI Bank\s*-\s*/i, '')
+  }
   
   // Verify admin access and get company ID
   useEffect(() => {
@@ -24,7 +36,9 @@ export default function CompanyDashboard() {
       const verifyAccess = async () => {
         try {
           setLoading(true)
-          const userEmail = localStorage.getItem('userEmail')
+          // Use tab-specific authentication storage
+          const { getUserEmail, getCompanyId, setAuthData } = await import('@/lib/utils/auth-storage')
+          const userEmail = getUserEmail('company') || localStorage.getItem('userEmail')
           if (!userEmail) {
             setAccessDenied(true)
             setLoading(false)
@@ -53,7 +67,38 @@ export default function CompanyDashboard() {
 
           // Set company ID and load data
           setCompanyId(company.id)
+          // Update tab-specific storage
+          setAuthData('company', {
+            userEmail,
+            companyId: company.id
+          })
+          // Also update localStorage for backward compatibility
           localStorage.setItem('companyId', company.id)
+          
+          // Fetch full company details for name and colors
+          const companyDetails = await getCompanyById(company.id)
+          if (companyDetails) {
+            setCompanyName(companyDetails.name || company.name || 'Company')
+            setCompanyPrimaryColor(companyDetails.primaryColor || company.primaryColor || '#f76b1c')
+            setCompanySecondaryColor(companyDetails.secondaryColor || companyDetails.primaryColor || company.primaryColor || '#f76b1c')
+          } else {
+            setCompanyName(company.name || 'Company')
+            setCompanyPrimaryColor(company.primaryColor || '#f76b1c')
+            setCompanySecondaryColor(company.secondaryColor || company.primaryColor || '#f76b1c')
+          }
+          
+          // Get admin's name
+          try {
+            const adminEmployee = await getEmployeeByEmail(userEmail)
+            if (adminEmployee) {
+              const firstName = adminEmployee.firstName || ''
+              const lastName = adminEmployee.lastName || ''
+              setAdminName(firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName || 'Admin')
+            }
+          } catch (error) {
+            console.error('Error fetching admin name:', error)
+            setAdminName('Admin')
+          }
           
           // Filter employees by company - only show employees linked to this company
           const filtered = await getEmployeesByCompany(company.id)
@@ -115,9 +160,9 @@ export default function CompanyDashboard() {
   const pendingOrders = companyOrders.filter(o => o.status === 'pending' || o.status === 'confirmed').length
 
   const stats = [
-    { name: 'Active Employees', value: activeEmployees, icon: Users, color: 'blue' },
-    { name: 'Total Orders', value: totalOrders, icon: ShoppingCart, color: 'purple' },
-    { name: 'Total Spent', value: `₹${totalSpent.toFixed(2)}`, icon: IndianRupee, color: 'green' },
+    { name: 'Active Employees', value: activeEmployees, icon: Users, color: 'orange' },
+    { name: 'Total Orders', value: totalOrders, icon: ShoppingCart, color: 'orange' },
+    { name: 'Total Spent', value: `₹${totalSpent.toFixed(2)}`, icon: IndianRupee, color: 'orange' },
     { name: 'Pending Approvals', value: pendingApprovalCount, icon: CheckCircle, color: 'orange' },
   ]
 
@@ -144,7 +189,8 @@ export default function CompanyDashboard() {
             </p>
             <button
               onClick={() => router.push('/login/company')}
-              className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+              style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+              className="text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
             >
               Back to Login
             </button>
@@ -158,26 +204,28 @@ export default function CompanyDashboard() {
     <DashboardLayout actorType="company">
       <div>
         <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 bg-clip-text text-transparent mb-2">
-            Company Dashboard
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 via-[#f76b1c] to-slate-900 bg-clip-text text-transparent mb-2" style={{ 
+            backgroundImage: `linear-gradient(to right, #1e293b, ${companyPrimaryColor}, #1e293b)`,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            {companyName ? `${companyName} Dashboard` : 'Company Dashboard'}
           </h1>
-          <p className="text-slate-600">Welcome back! Here's what's happening with your company.</p>
+          <p className="text-slate-600">
+            {adminName ? `Welcome back, ${adminName}!` : 'Welcome back!'} Here's what's happening with your company.
+          </p>
         </div>
         
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => {
             const Icon = stat.icon
-            const getColorClasses = (color: string) => {
-              const colors: Record<string, { bg: string; text: string }> = {
-                blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
-                purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
-                green: { bg: 'bg-green-100', text: 'text-green-600' },
-                orange: { bg: 'bg-orange-100', text: 'text-orange-600' },
-              }
-              return colors[color] || colors.blue
+            // Use company colors for stat cards
+            const primaryColor = companyPrimaryColor || '#f76b1c'
+            const colorClasses = {
+              bg: `bg-[${primaryColor}20]`,
+              text: `text-[${primaryColor}]`
             }
-            const colorClasses = getColorClasses(stat.color)
             
             // Determine if card is clickable and get link
             let isClickable = false
@@ -287,8 +335,16 @@ export default function CompanyDashboard() {
                     <p className="text-slate-500 text-sm font-medium mb-2">{stat.name}</p>
                     <p className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">{stat.value}</p>
                   </div>
-                  <div className={`${colorClasses.bg} p-4 rounded-xl shadow-modern`}>
-                    <Icon className={`h-6 w-6 ${colorClasses.text}`} />
+                  <div 
+                    className="p-4 rounded-xl shadow-modern"
+                    style={{ 
+                      backgroundColor: companyPrimaryColor ? `${companyPrimaryColor}20` : 'rgba(247, 107, 28, 0.2)'
+                    }}
+                  >
+                    <Icon 
+                      className="h-6 w-6" 
+                      style={{ color: companyPrimaryColor || '#f76b1c' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -445,16 +501,23 @@ export default function CompanyDashboard() {
           <div className="glass rounded-2xl shadow-modern-lg p-6 border border-slate-200/50">
             <h2 className="text-xl font-bold text-slate-900 mb-4">Quick Actions</h2>
             <div className="space-y-3">
-              <button className="w-full gradient-purple text-white py-3 rounded-xl font-semibold hover:shadow-glow-purple transition-smooth hover-lift">
+              <button 
+                style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+                className="w-full text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity hover-lift shadow-md"
+              >
                 Upload Employee Data
               </button>
               <Link
                 href="/dashboard/company/employees"
-                className="w-full gradient-primary text-white py-3 rounded-xl font-semibold hover:shadow-glow transition-smooth hover-lift text-center block"
+                style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+                className="w-full text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity hover-lift text-center block shadow-md"
               >
                 Place Bulk Order
               </Link>
-              <button className="w-full gradient-green text-white py-3 rounded-xl font-semibold hover:shadow-modern-lg transition-smooth hover-lift">
+              <button 
+                style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+                className="w-full text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity hover-lift shadow-md"
+              >
                 Generate Report
               </button>
             </div>
@@ -466,7 +529,7 @@ export default function CompanyDashboard() {
               {companyOrders.slice(0, 3).map((order) => (
                 <div key={order.id} className="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100 hover:bg-slate-100/50 transition-smooth">
                   <div>
-                    <p className="font-semibold text-slate-900">{order.employeeName}</p>
+                    <p className="font-semibold text-slate-900">{maskEmployeeName(order.employeeName || 'N/A')}</p>
                     <p className="text-sm text-slate-600">Order #{order.id}</p>
                   </div>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
@@ -490,32 +553,42 @@ export default function CompanyDashboard() {
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Employee ID</th>
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Name</th>
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Designation</th>
+                  <th className="text-left py-3 px-4 text-gray-700 font-semibold">Branch</th>
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Location</th>
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Email</th>
                   <th className="text-left py-3 px-4 text-gray-700 font-semibold">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {companyEmployees.slice(0, 10).map((employee) => (
-                  <tr key={employee.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">
-                      <span className="font-mono text-sm font-semibold text-blue-600">
-                        {employee.employeeId || 'N/A'}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-gray-900 font-medium">{employee.firstName} {employee.lastName}</td>
-                    <td className="py-3 px-4 text-gray-600">{employee.designation}</td>
-                    <td className="py-3 px-4 text-gray-600">{employee.location}</td>
-                    <td className="py-3 px-4 text-gray-600">{employee.email}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        employee.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {employee.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                {companyEmployees.slice(0, 10).map((employee) => {
+                  const masked = maskEmployeeData(employee)
+                  return (
+                    <tr key={employee.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 px-4">
+                        <span 
+                          className="font-mono text-sm font-semibold"
+                          style={{ color: companyPrimaryColor || '#f76b1c' }}
+                        >
+                          {employee.employeeId || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-gray-900 font-medium">{masked.firstName} {masked.lastName}</td>
+                      <td className="py-3 px-4 text-gray-600">{employee.designation}</td>
+                      <td className="py-3 px-4 text-gray-600">
+                        {getBranchName(employee)}
+                      </td>
+                      <td className="py-3 px-4 text-gray-600">{employee.location}</td>
+                      <td className="py-3 px-4 text-gray-600">{masked.email}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          employee.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
+                          {employee.status}
+                        </span>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

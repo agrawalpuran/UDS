@@ -3,7 +3,8 @@
 import DashboardLayout from '@/components/DashboardLayout'
 import { Search, CheckCircle, XCircle, Package, Truck } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { getAllOrders, updateOrderStatus } from '@/lib/data-mongodb'
+import { getAllOrders, getOrdersByVendor, updateOrderStatus } from '@/lib/data-mongodb'
+import { maskEmployeeName, maskAddress } from '@/lib/utils/data-masking'
 
 export default function VendorOrdersPage() {
   const [orders, setOrders] = useState<any[]>([])
@@ -18,10 +19,20 @@ export default function VendorOrdersPage() {
   const loadOrders = async () => {
     try {
       setLoading(true)
-      const allOrders = await getAllOrders()
-      console.log('Loaded orders:', allOrders.length)
-      console.log('Order statuses:', allOrders.map((o: any) => ({ id: o.id, status: o.status })))
-      setOrders(allOrders)
+      // Get vendor ID from localStorage
+      const storedVendorId = typeof window !== 'undefined' ? localStorage.getItem('vendorId') : null
+      if (storedVendorId) {
+        // Load only orders for this vendor
+        const vendorOrders = await getOrdersByVendor(storedVendorId)
+        console.log('Loaded vendor orders:', vendorOrders.length)
+        console.log('Order statuses:', vendorOrders.map((o: any) => ({ id: o.id, status: o.status, vendorName: o.vendorName })))
+        setOrders(vendorOrders)
+      } else {
+        // Fallback: get all orders if no vendor ID (shouldn't happen in production)
+        console.warn('No vendor ID found, loading all orders')
+        const allOrders = await getAllOrders()
+        setOrders(allOrders)
+      }
     } catch (error) {
       console.error('Error loading orders:', error)
     } finally {
@@ -98,7 +109,7 @@ export default function VendorOrdersPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Order #{order.id}</h3>
-                  <p className="text-sm text-gray-600">Employee: {order.employeeName}</p>
+                  <p className="text-sm text-gray-600">Employee: {maskEmployeeName(order.employeeName || 'N/A')}</p>
                   <p className="text-sm text-gray-600">Date: {order.orderDate}</p>
                 </div>
                 <span className={`px-4 py-2 rounded-full text-sm font-semibold ${

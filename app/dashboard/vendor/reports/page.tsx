@@ -57,16 +57,16 @@ export default function VendorReportsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => {
             const Icon = stat.icon
-            const getColorClasses = (color: string) => {
+            const getColorClasses = (color: string | undefined) => {
               const colors: Record<string, { bg: string; text: string }> = {
                 green: { bg: 'bg-green-100', text: 'text-green-600' },
                 blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
                 purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
                 orange: { bg: 'bg-orange-100', text: 'text-orange-600' },
               }
-              return colors[color] || colors.blue
+              return colors[color || 'blue'] || colors.blue
             }
-            const colorClasses = getColorClasses(stat.color)
+            const colorClasses = getColorClasses(stat.color) || { bg: 'bg-blue-100', text: 'text-blue-600' }
             return (
               <div key={stat.name} className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex items-center justify-between">

@@ -3,8 +3,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { BarChart3, Download, Calendar, DollarSign, Users, Package, IndianRupee } from 'lucide-react'
-import { getOrdersByCompany, getEmployeesByCompany } from '@/lib/data-mongodb'
+import { getOrdersByCompany, getEmployeesByCompany, getCompanyById } from '@/lib/data-mongodb'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } from 'recharts'
+import { maskEmployeeName } from '@/lib/utils/data-masking'
 import Link from 'next/link'
 
 export default function ReportsPage() {
@@ -14,6 +15,8 @@ export default function ReportsPage() {
   const [companyEmployees, setCompanyEmployees] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showTooltip, setShowTooltip] = useState<string | null>(null)
+  const [companyPrimaryColor, setCompanyPrimaryColor] = useState<string>('#f76b1c')
+  const [companySecondaryColor, setCompanySecondaryColor] = useState<string>('#f76b1c')
   
   // Get company ID from localStorage (set during login) - company admin is linked to only one company
   useEffect(() => {
@@ -29,6 +32,13 @@ export default function ReportsPage() {
             const employees = await getEmployeesByCompany(storedCompanyId)
             setCompanyOrders(orders)
             setCompanyEmployees(employees)
+            
+            // Fetch company details for colors
+            const companyDetails = await getCompanyById(storedCompanyId)
+            if (companyDetails) {
+              setCompanyPrimaryColor(companyDetails.primaryColor || '#f76b1c')
+              setCompanySecondaryColor(companyDetails.secondaryColor || companyDetails.primaryColor || '#f76b1c')
+            }
           }
         } catch (error) {
           console.error('Error loading reports data:', error)
@@ -166,13 +176,39 @@ export default function ReportsPage() {
             <select
               value={period}
               onChange={(e) => setPeriod(e.target.value as any)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 outline-none"
+              style={{ 
+                '--tw-ring-color': companyPrimaryColor || '#f76b1c',
+                '--tw-border-color': companyPrimaryColor || '#f76b1c'
+              } as React.CSSProperties & { '--tw-ring-color'?: string; '--tw-border-color'?: string }}
+              onFocus={(e) => {
+                e.target.style.borderColor = companyPrimaryColor || '#f76b1c'
+                e.target.style.boxShadow = `0 0 0 2px ${companyPrimaryColor || '#f76b1c'}40`
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#d1d5db'
+                e.target.style.boxShadow = 'none'
+              }}
             >
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
               <option value="quarterly">Quarterly</option>
             </select>
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center space-x-2">
+            <button 
+              className="text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center space-x-2"
+              style={{ backgroundColor: companyPrimaryColor || '#f76b1c' }}
+              onMouseEnter={(e) => {
+                const color = companyPrimaryColor || '#f76b1c'
+                const r = parseInt(color.slice(1, 3), 16)
+                const g = parseInt(color.slice(3, 5), 16)
+                const b = parseInt(color.slice(5, 7), 16)
+                const darker = `#${Math.max(0, r - 25).toString(16).padStart(2, '0')}${Math.max(0, g - 25).toString(16).padStart(2, '0')}${Math.max(0, b - 25).toString(16).padStart(2, '0')}`
+                e.currentTarget.style.backgroundColor = darker
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = companyPrimaryColor || '#f76b1c'
+              }}
+            >
               <Download className="h-5 w-5" />
               <span>Export Report</span>
             </button>
@@ -183,16 +219,18 @@ export default function ReportsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => {
             const Icon = stat.icon
-            const getColorClasses = (color: string) => {
+            const getColorClasses = (color: string | undefined) => {
+              const primaryColor = companyPrimaryColor || '#f76b1c'
+              const secondaryColor = companySecondaryColor || primaryColor
               const colors: Record<string, { bg: string; text: string }> = {
+                orange: { bg: `${primaryColor}20`, text: primaryColor },
+                blue: { bg: `${secondaryColor}20`, text: secondaryColor },
                 green: { bg: 'bg-green-100', text: 'text-green-600' },
-                blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
-                purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
-                orange: { bg: 'bg-orange-100', text: 'text-orange-600' },
+                purple: { bg: `${primaryColor}20`, text: primaryColor },
               }
-              return colors[color] || colors.blue
+              return colors[color || 'orange'] || { bg: `${primaryColor}20`, text: primaryColor }
             }
-            const colorClasses = getColorClasses(stat.color)
+            const colorClasses = getColorClasses(stat.color) || { bg: `${companyPrimaryColor || '#f76b1c'}20`, text: companyPrimaryColor || '#f76b1c' }
             return (
               <div key={stat.name} className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex items-center justify-between">
@@ -200,8 +238,14 @@ export default function ReportsPage() {
                     <p className="text-gray-600 text-sm mb-1">{stat.name}</p>
                     <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
                   </div>
-                  <div className={`${colorClasses.bg} p-3 rounded-lg`}>
-                    <Icon className={`h-6 w-6 ${colorClasses.text}`} />
+                  <div 
+                    className="p-3 rounded-lg"
+                    style={{ backgroundColor: colorClasses.bg }}
+                  >
+                    <Icon 
+                      className="h-6 w-6" 
+                      style={{ color: colorClasses.text }}
+                    />
                   </div>
                 </div>
               </div>
@@ -295,8 +339,8 @@ export default function ReportsPage() {
               label: 'Awaiting Fulfilment', 
               borderColor: 'border-blue-500', 
               icon: Package, 
-              iconBg: 'bg-blue-100', 
-              iconColor: 'text-blue-600',
+              iconBg: 'bg-orange-100', 
+              iconColor: 'text-[#f76b1c]',
               linkHref: '/dashboard/company/orders'
             },
             { 
@@ -304,8 +348,8 @@ export default function ReportsPage() {
               label: 'Dispatched', 
               borderColor: 'border-purple-500', 
               icon: BarChart3, 
-              iconBg: 'bg-purple-100', 
-              iconColor: 'text-purple-600',
+              iconBg: 'bg-orange-100', 
+              iconColor: 'text-[#f76b1c]',
               linkHref: '/dashboard/company/orders'
             },
             { 
@@ -313,8 +357,8 @@ export default function ReportsPage() {
               label: 'Delivered', 
               borderColor: 'border-green-500', 
               icon: Package, 
-              iconBg: 'bg-green-100', 
-              iconColor: 'text-green-600',
+              iconBg: 'bg-orange-100', 
+              iconColor: 'text-[#f76b1c]',
               linkHref: '/dashboard/company/orders'
             }
           ].map((statusCard) => {
@@ -370,7 +414,7 @@ export default function ReportsPage() {
                       {ordersList.map((order: any, idx: number) => (
                         <div key={idx} className="text-xs">
                           <div className="font-semibold text-white mb-1">Order #{order.id}</div>
-                          <div className="text-gray-300">Employee: {order.employeeName}</div>
+                          <div className="text-gray-300">Employee: {maskEmployeeName(order.employeeName || 'N/A')}</div>
                           <div className="text-gray-300">Amount: ₹{order.total.toFixed(2)}</div>
                           <div className="text-gray-300">Items: {order.itemsCount}</div>
                           <div className="text-gray-400">Date: {order.date}</div>
@@ -432,7 +476,7 @@ export default function ReportsPage() {
                   companyOrders.map((order) => (
                   <tr key={order.id} className="border-b hover:bg-gray-50">
                     <td className="py-3 px-4 text-gray-900 font-medium">{order.id}</td>
-                    <td className="py-3 px-4 text-gray-600">{order.employeeName}</td>
+                    <td className="py-3 px-4 text-gray-600">{maskEmployeeName(order.employeeName || 'N/A')}</td>
                     <td className="py-3 px-4 text-gray-600">{order.items.length} items</td>
                     <td className="py-3 px-4 text-gray-900 font-semibold">₹{order.total.toFixed(2)}</td>
                     <td className="py-3 px-4 text-gray-600">{order.orderDate}</td>

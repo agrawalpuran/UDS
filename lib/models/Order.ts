@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IOrderItem {
   uniformId: mongoose.Types.ObjectId
+  productId: string // Numeric/string product ID for correlation
   uniformName: string
   size: string
   quantity: number
@@ -11,6 +12,7 @@ export interface IOrderItem {
 export interface IOrder extends Document {
   id: string
   employeeId: mongoose.Types.ObjectId
+  employeeIdNum: string // Numeric/string employee ID for correlation
   employeeName: string
   items: IOrderItem[]
   total: number
@@ -18,8 +20,14 @@ export interface IOrder extends Document {
   orderDate: Date
   dispatchLocation: string
   companyId: mongoose.Types.ObjectId
+  companyIdNum: number // Numeric company ID for correlation
   deliveryAddress: string
   estimatedDeliveryTime: string
+  parentOrderId?: string // ID of the parent order if this is a split order
+  vendorId?: mongoose.Types.ObjectId // Vendor ID if this order is for a specific vendor
+  vendorName?: string // Vendor name for display
+  isPersonalPayment?: boolean // Whether this is a personal payment order (beyond eligibility)
+  personalPaymentAmount?: number // Amount paid personally (if isPersonalPayment is true)
   createdAt?: Date
   updatedAt?: Date
 }
@@ -29,6 +37,11 @@ const OrderItemSchema = new Schema<IOrderItem>({
     type: Schema.Types.ObjectId,
     ref: 'Uniform',
     required: true,
+  },
+  productId: {
+    type: String,
+    required: true,
+    index: true,
   },
   uniformName: {
     type: String,
@@ -59,6 +72,11 @@ const OrderSchema = new Schema<IOrder>(
     employeeId: {
       type: Schema.Types.ObjectId,
       ref: 'Employee',
+      required: true,
+      index: true,
+    },
+    employeeIdNum: {
+      type: String,
       required: true,
       index: true,
     },
@@ -95,6 +113,11 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
       index: true,
     },
+    companyIdNum: {
+      type: Number,
+      required: true,
+      index: true,
+    },
     deliveryAddress: {
       type: String,
       required: true,
@@ -103,14 +126,37 @@ const OrderSchema = new Schema<IOrder>(
       type: String,
       required: true,
     },
+    parentOrderId: {
+      type: String,
+      index: true,
+    },
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Vendor',
+      index: true,
+    },
+    vendorName: {
+      type: String,
+    },
+    isPersonalPayment: {
+      type: Boolean,
+      default: false,
+    },
+    personalPaymentAmount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
+    strictPopulate: false, // Allow populating optional fields
   }
 )
 
 OrderSchema.index({ employeeId: 1, companyId: 1 })
+OrderSchema.index({ employeeIdNum: 1, companyIdNum: 1 })
 OrderSchema.index({ companyId: 1, status: 1 })
+OrderSchema.index({ companyIdNum: 1, status: 1 })
 OrderSchema.index({ orderDate: -1 })
 OrderSchema.index({ id: 1 })
 

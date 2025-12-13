@@ -5,31 +5,67 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import OTPVerification from '@/components/OTPVerification'
 import { useRouter } from 'next/navigation'
+import { getVendorByEmail } from '@/lib/data-mongodb'
 
 export default function VendorLogin() {
   const [emailOrPhone, setEmailOrPhone] = useState('')
   const [showOTP, setShowOTP] = useState(false)
+  const [error, setError] = useState<string>('')
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (emailOrPhone) {
-      setShowOTP(true)
+      setError('')
+      // Check if this email belongs to a vendor before showing OTP
+      try {
+        const vendor = await getVendorByEmail(emailOrPhone)
+        if (!vendor) {
+          setError('Access denied: This email is not registered as a vendor. Please contact support.')
+          return
+        }
+        setShowOTP(true)
+      } catch (error) {
+        console.error('Error checking vendor status:', error)
+        setError('Error verifying vendor status. Please try again.')
+      }
     }
   }
 
-  const handleOTPVerify = (otp: string) => {
-    localStorage.setItem('actorType', 'vendor')
-    localStorage.setItem('userEmail', emailOrPhone)
-    
-    // Assign vendor based on email domain or default
-    const vendorId = emailOrPhone.includes('uniformpro') ? 'VEND-001' : 
-                    emailOrPhone.includes('footwear') ? 'VEND-002' : 'VEND-001'
-    localStorage.setItem('vendorId', vendorId)
-    
-    setTimeout(() => {
-      router.push('/dashboard/vendor')
-    }, 1000)
+  const handleOTPVerify = async (otp: string) => {
+    // Double-check vendor status before allowing login
+    try {
+      const vendor = await getVendorByEmail(emailOrPhone)
+      if (!vendor) {
+        setError('Access denied: This email is not registered as a vendor.')
+        setShowOTP(false)
+        return
+      }
+      
+      // Use tab-specific authentication storage
+      const { setAuthData } = await import('@/lib/utils/auth-storage')
+      setAuthData('vendor', {
+        userEmail: emailOrPhone,
+        vendorId: vendor.id
+      })
+      
+      // Also set in localStorage for backward compatibility (but don't overwrite other tabs)
+      const currentActorType = sessionStorage.getItem('currentActorType')
+      if (!currentActorType || currentActorType === 'vendor') {
+        localStorage.setItem('actorType', 'vendor')
+        localStorage.setItem('userEmail', emailOrPhone)
+        localStorage.setItem('vendorId', vendor.id)
+        sessionStorage.setItem('currentActorType', 'vendor')
+      }
+      
+      setTimeout(() => {
+        router.push('/dashboard/vendor')
+      }, 1000)
+    } catch (error) {
+      console.error('Error verifying vendor:', error)
+      setError('Error verifying vendor status. Please try again.')
+      setShowOTP(false)
+    }
   }
 
   const handleResendOTP = () => {
@@ -70,17 +106,28 @@ export default function VendorLogin() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="emailOrPhone" className="block text-sm font-medium text-gray-700 mb-2">
-                Email or Phone Number
+                Vendor Email
               </label>
               <input
-                type="text"
+                type="email"
                 id="emailOrPhone"
                 value={emailOrPhone}
-                onChange={(e) => setEmailOrPhone(e.target.value)}
-                placeholder="Enter email or phone number"
+                onChange={(e) => {
+                  setEmailOrPhone(e.target.value)
+                  setError('')
+                }}
+                placeholder="Enter your vendor email"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required
               />
+              {error && (
+                <p className="mt-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+                  {error}
+                </p>
+              )}
+              <p className="mt-2 text-xs text-gray-500">
+                Only registered vendor emails can access this portal.
+              </p>
             </div>
 
             <button

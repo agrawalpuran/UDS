@@ -1,10 +1,19 @@
 import { NextResponse } from 'next/server'
-import { getAllVendors, getVendorById } from '@/lib/db/data-access'
+import { getAllVendors, getVendorById, getVendorByEmail } from '@/lib/db/data-access'
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const vendorId = searchParams.get('vendorId')
+    const email = searchParams.get('email')
+
+    if (email) {
+      const vendor = await getVendorByEmail(email)
+      if (!vendor) {
+        return NextResponse.json({ error: 'Vendor not found with this email' }, { status: 404 })
+      }
+      return NextResponse.json(vendor)
+    }
 
     if (vendorId) {
       const vendor = await getVendorById(vendorId)
@@ -18,6 +27,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+
 
 
 

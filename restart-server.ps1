@@ -10,7 +10,10 @@ if (Test-Path .next) {
 
 # Restart the server
 Write-Host "Starting server..."
-npm run dev
+Write-Host "Server will start in a new window. Check the new PowerShell window for output."
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; Write-Host 'Starting UDS server on port 3001...'; npm run dev"
+
+
 
 
 

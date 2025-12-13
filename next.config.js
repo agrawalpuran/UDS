@@ -17,6 +17,16 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.goindigo.in',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'goindigo.in',
+        pathname: '/**',
+      },
     ],
   },
 }

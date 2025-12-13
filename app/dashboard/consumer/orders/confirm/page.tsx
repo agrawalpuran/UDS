@@ -16,6 +16,9 @@ export default function OrderConfirmationPage() {
   const [loading, setLoading] = useState(true)
   const [orderSaved, setOrderSaved] = useState(false)
   const [savingOrder, setSavingOrder] = useState(false)
+  const [savedOrderId, setSavedOrderId] = useState<string | null>(null)
+  const [savedOrder, setSavedOrder] = useState<any>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
   
   // Get current employee from localStorage
   useEffect(() => {
@@ -94,7 +97,8 @@ export default function OrderConfirmationPage() {
   // Save order to database when order data and employee are loaded
   useEffect(() => {
     const saveOrder = async () => {
-      if (!orderData || !currentEmployee || !companyProducts || orderSaved || savingOrder) {
+      // Don't retry if there was an error, if already saved, or if currently saving
+      if (!orderData || !currentEmployee || !companyProducts || orderSaved || savingOrder || saveError) {
         return
       }
 
@@ -129,9 +133,8 @@ export default function OrderConfirmationPage() {
         })
 
         // Get employee ID (handle both string and object)
-        const employeeId = typeof currentEmployee.id === 'string' 
-          ? currentEmployee.id 
-          : currentEmployee._id?.toString() || currentEmployee.id
+        // Use employeeId field instead of id field
+        const employeeId = currentEmployee.employeeId || currentEmployee.id
 
         // Create order in database
         const savedOrder = await createOrder({
@@ -140,24 +143,72 @@ export default function OrderConfirmationPage() {
           deliveryAddress: currentEmployee.address || 'Address not available',
           estimatedDeliveryTime: getEstimatedDeliveryTime(),
           dispatchLocation: currentEmployee.dispatchPreference || 'standard',
+          isPersonalPayment: orderData.isPersonalPayment || false,
+          personalPaymentAmount: orderData.personalPaymentAmount ? parseFloat(orderData.personalPaymentAmount) : 0,
         })
 
         console.log('Order saved successfully:', savedOrder)
         setOrderSaved(true)
+        setSavedOrder(savedOrder) // Store the full order object
+        // Store the order ID for display (use parentOrderId if it's a split order)
+        if (savedOrder?.parentOrderId) {
+          setSavedOrderId(savedOrder.parentOrderId)
+        } else if (savedOrder?.id) {
+          setSavedOrderId(savedOrder.id)
+        }
 
         // Clear the pending order from sessionStorage after successful save
         sessionStorage.removeItem('pendingOrder')
         console.log('Order confirmation: Cleared pending order from sessionStorage')
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error saving order to database:', error)
-        alert('Error saving order. Please try again or contact support.')
+        const errorMessage = error?.message || error?.toString() || 'Unknown error occurred'
+        console.error('Full error details:', {
+          message: errorMessage,
+          stack: error?.stack,
+          error: error,
+          errorType: error?.constructor?.name
+        })
+        
+        // Provide more helpful error message based on the actual error
+        let userFriendlyMessage = errorMessage
+        
+        // Check for specific error patterns
+        if (errorMessage.includes('No vendor found') || errorMessage.includes('vendor') && errorMessage.includes('not found')) {
+          userFriendlyMessage = `Unable to process order: One or more products are not linked to a vendor.\n\nPlease ensure:\n1. Products are linked to your company\n2. Products are linked to vendors\n\nContact your administrator to set up product-vendor relationships.`
+        } else if (errorMessage.includes('Company not found') || errorMessage.includes('companyId')) {
+          userFriendlyMessage = `Unable to process order: Company information is missing or invalid.\n\nPlease contact support.`
+        } else if (errorMessage.includes('Employee not found') || errorMessage.includes('employeeId')) {
+          userFriendlyMessage = `Unable to process order: Employee information is missing or invalid.\n\nPlease log out and log back in.`
+        } else if (errorMessage.includes('Product') && errorMessage.includes('not found')) {
+          userFriendlyMessage = `Unable to process order: One or more products could not be found.\n\nPlease refresh the page and try again.`
+        } else if (errorMessage.includes('API Error')) {
+          // Extract the actual error from API Error messages
+          const apiErrorMatch = errorMessage.match(/API Error: \d+ (.+)/)
+          if (apiErrorMatch) {
+            userFriendlyMessage = `Unable to process order: ${apiErrorMatch[1]}\n\nPlease contact support if this issue persists.`
+          } else {
+            // Try to extract error from "Internal Server Error" or similar
+            userFriendlyMessage = `Unable to process order: ${errorMessage}\n\nPlease check the browser console for more details and contact support if this issue persists.`
+          }
+        } else if (errorMessage.includes('Internal Server Error') || errorMessage.includes('500')) {
+          userFriendlyMessage = `Unable to process order: A server error occurred.\n\nPlease check:\n1. Products are linked to your company\n2. Products are linked to vendors\n\nCheck the browser console (F12) for detailed error information.`
+        }
+        
+        // Set error state to prevent infinite retry loop
+        setSaveError(userFriendlyMessage)
+        alert(`Error saving order: ${userFriendlyMessage}`)
+        
+        // Clear the pending order from sessionStorage on error to prevent retry
+        sessionStorage.removeItem('pendingOrder')
+        console.log('Order confirmation: Cleared pending order from sessionStorage due to error')
       } finally {
         setSavingOrder(false)
       }
     }
 
     saveOrder()
-  }, [orderData, currentEmployee, companyProducts, orderSaved, savingOrder])
+  }, [orderData, currentEmployee, companyProducts, orderSaved, savingOrder, saveError])
 
   if (loading) {
     return (
@@ -166,6 +217,44 @@ export default function OrderConfirmationPage() {
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600 mb-4">Loading order details...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
+  // Show error state if save failed
+  if (saveError) {
+    return (
+      <DashboardLayout actorType="consumer">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center max-w-md">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+              <AlertCircle className="h-10 w-10 text-red-600" />
+            </div>
+            <h1 className="text-2xl font-semibold text-gray-900 mb-4">Order Failed</h1>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+              <p className="text-red-800 whitespace-pre-line">{saveError}</p>
+            </div>
+            <div className="flex space-x-4 justify-center">
+              <Link
+                href="/dashboard/consumer/catalog"
+                className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors"
+              >
+                Back to Catalog
+              </Link>
+              <button
+                onClick={() => {
+                  setSaveError(null)
+                  setOrderData(null)
+                  router.push('/dashboard/consumer/catalog')
+                }}
+                style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                className="text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity"
+              >
+                Try Again
+              </button>
+            </div>
           </div>
         </div>
       </DashboardLayout>
@@ -192,7 +281,8 @@ export default function OrderConfirmationPage() {
             <p className="text-red-600 mb-4">Employee data not found. Please log in again.</p>
             <Link
               href="/login/consumer"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-block"
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-block"
             >
               Go to Login
             </Link>
@@ -235,7 +325,37 @@ export default function OrderConfirmationPage() {
             </div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">Order Confirmed!</h1>
             <p className="text-gray-600">Your order has been successfully placed</p>
+            {savedOrderId && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500">Order Number</p>
+                <p className="text-2xl font-bold" style={{ color: company?.primaryColor || '#f76b1c' }}>{savedOrder?.parentOrderId || savedOrderId}</p>
+                {savedOrder?.isSplitOrder && savedOrder?.splitOrders && (
+                  <div className="mt-2">
+                    <p className="text-xs text-gray-500">Split into {savedOrder.splitOrders.length} vendor order(s)</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
+          {/* Personal Payment Notice */}
+          {orderData?.isPersonalPayment && orderData?.personalPaymentAmount && parseFloat(orderData.personalPaymentAmount) > 0 && (
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-6">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <h3 className="text-sm font-semibold text-yellow-800">Personal Payment Order</h3>
+                  <p className="mt-1 text-sm text-yellow-700">
+                    This order includes items beyond your eligibility. A personal payment of <span className="font-bold">₹{parseFloat(orderData.personalPaymentAmount).toFixed(2)}</span> will be required.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Awaiting Admin Approval Notice */}
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
@@ -247,10 +367,37 @@ export default function OrderConfirmationPage() {
             </div>
           </div>
 
+          {/* Split Order Information */}
+          {savedOrder?.isSplitOrder && savedOrder?.splitOrders && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <div className="flex items-start">
+                <Package className="h-5 w-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-blue-900 font-semibold mb-2">Your order has been split by vendor</p>
+                  <p className="text-sm text-blue-800 mb-3">
+                    Your order contains items from {savedOrder.splitOrders.length} different vendor{savedOrder.splitOrders.length > 1 ? 's' : ''}. 
+                    Each vendor will process their portion separately.
+                  </p>
+                  <div className="space-y-2">
+                    {savedOrder.splitOrders.map((split: any, idx: number) => (
+                      <div key={idx} className="bg-white rounded p-2 text-sm">
+                        <span className="font-medium text-blue-900">{split.vendorName}:</span>
+                        <span className="text-blue-700 ml-2">
+                          {split.itemCount} item(s)
+                          {company?.showPrices && ` - ₹${split.total.toFixed(2)}`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Order Items */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <Package className="h-5 w-5 mr-2 text-blue-600" />
+              <Package className="h-5 w-5 mr-2" style={{ color: company?.primaryColor || '#f76b1c' }} />
               Order Items
             </h2>
             <div className="space-y-3">
@@ -267,24 +414,36 @@ export default function OrderConfirmationPage() {
 
           {/* Delivery Information */}
           <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <div 
+              className="rounded-lg p-6 border"
+              style={{ 
+                backgroundColor: company?.primaryColor ? `${company.primaryColor}10` : 'rgba(247, 107, 28, 0.1)',
+                borderColor: company?.primaryColor ? `${company.primaryColor}40` : 'rgba(247, 107, 28, 0.4)'
+              }}
+            >
               <div className="flex items-center mb-3">
-                <MapPin className="h-5 w-5 text-blue-600 mr-2" />
-                <h3 className="font-semibold text-blue-900">Delivery Address</h3>
+                <MapPin className="h-5 w-5 mr-2" style={{ color: company?.primaryColor || '#f76b1c' }} />
+                <h3 className="font-semibold" style={{ color: company?.primaryColor || '#f76b1c' }}>Delivery Address</h3>
               </div>
-              <p className="text-blue-800 leading-relaxed">{currentEmployee?.address || 'Address not available'}</p>
+              <p className="leading-relaxed" style={{ color: company?.primaryColor || '#f76b1c' }}>{currentEmployee?.address || 'Address not available'}</p>
             </div>
 
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-6">
+            <div 
+              className="rounded-lg p-6 border"
+              style={{ 
+                backgroundColor: company?.primaryColor ? `${company.primaryColor}10` : 'rgba(247, 107, 28, 0.1)',
+                borderColor: company?.primaryColor ? `${company.primaryColor}40` : 'rgba(247, 107, 28, 0.4)'
+              }}
+            >
               <div className="flex items-center mb-3">
-                <Clock className="h-5 w-5 text-orange-600 mr-2" />
-                <h3 className="font-semibold text-orange-900">Estimated Delivery Time</h3>
+                <Clock className="h-5 w-5 mr-2" style={{ color: company?.primaryColor || '#f76b1c' }} />
+                <h3 className="font-semibold" style={{ color: company?.primaryColor || '#f76b1c' }}>Estimated Delivery Time</h3>
               </div>
-              <p className="text-2xl font-bold text-orange-800 mb-2">{getEstimatedDeliveryTime()}</p>
-              <p className="text-sm text-orange-700 mb-2">
+              <p className="text-2xl font-bold mb-2" style={{ color: company?.primaryColor || '#f76b1c' }}>{getEstimatedDeliveryTime()}</p>
+              <p className="text-sm mb-2" style={{ color: company?.primaryColor ? `${company.primaryColor}CC` : '#f76b1c' }}>
                 <span className="font-semibold">5-7 business days post admin's approval</span>
               </p>
-              <p className="text-sm text-orange-700">Dispatch Preference: <span className="font-semibold capitalize">{currentEmployee?.dispatchPreference || 'standard'}</span></p>
+              <p className="text-sm" style={{ color: company?.primaryColor ? `${company.primaryColor}CC` : '#f76b1c' }}>Dispatch Preference: <span className="font-semibold capitalize">{currentEmployee?.dispatchPreference || 'standard'}</span></p>
             </div>
           </div>
 
@@ -293,15 +452,15 @@ export default function OrderConfirmationPage() {
             <h3 className="font-semibold text-gray-900 mb-3">What's Next?</h3>
             <ul className="space-y-2 text-sm text-gray-700">
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
+                <span className="text-[#f76b1c] mr-2">•</span>
                 <span>You will receive an email confirmation shortly</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
+                <span className="text-[#f76b1c] mr-2">•</span>
                 <span>Your order is awaiting admin approval. Once approved, it will be processed and shipped</span>
               </li>
               <li className="flex items-start">
-                <span className="text-blue-600 mr-2">•</span>
+                <span className="text-[#f76b1c] mr-2">•</span>
                 <span>You can track your order status from the "My Orders" page</span>
               </li>
             </ul>
@@ -311,7 +470,8 @@ export default function OrderConfirmationPage() {
           <div className="flex space-x-4">
             <Link
               href="/dashboard/consumer/orders"
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center shadow-md"
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="flex-1 text-white py-3 rounded-lg font-medium hover:opacity-90 transition-opacity text-center shadow-md"
             >
               View My Orders
             </Link>

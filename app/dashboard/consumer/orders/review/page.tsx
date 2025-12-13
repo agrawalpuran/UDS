@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { ShoppingCart, MapPin, Package, ArrowRight, CheckCircle, Clock } from 'lucide-react'
-import { getProductsByCompany, getEmployeeByEmail, getCompanyById } from '@/lib/data-mongodb'
+import { getProductsByCompany, getEmployeeByEmail, getCompanyById, getConsumedEligibility } from '@/lib/data-mongodb'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -13,6 +13,12 @@ export default function OrderReviewPage() {
   const [currentEmployee, setCurrentEmployee] = useState<any>(null)
   const [companyProducts, setCompanyProducts] = useState<any[]>([])
   const [company, setCompany] = useState<any>(null)
+  const [consumedEligibility, setConsumedEligibility] = useState<{
+    shirt: number
+    pant: number
+    shoe: number
+    jacket: number
+  }>({ shirt: 0, pant: 0, shoe: 0, jacket: 0 })
   const [loading, setLoading] = useState(true)
   
   // Get current employee from localStorage
@@ -34,12 +40,17 @@ export default function OrderReviewPage() {
             const companyId = typeof employee.companyId === 'object' && employee.companyId?.id 
               ? employee.companyId.id 
               : employee.companyId
-            const [products, companyData] = await Promise.all([
+            // Use employeeId field instead of id field
+            const employeeId = employee.employeeId || employee.id
+            
+            const [products, companyData, consumed] = await Promise.all([
               getProductsByCompany(companyId),
-              getCompanyById(companyId)
+              getCompanyById(companyId),
+              getConsumedEligibility(employeeId)
             ])
             setCompanyProducts(products)
             setCompany(companyData)
+            setConsumedEligibility(consumed)
           }
         } catch (error) {
           console.error('Error loading employee data:', error)
@@ -79,13 +90,81 @@ export default function OrderReviewPage() {
     // Calculate total
     const total = orderData.items.reduce((sum: number, item: any) => {
       const uniform = companyProducts.find(u => u.id === item.uniformId)
-      return sum + (uniform?.price || 0) * item.quantity
+      return sum + (uniform?.price || item.price || 0) * item.quantity
     }, 0)
     
-    // Add total to order data
+    // Calculate personal payment amount if eligibility is exceeded
+    let personalPaymentAmount = 0
+    let isPersonalPayment = false
+    
+    if (company?.allowPersonalPayments) {
+      // Calculate category totals
+      const categoryTotals: Record<string, number> = {}
+      orderData.items.forEach((item: any) => {
+        const uniform = companyProducts.find(u => u.id === item.uniformId)
+        if (uniform) {
+          categoryTotals[uniform.category] = (categoryTotals[uniform.category] || 0) + item.quantity
+        }
+      })
+      
+      // Calculate personal payment for exceeded items
+      for (const [category, total] of Object.entries(categoryTotals)) {
+        const totalEligibility = (() => {
+          switch (category) {
+            case 'shirt': return currentEmployee.eligibility?.shirt || 0
+            case 'pant': case 'trouser': return currentEmployee.eligibility?.pant || 0
+            case 'shoe': return currentEmployee.eligibility?.shoe || 0
+            case 'jacket': case 'blazer': return currentEmployee.eligibility?.jacket || 0
+            default: return 0
+          }
+        })()
+        
+        const consumed = (() => {
+          switch (category) {
+            case 'shirt': return consumedEligibility.shirt
+            case 'pant': case 'trouser': return consumedEligibility.pant
+            case 'shoe': return consumedEligibility.shoe
+            case 'jacket': case 'blazer': return consumedEligibility.jacket
+            default: return 0
+          }
+        })()
+        
+        const remainingEligibility = totalEligibility - consumed
+        const exceededQuantity = Math.max(0, total - remainingEligibility)
+        
+        if (exceededQuantity > 0) {
+          isPersonalPayment = true
+          // Calculate cost for exceeded items
+          const exceededItems = orderData.items.filter((item: any) => {
+            const uniform = companyProducts.find(u => u.id === item.uniformId)
+            return uniform && (uniform.category === category || 
+              (category === 'pant' && uniform.category === 'trouser') ||
+              (category === 'trouser' && uniform.category === 'pant') ||
+              (category === 'jacket' && uniform.category === 'blazer') ||
+              (category === 'blazer' && uniform.category === 'jacket'))
+          })
+          
+          // Calculate personal payment proportionally
+          let itemsProcessed = 0
+          for (const item of exceededItems) {
+            const uniform = companyProducts.find(u => u.id === item.uniformId)
+            if (uniform && itemsProcessed < exceededQuantity) {
+              const itemPrice = uniform.price || item.price || 0
+              const quantityToCharge = Math.min(item.quantity, exceededQuantity - itemsProcessed)
+              personalPaymentAmount += itemPrice * quantityToCharge
+              itemsProcessed += quantityToCharge
+            }
+          }
+        }
+      }
+    }
+    
+    // Add total and personal payment info to order data
     const finalOrderData = {
       ...orderData,
-      total: total.toFixed(2)
+      total: total.toFixed(2),
+      isPersonalPayment,
+      personalPaymentAmount: personalPaymentAmount.toFixed(2)
     }
     
     // Update sessionStorage with final order data
@@ -133,7 +212,8 @@ export default function OrderReviewPage() {
             <p className="text-red-600 mb-4">Employee data not found. Please log in again.</p>
             <Link
               href="/login/consumer"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-block"
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity inline-block"
             >
               Go to Login
             </Link>
@@ -146,8 +226,79 @@ export default function OrderReviewPage() {
   // Calculate order total
   const orderTotal = orderData.items.reduce((sum: number, item: any) => {
     const uniform = companyProducts.find(u => u.id === item.uniformId)
-    return sum + (uniform?.price || 0) * item.quantity
+    return sum + (uniform?.price || item.price || 0) * item.quantity
   }, 0)
+  
+  // Calculate personal payment amount if eligibility is exceeded
+  const calculatePersonalPayment = () => {
+    if (!company?.allowPersonalPayments || !currentEmployee) return { amount: 0, isPersonalPayment: false }
+    
+    const categoryTotals: Record<string, number> = {}
+    orderData.items.forEach((item: any) => {
+      const uniform = companyProducts.find(u => u.id === item.uniformId)
+      if (uniform) {
+        const category = uniform.category
+        categoryTotals[category] = (categoryTotals[category] || 0) + item.quantity
+      }
+    })
+    
+    let personalPaymentAmount = 0
+    let isPersonalPayment = false
+    
+    for (const [category, total] of Object.entries(categoryTotals)) {
+      const totalEligibility = (() => {
+        switch (category) {
+          case 'shirt': return currentEmployee.eligibility?.shirt || 0
+          case 'pant': case 'trouser': return currentEmployee.eligibility?.pant || 0
+          case 'shoe': return currentEmployee.eligibility?.shoe || 0
+          case 'jacket': case 'blazer': return currentEmployee.eligibility?.jacket || 0
+          default: return 0
+        }
+      })()
+      
+      const consumed = (() => {
+        switch (category) {
+          case 'shirt': return consumedEligibility.shirt
+          case 'pant': case 'trouser': return consumedEligibility.pant
+          case 'shoe': return consumedEligibility.shoe
+          case 'jacket': case 'blazer': return consumedEligibility.jacket
+          default: return 0
+        }
+      })()
+      
+      const remainingEligibility = totalEligibility - consumed
+      const exceededQuantity = Math.max(0, total - remainingEligibility)
+      
+      if (exceededQuantity > 0) {
+        isPersonalPayment = true
+        // Calculate cost for exceeded items
+        const exceededItems = orderData.items.filter((item: any) => {
+          const uniform = companyProducts.find(u => u.id === item.uniformId)
+          return uniform && (uniform.category === category || 
+            (category === 'pant' && uniform.category === 'trouser') ||
+            (category === 'trouser' && uniform.category === 'pant') ||
+            (category === 'jacket' && uniform.category === 'blazer') ||
+            (category === 'blazer' && uniform.category === 'jacket'))
+        })
+        
+        // Calculate personal payment proportionally
+        let itemsProcessed = 0
+        for (const item of exceededItems) {
+          const uniform = companyProducts.find(u => u.id === item.uniformId)
+          if (uniform && itemsProcessed < exceededQuantity) {
+            const itemPrice = uniform.price || item.price || 0
+            const quantityToCharge = Math.min(item.quantity, exceededQuantity - itemsProcessed)
+            personalPaymentAmount += itemPrice * quantityToCharge
+            itemsProcessed += quantityToCharge
+          }
+        }
+      }
+    }
+    
+    return { amount: personalPaymentAmount, isPersonalPayment }
+  }
+  
+  const personalPayment = calculatePersonalPayment()
 
   // Get order items with product details
   const orderItems = orderData.items.map((item: any) => {
@@ -223,7 +374,7 @@ export default function OrderReviewPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-6">
           <div className="mb-8">
             <h1 className="text-3xl font-semibold text-gray-900 mb-2 flex items-center">
-              <ShoppingCart className="h-8 w-8 mr-3 text-blue-600" />
+              <ShoppingCart className="h-8 w-8 mr-3" style={{ color: company?.primaryColor || '#f76b1c' }} />
               Review Your Order
             </h1>
             <p className="text-gray-600">Please review your order details before confirming</p>
@@ -232,7 +383,7 @@ export default function OrderReviewPage() {
           {/* Order Items */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-              <Package className="h-5 w-5 mr-2 text-blue-600" />
+              <Package className="h-5 w-5 mr-2" style={{ color: company?.primaryColor || '#f76b1c' }} />
               Order Items
             </h2>
             <div className="space-y-3">
@@ -262,30 +413,61 @@ export default function OrderReviewPage() {
 
           {/* Estimated Delivery Information */}
           {estimatedDeliveryDate && (
-            <div className="mb-8 p-6 bg-orange-50 border border-orange-200 rounded-lg">
+            <div 
+              className="mb-8 p-6 rounded-lg border"
+              style={{ 
+                backgroundColor: company?.primaryColor ? `${company.primaryColor}10` : 'rgba(247, 107, 28, 0.1)',
+                borderColor: company?.primaryColor ? `${company.primaryColor}40` : 'rgba(247, 107, 28, 0.4)'
+              }}
+            >
               <div className="flex items-center mb-3">
-                <Clock className="h-5 w-5 text-orange-600 mr-2" />
-                <h3 className="font-semibold text-orange-900">Estimated Delivery</h3>
+                <Clock className="h-5 w-5 mr-2" style={{ color: company?.primaryColor || '#f76b1c' }} />
+                <h3 className="font-semibold" style={{ color: company?.primaryColor || '#f76b1c' }}>Estimated Delivery</h3>
               </div>
-              <p className="text-2xl font-bold text-orange-800 mb-2">{formatDate(estimatedDeliveryDate)}</p>
-              <p className="text-sm text-orange-700">
+              <p className="text-2xl font-bold mb-2" style={{ color: company?.primaryColor || '#f76b1c' }}>{formatDate(estimatedDeliveryDate)}</p>
+              <p className="text-sm" style={{ color: company?.primaryColor ? `${company.primaryColor}CC` : '#f76b1c' }}>
                 Estimated delivery time: {getEstimatedDeliveryTime()} (plus 1-2 business days for processing)
               </p>
               {currentEmployee?.dispatchPreference && (
-                <p className="text-xs text-orange-600 mt-2">
+                <p className="text-xs mt-2" style={{ color: company?.primaryColor || '#f76b1c' }}>
                   Based on your dispatch preference: <span className="font-semibold capitalize">{currentEmployee.dispatchPreference}</span>
                 </p>
               )}
             </div>
           )}
 
+          {/* Personal Payment Notice */}
+          {personalPayment.isPersonalPayment && (
+            <div className="mb-8 p-6 bg-yellow-50 border border-yellow-300 rounded-lg">
+              <div className="flex items-start mb-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <h3 className="text-sm font-semibold text-yellow-800">Personal Payment Required</h3>
+                  <p className="mt-1 text-sm text-yellow-700">
+                    Your order exceeds your eligibility limits. You will need to make a personal payment of <span className="font-bold">₹{personalPayment.amount.toFixed(2)}</span> for the items beyond your entitlement.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Order Summary - Only show if prices are enabled */}
           {company?.showPrices && (
-            <div className="mb-8 p-6 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="mb-8 p-6 bg-orange-50 border border-orange-200 rounded-lg">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-700">Subtotal:</span>
                 <span className="font-semibold text-gray-900">₹{orderTotal.toFixed(2)}</span>
               </div>
+              {personalPayment.isPersonalPayment && (
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-700">Personal Payment (beyond eligibility):</span>
+                  <span className="font-semibold text-yellow-700">₹{personalPayment.amount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-700">Shipping:</span>
                 <span className="font-semibold text-gray-900">Free</span>
@@ -293,8 +475,13 @@ export default function OrderReviewPage() {
               <div className="border-t border-blue-300 pt-2 mt-2">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-gray-900">Total:</span>
-                  <span className="text-2xl font-bold text-blue-900">₹{orderTotal.toFixed(2)}</span>
+                  <span className="text-2xl font-bold" style={{ color: company?.primaryColor || '#f76b1c' }}>₹{orderTotal.toFixed(2)}</span>
                 </div>
+                {personalPayment.isPersonalPayment && (
+                  <p className="text-xs text-gray-600 mt-2">
+                    * ₹{personalPayment.amount.toFixed(2)} will be charged as personal payment
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -318,7 +505,8 @@ export default function OrderReviewPage() {
             </button>
             <button
               onClick={handlePlaceOrder}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 shadow-md"
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="flex-1 text-white py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 shadow-md"
             >
               <CheckCircle className="h-5 w-5" />
               <span>Confirm & Place Order</span>

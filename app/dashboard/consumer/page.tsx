@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Package, ShoppingCart, CheckCircle, Clock, Plus, Minus, ArrowRight } from 'lucide-react'
-import { getProductsByCompany, getEmployeeByEmail, getOrdersByEmployee, getConsumedEligibility, Uniform } from '@/lib/data-mongodb'
+import { getProductsByCompany, getEmployeeByEmail, getOrdersByEmployee, getConsumedEligibility, getCompanyById, Uniform } from '@/lib/data-mongodb'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { maskEmail } from '@/lib/utils/data-masking'
 
 // Helper function to get Indigo Airlines-style uniform images
 // Using local images stored in public/images/uniforms/
@@ -80,14 +81,17 @@ export default function ConsumerDashboard() {
     shoe: number
     jacket: number
   }>({ shirt: 0, pant: 0, shoe: 0, jacket: 0 })
+  const [company, setCompany] = useState<any>(null)
   
-  // Get current employee from localStorage on mount
+  // Get current employee from tab-specific storage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const loadData = async () => {
         try {
           setLoading(true)
-          const userEmail = localStorage.getItem('userEmail')
+          // Use tab-specific authentication storage
+          const { getUserEmail } = await import('@/lib/utils/auth-storage')
+          const userEmail = getUserEmail('consumer') || localStorage.getItem('userEmail')
           console.log('Consumer Dashboard - User Email:', userEmail)
           
           if (!userEmail) {
@@ -98,7 +102,16 @@ export default function ConsumerDashboard() {
           }
           
           try {
-            const employee = await getEmployeeByEmail(userEmail)
+            let employee
+            try {
+              employee = await getEmployeeByEmail(userEmail)
+            } catch (fetchError: any) {
+              console.error('Consumer Dashboard - Error fetching employee:', fetchError)
+              setError(fetchError?.message || `Failed to fetch employee data. Please try again.`)
+              setLoading(false)
+              return
+            }
+            
             console.log('Consumer Dashboard - Employee:', employee)
             
             if (!employee) {
@@ -110,48 +123,114 @@ export default function ConsumerDashboard() {
             
             setCurrentEmployee(employee)
             
-            // Ensure companyId is a string (handle populated objects, ObjectIds, and strings)
+            // Ensure companyId is a string (handle populated objects, ObjectIds, numbers, and strings)
+            // Use the same logic as the fetch script to handle ObjectId conversion
             let companyId: string | undefined
-            if (employee.companyId) {
-              if (typeof employee.companyId === 'object') {
-                // Populated object with id field
-                companyId = employee.companyId.id || employee.companyId._id?.toString()
-              } else {
-                // Already a string (ObjectId string or company id string)
-                companyId = employee.companyId.toString()
+            if (employee.companyId !== null && employee.companyId !== undefined) {
+              if (typeof employee.companyId === 'object' && employee.companyId !== null) {
+                // Populated object - check for id field first (company string ID like 'COMP-INDIGO')
+                if (employee.companyId.id) {
+                  companyId = String(employee.companyId.id) // Convert to string
+                } else if (employee.companyId._id) {
+                  // Only _id present - need to look up the company
+                  const _idStr = employee.companyId._id.toString()
+                  console.log('Consumer Dashboard - companyId is object with _id, looking up company:', _idStr)
+                  try {
+                    const { getAllCompanies } = await import('@/lib/data-mongodb')
+                    const companies = await getAllCompanies()
+                    // Companies from API should have both _id and id fields
+                    const matchingCompany = companies.find((c: any) => {
+                      // Compare ObjectId strings
+                      const companyObjectId = c._id?.toString() || (typeof c._id === 'string' ? c._id : null)
+                      return companyObjectId === _idStr
+                    })
+                    if (matchingCompany) {
+                      companyId = String(matchingCompany.id) // Convert to string
+                      console.log('Consumer Dashboard - Found company by ObjectId _id:', companyId)
+                    }
+                  } catch (error) {
+                    console.error('Consumer Dashboard - Error looking up company by _id:', error)
+                  }
+                }
+              } else if (typeof employee.companyId === 'number') {
+                // companyId is a number (like 3) - convert to string
+                companyId = String(employee.companyId)
+                console.log('Consumer Dashboard - companyId is number, converted to string:', companyId)
+              } else if (typeof employee.companyId === 'string') {
+                // Already a string - check if it's an ObjectId (24 hex chars) or company string ID
+                if (/^[0-9a-fA-F]{24}$/.test(employee.companyId)) {
+                  // It's an ObjectId string - need to look up the company
+                  console.log('Consumer Dashboard - companyId is ObjectId string, looking up company:', employee.companyId)
+                  try {
+                    const { getAllCompanies } = await import('@/lib/data-mongodb')
+                    const companies = await getAllCompanies()
+                    // Find company by matching ObjectId
+                    const matchingCompany = companies.find((c: any) => {
+                      const companyObjectId = c._id?.toString() || (typeof c._id === 'string' ? c._id : null)
+                      return companyObjectId === employee.companyId
+                    })
+                    if (matchingCompany) {
+                      companyId = String(matchingCompany.id) // Convert to string
+                      console.log('Consumer Dashboard - Found company by ObjectId string:', companyId)
+                    } else {
+                      console.warn('Consumer Dashboard - Company not found for ObjectId:', employee.companyId)
+                    }
+                  } catch (error) {
+                    console.error('Consumer Dashboard - Error looking up company by ObjectId:', error)
+                  }
+                } else {
+                  // It's already a company string ID (like 'COMP-INDIGO' or numeric string like '3')
+                  companyId = employee.companyId
+                }
               }
             }
             
+            // If companyId is still not found, employee is not properly linked to a company
+            // This should not happen - all employees must have a companyId
+            if (!companyId) {
+              console.error('Consumer Dashboard - Employee has no companyId. Employee must be linked to a company using companyId.')
+            }
+            
             console.log('Consumer Dashboard - Employee companyId raw:', employee.companyId)
+            console.log('Consumer Dashboard - Employee companyId type:', typeof employee.companyId)
+            console.log('Consumer Dashboard - Employee companyId isObject:', typeof employee.companyId === 'object')
+            console.log('Consumer Dashboard - Employee companyId isNull:', employee.companyId === null)
+            console.log('Consumer Dashboard - Employee companyId keys:', employee.companyId && typeof employee.companyId === 'object' ? Object.keys(employee.companyId) : 'N/A')
+            console.log('Consumer Dashboard - Full employee object:', JSON.stringify(employee, null, 2))
             console.log('Consumer Dashboard - Company ID extracted:', companyId, 'Type:', typeof companyId)
             console.log('Consumer Dashboard - Company Name:', employee.companyName)
             
             if (!companyId) {
-              console.error('Consumer Dashboard - No companyId found for employee:', employee.id)
+              console.error('Consumer Dashboard - No companyId found for employee:', employee.employeeId, 'Employee data:', {
+                employeeId: employee.employeeId,
+                companyId: employee.companyId,
+                companyName: employee.companyName
+              })
               setError('Employee is not associated with a company. Please contact your administrator.')
               setLoading(false)
               return
             }
             
-            // Get employee ID for consumed eligibility
-            const employeeId = typeof employee.id === 'string' 
-              ? employee.id 
-              : employee._id?.toString() || employee.id
+            // Use employeeId field instead of id field
+            const employeeId = employee.employeeId || employee.id
             
-            // Load products, orders, and consumed eligibility in parallel
-            const [products, orders, consumed] = await Promise.all([
-              getProductsByCompany(companyId),
+            // Load products (filtered by designation and gender), orders, consumed eligibility, and company settings in parallel
+            const [products, orders, consumed, companyData] = await Promise.all([
+              getProductsByCompany(companyId, employee.designation, employee.gender as 'male' | 'female'),
               getOrdersByEmployee(employeeId),
-              getConsumedEligibility(employeeId)
+              getConsumedEligibility(employeeId),
+              getCompanyById(companyId)
             ])
             
             console.log('Consumer Dashboard - Products loaded:', products.length, products)
             console.log('Consumer Dashboard - Orders loaded:', orders.length, orders)
             console.log('Consumer Dashboard - Consumed eligibility:', consumed)
+            console.log('Consumer Dashboard - Company settings:', companyData ? { showPrices: companyData.showPrices, allowPersonalPayments: companyData.allowPersonalPayments } : 'not loaded')
             
             setCompanyProducts(products)
             setMyOrders(orders)
             setConsumedEligibility(consumed)
+            setCompany(companyData)
             
             if (products.length === 0) {
               console.warn('No products found for company:', companyId)
@@ -251,11 +330,15 @@ export default function ConsumerDashboard() {
     // Prevent negative quantities
     if (newQuantity < 0) return
     
-    // Strict check: total should never exceed eligibility
+    // Check eligibility limit - allow exceeding if personal payments are enabled
     if (totalAfterChange > eligibility) {
-      const remaining = Math.max(0, eligibility - otherItemsQuantity)
-      alert(`You can only order up to ${eligibility} ${uniform.category}(s) total. You have already selected ${otherItemsQuantity} other ${uniform.category}(s). Maximum allowed for this item: ${remaining}.`)
-      return
+      if (!company?.allowPersonalPayments) {
+        const remaining = Math.max(0, eligibility - otherItemsQuantity)
+        alert(`You can only order up to ${eligibility} ${uniform.category}(s) total. You have already selected ${otherItemsQuantity} other ${uniform.category}(s). Maximum allowed for this item: ${remaining}.\n\nPersonal payment orders are not enabled for your company.`)
+        return
+      }
+      // Personal payments are enabled - allow adding beyond eligibility
+      // The personal payment amount will be calculated on the review page
     }
     
     if (newQuantity === 0) {
@@ -276,7 +359,7 @@ export default function ConsumerDashboard() {
       return
     }
     
-    // Validate eligibility before checkout
+    // Calculate category totals
     const categoryTotals: Record<string, number> = {}
     Object.entries(quickOrderCart).forEach(([uniformId, item]) => {
       const uniform = companyProducts.find(u => u.id === uniformId)
@@ -285,13 +368,25 @@ export default function ConsumerDashboard() {
       }
     })
     
-    // Check each category doesn't exceed eligibility
+    // Check if any category exceeds eligibility
+    const exceededCategories: Array<{ category: string; requested: number; eligible: number }> = []
     for (const [category, total] of Object.entries(categoryTotals)) {
       const eligibility = getEligibilityForCategory(category)
       if (total > eligibility) {
-        alert(`Error: Your cart contains ${total} ${category}(s), but you are only eligible for ${eligibility}. Please adjust your order.`)
+        exceededCategories.push({ category, requested: total, eligible: eligibility })
+      }
+    }
+    
+    // If eligibility is exceeded, check if personal payments are allowed
+    if (exceededCategories.length > 0) {
+      if (!company?.allowPersonalPayments) {
+        const errorMsg = exceededCategories.map(
+          e => `${e.category}: ${e.requested} requested, ${e.eligible} eligible`
+        ).join('\n')
+        alert(`Error: Your cart exceeds eligibility limits:\n${errorMsg}\n\nPersonal payment orders are not enabled for your company. Please adjust your order.`)
         return
       }
+      // Personal payments are allowed - proceed to review page where personal payment will be calculated
     }
     
     // Store order data and navigate to catalog/checkout
@@ -302,7 +397,8 @@ export default function ConsumerDashboard() {
           uniformId,
           uniformName: uniform?.name || '',
           size: item.size,
-          quantity: item.quantity
+          quantity: item.quantity,
+          price: uniform?.price || 0
         }
       })
     }
@@ -345,7 +441,8 @@ export default function ConsumerDashboard() {
                 setLoading(true)
                 const loadData = async () => {
                   try {
-                    const userEmail = localStorage.getItem('userEmail')
+                    const { getUserEmail } = await import('@/lib/utils/auth-storage')
+                    const userEmail = getUserEmail('consumer') || localStorage.getItem('userEmail')
                     if (userEmail) {
                       const employee = await getEmployeeByEmail(userEmail)
                       if (employee) {
@@ -353,9 +450,9 @@ export default function ConsumerDashboard() {
                         const companyId = typeof employee.companyId === 'object' && employee.companyId?.id 
                           ? employee.companyId.id 
                           : employee.companyId
-                        const products = await getProductsByCompany(companyId)
+                        const products = await getProductsByCompany(companyId, employee.designation, employee.gender as 'male' | 'female')
                         setCompanyProducts(products)
-                        const orders = await getOrdersByEmployee(employee.id)
+                        const orders = await getOrdersByEmployee(employee.employeeId || employee.id)
                         setMyOrders(orders)
                       }
                     }
@@ -367,7 +464,10 @@ export default function ConsumerDashboard() {
                 }
                 loadData()
               }}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              style={{
+                backgroundColor: company?.primaryColor || '#f76b1c',
+              }}
+              className="text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
             >
               Retry
             </button>
@@ -399,24 +499,29 @@ export default function ConsumerDashboard() {
     <DashboardLayout actorType="consumer">
       <div>
         <h1 className="text-3xl font-semibold text-gray-800 mb-8">
-          Welcome Back{currentEmployee?.firstName ? `, ${currentEmployee.firstName}${currentEmployee.lastName ? ` ${currentEmployee.lastName}` : ''}` : ''}!
+          Welcome Back!
         </h1>
         
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {[
-            { name: 'Total Orders', value: totalOrders, icon: ShoppingCart, color: 'blue', link: '/dashboard/consumer/orders' },
+            { name: 'Total Orders', value: totalOrders, icon: ShoppingCart, color: 'orange', link: '/dashboard/consumer/orders' },
             { name: 'Pending Orders', value: pendingOrders, icon: Clock, color: 'orange', link: '/dashboard/consumer/orders' },
-            { name: 'Available Items', value: companyProducts.length, icon: Package, color: 'green', link: '/dashboard/consumer/catalog' },
+            { name: 'Available Items', value: companyProducts.length, icon: Package, color: 'orange', link: '/dashboard/consumer/catalog' },
           ].map((stat) => {
             const Icon = stat.icon
-            const getColorClasses = (color: string) => {
-              const colors: Record<string, { bg: string; text: string }> = {
-                blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
-                orange: { bg: 'bg-orange-50', text: 'text-orange-600' },
-                green: { bg: 'bg-green-50', text: 'text-green-600' },
+            // Get color classes based on company colors
+            const getColorClasses = (color: string | undefined) => {
+              const primaryColor = company?.primaryColor || '#f76b1c'
+              const secondaryColor = company?.secondaryColor || company?.primaryColor || '#f76b1c'
+              
+              // Create dynamic color classes using inline styles for custom colors
+              return {
+                bg: `bg-[${primaryColor}]20`, // 20% opacity background
+                text: `text-[${primaryColor}]`,
+                bgFull: `bg-[${primaryColor}]`,
+                hover: `hover:bg-[${secondaryColor}]`
               }
-              return colors[color] || colors.blue
             }
             const colorClasses = getColorClasses(stat.color)
             const isClickable = stat.value > 0
@@ -491,18 +596,29 @@ export default function ConsumerDashboard() {
                           const companyId = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
                             ? currentEmployee.companyId.id 
                             : currentEmployee.companyId
-                          const products = await getProductsByCompany(companyId)
+                          const products = await getProductsByCompany(companyId, employee.designation, employee.gender as 'male' | 'female')
                           setCompanyProducts(products)
                           alert(`Cleared localStorage. Found ${products.length} products.`)
                         }}
-                        className="mt-2 text-xs text-blue-600 hover:text-blue-800 underline"
+                        style={{ 
+                          color: company?.primaryColor || '#f76b1c',
+                        }}
+                        className="mt-2 text-xs underline hover:opacity-80"
                       >
                         Reset & Refresh
                       </button>
                     )}
                   </div>
-                  <div className={`${colorClasses.bg} p-3 rounded-lg`}>
-                    <Icon className={`h-6 w-6 ${colorClasses.text}`} />
+                  <div 
+                    className="p-3 rounded-lg"
+                    style={{ 
+                      backgroundColor: company?.primaryColor ? `${company.primaryColor}20` : 'rgba(247, 107, 28, 0.2)'
+                    }}
+                  >
+                    <Icon 
+                      className="h-6 w-6" 
+                      style={{ color: company?.primaryColor || '#f76b1c' }}
+                    />
                   </div>
                 </div>
               </div>
@@ -632,14 +748,16 @@ export default function ConsumerDashboard() {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-yellow-900 mb-2">Debug Information</h3>
             <div className="text-sm text-yellow-800 space-y-1">
-              <p>Company ID: <strong>{(() => {
+              <p>Company ID: <strong style={{ color: currentEmployee.companyId ? 'green' : 'red' }}>{(() => {
                 const cid = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
                   ? currentEmployee.companyId.id 
                   : currentEmployee.companyId
                 return cid || 'Not found'
               })()}</strong></p>
+              <p>Company ID Type: <strong>{typeof currentEmployee.companyId}</strong></p>
+              <p>Company ID Value: <strong>{JSON.stringify(currentEmployee.companyId)}</strong></p>
               <p>Company Name: <strong>{currentEmployee.companyName}</strong></p>
-              <p>Employee Email: <strong>{currentEmployee.email}</strong></p>
+              <p>Employee Email: <strong>{maskEmail(currentEmployee.email)}</strong></p>
               <p className="mt-2">Check browser console (F12) for detailed debug logs.</p>
               <button
                 onClick={async () => {
@@ -666,7 +784,11 @@ export default function ConsumerDashboard() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
           <div className="grid md:grid-cols-3 gap-4">
-            <Link href="/dashboard/consumer/catalog" className="bg-blue-600 text-white py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center shadow-md flex items-center justify-center space-x-2">
+            <Link 
+              href="/dashboard/consumer/catalog" 
+              style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+              className="text-white py-4 rounded-lg font-medium hover:opacity-90 transition-opacity text-center shadow-md flex items-center justify-center space-x-2"
+            >
               <Package className="h-5 w-5" />
               <span>Browse Catalog</span>
             </Link>
@@ -675,7 +797,11 @@ export default function ConsumerDashboard() {
                 <ShoppingCart className="h-5 w-5" />
                 <span>View My Orders</span>
               </Link>
-              <Link href="/dashboard/consumer/catalog" className="flex-1 bg-green-600 text-white py-4 rounded-lg font-medium hover:bg-green-700 transition-colors text-center shadow-md flex items-center justify-center space-x-2">
+              <Link 
+                href="/dashboard/consumer/catalog" 
+                style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                className="flex-1 text-white py-4 rounded-lg font-medium hover:opacity-90 transition-opacity text-center shadow-md flex items-center justify-center space-x-2"
+              >
                 <Plus className="h-5 w-5" />
                 <span>New Order</span>
               </Link>
@@ -683,7 +809,8 @@ export default function ConsumerDashboard() {
             {getCartTotalItems() > 0 && (
               <button
                 onClick={handleQuickOrderCheckout}
-                className="bg-orange-600 text-white py-4 rounded-lg font-medium hover:bg-orange-700 transition-colors shadow-md flex items-center justify-center space-x-2"
+                style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                className="text-white py-4 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-md flex items-center justify-center space-x-2"
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span>Checkout ({getCartTotalItems()})</span>
@@ -701,7 +828,8 @@ export default function ConsumerDashboard() {
             </div>
             <Link 
               href="/dashboard/consumer/catalog" 
-              className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-1"
+              style={{ color: company?.primaryColor || '#f76b1c' }}
+              className="hover:opacity-80 font-medium flex items-center space-x-1 transition-opacity"
             >
               <span>View All</span>
               <ArrowRight className="h-4 w-4" />
@@ -723,7 +851,10 @@ export default function ConsumerDashboard() {
                 const totalForCategory = getTotalQuantityForCategory(uniform.category)
                 const otherItemsQuantity = totalForCategory - currentQuantity
                 const maxAllowed = Math.max(0, eligibility - otherItemsQuantity)
-                const canAddMore = currentQuantity < maxAllowed && totalForCategory < eligibility
+                // Allow adding more if personal payments are enabled, otherwise restrict to eligibility
+                const canAddMore = company?.allowPersonalPayments 
+                  ? true // No limit when personal payments are enabled
+                  : (currentQuantity < maxAllowed && totalForCategory < eligibility)
                 
                 return (
                   <div key={uniform.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -787,14 +918,22 @@ export default function ConsumerDashboard() {
                         </button>
                       </div>
                     </div>
-                    {!canAddMore && currentQuantity > 0 && (
+                    {!canAddMore && currentQuantity > 0 && !company?.allowPersonalPayments && (
                       <p className="text-xs text-red-600 mt-1">
                         Maximum {maxAllowed} allowed for {uniform.category}
                       </p>
                     )}
                     {currentQuantity === 0 && eligibility > 0 && (
                       <p className="text-xs text-gray-500 mt-1">
-                        You can order up to {eligibility} {uniform.category}(s)
+                        {company?.allowPersonalPayments 
+                          ? `You can order ${eligibility} ${uniform.category}(s) under eligibility. Additional items can be purchased with personal payment.`
+                          : `You can order up to ${eligibility} ${uniform.category}(s)`
+                        }
+                      </p>
+                    )}
+                    {company?.allowPersonalPayments && totalForCategory >= eligibility && currentQuantity > 0 && (
+                      <p className="text-xs text-yellow-600 mt-1">
+                        ⚠️ Items beyond eligibility will require personal payment
                       </p>
                     )}
                     {eligibility === 0 && (
@@ -824,7 +963,8 @@ export default function ConsumerDashboard() {
                 </div>
                 <button
                   onClick={handleQuickOrderCheckout}
-                  className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center space-x-2 shadow-md"
+                  style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                  className="text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center space-x-2 shadow-md"
                 >
                   <ShoppingCart className="h-5 w-5" />
                   <span>Proceed to Checkout</span>
@@ -841,7 +981,11 @@ export default function ConsumerDashboard() {
             <div className="text-center py-8">
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <p className="text-gray-600 mb-4">You haven't placed any orders yet.</p>
-              <Link href="/dashboard/consumer/catalog" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md">
+              <Link 
+                href="/dashboard/consumer/catalog" 
+                style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                className="inline-block text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity shadow-md"
+              >
                 Browse Catalog
               </Link>
             </div>

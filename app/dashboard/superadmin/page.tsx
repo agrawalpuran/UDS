@@ -8,15 +8,18 @@ import {
 } from 'lucide-react'
 import { 
   getAllProducts, getAllVendors, getAllCompanies, getAllEmployees,
-  getProductCompanies, getProductVendors, getVendorCompanies,
-  createProductCompany, createProductVendor, createVendorCompany,
-  deleteProductCompany, deleteProductVendor, deleteVendorCompany,
+  getProductCompanies, getProductVendors,
+  createProductCompany, createProductVendor,
+  deleteProductCompany, deleteProductVendor,
   addCompanyAdmin, removeCompanyAdmin, updateCompanyAdminPrivileges, getCompanyAdmins,
-  Uniform, Vendor, Company, Employee, ProductCompany, ProductVendor, VendorCompany
+  createProduct, updateProduct, deleteProduct,
+  Uniform, Vendor, Company, Employee, ProductCompany, ProductVendor
 } from '@/lib/data-mongodb'
+import { maskEmployeeData, maskEmail } from '@/lib/utils/data-masking'
 
 export default function SuperAdminPage() {
   const [activeTab, setActiveTab] = useState<'products' | 'vendors' | 'companies' | 'employees' | 'relationships'>('products')
+  const [relationshipSubTab, setRelationshipSubTab] = useState<'productToCompany' | 'productToVendor'>('productToCompany')
   const [searchTerm, setSearchTerm] = useState('')
   
   // Data states
@@ -26,7 +29,7 @@ export default function SuperAdminPage() {
   const [employees, setEmployees] = useState<Employee[]>([])
   const [productCompanies, setProductCompanies] = useState<ProductCompany[]>([])
   const [productVendors, setProductVendors] = useState<ProductVendor[]>([])
-  const [vendorCompanies, setVendorCompanies] = useState<VendorCompany[]>([])
+  const [vendorCompanies, setVendorCompanies] = useState<Array<{ vendorId: string, companyId: string }>>([])
   const [loading, setLoading] = useState(true)
   
   // Load all data from MongoDB on mount
@@ -34,14 +37,13 @@ export default function SuperAdminPage() {
     const loadAllData = async () => {
       try {
         setLoading(true)
-        const [productsData, vendorsData, companiesData, employeesData, pcData, pvData, vcData] = await Promise.all([
+        const [productsData, vendorsData, companiesData, employeesData, pcData, pvData] = await Promise.all([
           getAllProducts(),
           getAllVendors(),
           getAllCompanies(),
           getAllEmployees(),
           getProductCompanies(),
-          getProductVendors(),
-          getVendorCompanies()
+          getProductVendors()
         ])
         
         setProducts(productsData)
@@ -50,7 +52,7 @@ export default function SuperAdminPage() {
         setEmployees(employeesData)
         setProductCompanies(pcData)
         setProductVendors(pvData)
-        setVendorCompanies(vcData)
+        setVendorCompanies([])
         
         // Load admins for each company
         const adminsMap: Record<string, any[]> = {}
@@ -58,11 +60,13 @@ export default function SuperAdminPage() {
           try {
             const admins = await getCompanyAdmins(company.id)
             adminsMap[company.id] = admins
+            console.log(`Loaded ${admins.length} admins for ${company.id}:`, admins.map((a: any) => a.employee?.employeeId || a.employeeId))
           } catch (error) {
             console.error(`Error loading admins for company ${company.id}:`, error)
             adminsMap[company.id] = []
           }
         }
+        console.log('Setting companyAdmins state:', adminsMap)
         setCompanyAdmins(adminsMap)
         
         console.log('✅ Loaded data:', {
@@ -81,6 +85,27 @@ export default function SuperAdminPage() {
     
     loadAllData()
   }, [])
+  
+  // Refresh admins when Companies tab is opened
+  useEffect(() => {
+    if (activeTab === 'companies' && companies.length > 0) {
+      const refreshAdmins = async () => {
+        const adminsMap: Record<string, any[]> = {}
+        for (const company of companies) {
+          try {
+            const admins = await getCompanyAdmins(company.id)
+            adminsMap[company.id] = admins
+            console.log(`[Refresh] Loaded ${admins.length} admins for ${company.id}`)
+          } catch (error) {
+            console.error(`Error refreshing admins for company ${company.id}:`, error)
+            adminsMap[company.id] = []
+          }
+        }
+        setCompanyAdmins(adminsMap)
+      }
+      refreshAdmins()
+    }
+  }, [activeTab, companies])
   
   // Form states
   const [editingProduct, setEditingProduct] = useState<Uniform | null>(null)
@@ -122,26 +147,49 @@ export default function SuperAdminPage() {
     (e.employeeId && e.employeeId.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const handleSaveProduct = (product: Partial<Uniform>) => {
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...product } as Uniform : p))
-    } else {
-      const newProduct: Uniform = {
-        id: `PROD-${Date.now()}`,
-        name: product.name || '',
-        category: product.category || 'shirt',
-        gender: product.gender || 'unisex',
-        sizes: product.sizes || [],
-        price: product.price || 0,
-        image: product.image || '',
-        sku: product.sku || '',
-        vendorId: product.vendorId || '',
-        stock: product.stock || 0,
-        companyIds: product.companyIds || []
+  const handleSaveProduct = async (product: Partial<Uniform>) => {
+    try {
+      if (editingProduct && editingProduct.id) {
+        // Update existing product
+        const updated = await updateProduct(editingProduct.id, {
+          name: product.name,
+          category: product.category,
+          gender: product.gender,
+          sizes: product.sizes,
+          price: product.price,
+          image: product.image,
+          sku: product.sku,
+          vendorId: product.vendorId,
+          stock: product.stock,
+        })
+        
+        // Reload products list
+        const updatedProducts = await getAllProducts()
+        setProducts(updatedProducts)
+        alert('Product updated successfully!')
+      } else {
+        // Create new product (vendor can be linked later via relationships)
+        const newProduct = await createProduct({
+          name: product.name || '',
+          category: (product.category as any) || 'shirt',
+          gender: (product.gender as any) || 'unisex',
+          sizes: product.sizes || [],
+          price: product.price || 0,
+          image: product.image || '',
+          sku: product.sku || '',
+          stock: product.stock || 0,
+        })
+        
+        // Reload products list
+        const updatedProducts = await getAllProducts()
+        setProducts(updatedProducts)
+        alert('Product created successfully!')
       }
-      setProducts([...products, newProduct])
+      setEditingProduct(null)
+    } catch (error: any) {
+      console.error('Error saving product:', error)
+      alert(`Error saving product: ${error.message || 'Unknown error occurred'}`)
     }
-    setEditingProduct(null)
   }
 
   const handleSaveVendor = (vendor: Partial<Vendor>) => {
@@ -326,6 +374,9 @@ export default function SuperAdminPage() {
                 <div key={product.id} className="border border-gray-200 rounded-lg p-4">
                   <h3 className="font-semibold text-gray-900 mb-2">{product.name}</h3>
                   <p className="text-sm text-gray-600 mb-2">SKU: {product.sku}</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Gender: <span className="font-semibold capitalize">{product.gender || 'unisex'}</span>
+                  </p>
                   <p className="text-sm text-gray-600 mb-2">Price: ₹{product.price}</p>
                   <p className="text-sm text-gray-600 mb-2">Stock: {product.stock}</p>
                   <p className="text-sm text-gray-600 mb-2">
@@ -339,7 +390,20 @@ export default function SuperAdminPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => setProducts(products.filter(p => p.id !== product.id))}
+                      onClick={async () => {
+                        if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
+                          try {
+                            await deleteProduct(product.id)
+                            // Reload products list
+                            const updatedProducts = await getAllProducts()
+                            setProducts(updatedProducts)
+                            alert('Product deleted successfully!')
+                          } catch (error: any) {
+                            console.error('Error deleting product:', error)
+                            alert(`Error deleting product: ${error.message || 'Unknown error occurred'}`)
+                          }
+                        }
+                      }}
                       className="flex-1 bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors text-sm"
                     >
                       Delete
@@ -348,6 +412,144 @@ export default function SuperAdminPage() {
                 </div>
               ))}
             </div>
+
+            {/* Product Edit/Add Form Modal */}
+            {editingProduct && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    {editingProduct.id ? 'Edit Product' : 'Add New Product'}
+                  </h2>
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault()
+                      const formData = new FormData(e.target as HTMLFormElement)
+                      const productData: Partial<Uniform> = {
+                        name: formData.get('name') as string,
+                        category: formData.get('category') as any,
+                        gender: formData.get('gender') as any,
+                        sizes: (formData.get('sizes') as string)?.split(',').map(s => s.trim()).filter(s => s) || [],
+                        price: parseFloat(formData.get('price') as string) || 0,
+                        image: formData.get('image') as string,
+                        sku: formData.get('sku') as string,
+                        stock: parseInt(formData.get('stock') as string) || 0,
+                      }
+                      await handleSaveProduct(productData)
+                    }}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                      <input
+                        type="text"
+                        name="name"
+                        defaultValue={editingProduct.name || ''}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select
+                          name="category"
+                          defaultValue={editingProduct.category || 'shirt'}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="shirt">Shirt</option>
+                          <option value="pant">Pant</option>
+                          <option value="shoe">Shoe</option>
+                          <option value="jacket">Jacket</option>
+                          <option value="accessory">Accessory</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <select
+                          name="gender"
+                          defaultValue={editingProduct.gender || 'unisex'}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="unisex">Unisex</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Sizes (comma-separated)</label>
+                      <input
+                        type="text"
+                        name="sizes"
+                        defaultValue={editingProduct.sizes?.join(', ') || ''}
+                        placeholder="e.g., S, M, L, XL"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          name="price"
+                          step="0.01"
+                          defaultValue={editingProduct.price || 0}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                        <input
+                          type="number"
+                          name="stock"
+                          defaultValue={editingProduct.stock || 0}
+                          required
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                      <input
+                        type="text"
+                        name="sku"
+                        defaultValue={editingProduct.sku || ''}
+                        required
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                      <input
+                        type="url"
+                        name="image"
+                        defaultValue={editingProduct.image || ''}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    </div>
+                    <div className="flex space-x-4 pt-4">
+                      <button
+                        type="submit"
+                        className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                      >
+                        <Save className="h-5 w-5 inline mr-2" />
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingProduct(null)}
+                        className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -419,9 +621,28 @@ export default function SuperAdminPage() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredCompanies.map((company) => {
                 const companyEmployees = employees.filter((e: any) => {
-                  const empCompanyId = typeof e.companyId === 'object' && e.companyId?.id
-                    ? e.companyId.id
-                    : e.companyId
+                  // Handle different companyId formats
+                  let empCompanyId: string | null = null
+                  
+                  if (e.companyId) {
+                    // If companyId is populated object with id field
+                    if (typeof e.companyId === 'object' && e.companyId !== null) {
+                      empCompanyId = e.companyId.id || e.companyId._id?.toString() || null
+                    } 
+                    // If companyId is a string (company id like "COMP-INDIGO")
+                    else if (typeof e.companyId === 'string') {
+                      empCompanyId = e.companyId
+                    }
+                  }
+                  
+                  // Also check companyName as fallback
+                  if (!empCompanyId && e.companyName) {
+                    const matchingCompany = companies.find(c => c.name === e.companyName)
+                    if (matchingCompany) {
+                      empCompanyId = matchingCompany.id
+                    }
+                  }
+                  
                   return empCompanyId === company.id
                 })
                 const admins = companyAdmins[company.id] || []
@@ -440,19 +661,51 @@ export default function SuperAdminPage() {
                     
                     {/* Company Admins Display */}
                     <div className="mb-3 p-2 bg-gray-50 rounded">
-                      <p className="text-xs font-semibold text-gray-700 mb-2">Company Admins ({admins.length}):</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-gray-700">Company Admins ({admins.length}):</p>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const refreshedAdmins = await getCompanyAdmins(company.id)
+                              setCompanyAdmins({ ...companyAdmins, [company.id]: refreshedAdmins })
+                              console.log('Refreshed admins for', company.id, ':', refreshedAdmins)
+                            } catch (error) {
+                              console.error('Error refreshing admins:', error)
+                            }
+                          }}
+                          className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                        >
+                          🔄 Refresh
+                        </button>
+                      </div>
                       {admins.length > 0 ? (
                         <div className="space-y-2">
                           {admins.map((admin: any) => {
-                            const adminEmployee = admin.employee || employees.find((e: any) => e.id === admin.employeeId)
-                            return adminEmployee ? (
-                              <div key={admin.employeeId} className="p-2 bg-white rounded border border-gray-200">
+                            // Try to get employee from admin.employee (populated), or find in employees list
+                            let adminEmployee = admin.employee
+                            if (!adminEmployee && admin.employeeId) {
+                              // Try to find by id or employeeId - but only if admin.employeeId exists
+                              adminEmployee = employees.find((e: any) => 
+                                e.id === admin.employeeId || 
+                                e.employeeId === admin.employeeId ||
+                                e._id?.toString() === admin.employeeId?.toString()
+                              )
+                            }
+                            
+                            // Don't display if no valid employee found
+                            if (!adminEmployee) {
+                              console.warn('Admin record has no valid employee:', admin)
+                              return null
+                            }
+                            
+                            return (
+                              <div key={admin.employeeId || admin._id} className="p-2 bg-white rounded border border-gray-200">
                                 <div className="flex items-start justify-between">
                                   <div className="flex-1">
                                     <p className="text-sm font-medium text-gray-900">
-                                      {adminEmployee.firstName} {adminEmployee.lastName}
+                                      {maskEmployeeData(adminEmployee).firstName} {maskEmployeeData(adminEmployee).lastName}
                                     </p>
-                                    <p className="text-xs text-gray-600">{adminEmployee.email}</p>
+                                    <p className="text-xs text-gray-600">{maskEmail(adminEmployee.email)}</p>
                                     <p className="text-xs font-mono text-blue-600 font-semibold mt-1">
                                       ID: {adminEmployee.employeeId || 'N/A'}
                                     </p>
@@ -470,9 +723,15 @@ export default function SuperAdminPage() {
                                     <button
                                       onClick={async () => {
                                         try {
+                                          // Use employee.id or employee.employeeId, fallback to admin.employeeId
+                                          const employeeIdToUpdate = adminEmployee.id || adminEmployee.employeeId || admin.employeeId
+                                          if (!employeeIdToUpdate) {
+                                            alert('Error: Could not determine employee ID')
+                                            return
+                                          }
                                           await updateCompanyAdminPrivileges(
                                             company.id, 
-                                            admin.employeeId, 
+                                            employeeIdToUpdate, 
                                             !admin.canApproveOrders
                                           )
                                           // Reload admins
@@ -480,6 +739,7 @@ export default function SuperAdminPage() {
                                           setCompanyAdmins({ ...companyAdmins, [company.id]: updatedAdmins })
                                           alert('Privileges updated successfully!')
                                         } catch (error: any) {
+                                          console.error('Error updating privileges:', error)
                                           alert(`Error: ${error.message}`)
                                         }
                                       }}
@@ -493,14 +753,34 @@ export default function SuperAdminPage() {
                                     </button>
                                     <button
                                       onClick={async () => {
-                                        if (confirm(`Remove ${adminEmployee.firstName} ${adminEmployee.lastName} as admin?`)) {
+                                        const masked = maskEmployeeData(adminEmployee)
+                                        if (confirm(`Remove ${masked.firstName} ${masked.lastName} as admin?`)) {
                                           try {
-                                            await removeCompanyAdmin(company.id, admin.employeeId)
+                                            // Use employee.id or employee.employeeId, fallback to admin.employeeId
+                                            const employeeIdToRemove = adminEmployee.id || adminEmployee.employeeId || admin.employeeId
+                                            
+                                            if (!employeeIdToRemove) {
+                                              console.error('No employeeId found:', { adminEmployee, admin })
+                                              alert('Error: Could not determine employee ID. Please check the console.')
+                                              return
+                                            }
+                                            
+                                            console.log('Removing admin:', { 
+                                              companyId: company.id, 
+                                              employeeId: employeeIdToRemove,
+                                              adminEmployeeId: adminEmployee.id,
+                                              adminEmployeeEmployeeId: adminEmployee.employeeId,
+                                              adminRecordEmployeeId: admin.employeeId
+                                            })
+                                            
+                                            await removeCompanyAdmin(company.id, employeeIdToRemove)
+                                            
                                             // Reload admins
                                             const updatedAdmins = await getCompanyAdmins(company.id)
                                             setCompanyAdmins({ ...companyAdmins, [company.id]: updatedAdmins })
                                             alert('Admin removed successfully!')
                                           } catch (error: any) {
+                                            console.error('Error removing admin:', error)
                                             alert(`Error: ${error.message}`)
                                           }
                                         }
@@ -512,7 +792,7 @@ export default function SuperAdminPage() {
                                   </div>
                                 </div>
                               </div>
-                            ) : null
+                            )
                           })}
                         </div>
                       ) : (
@@ -524,7 +804,7 @@ export default function SuperAdminPage() {
                     {assigningAdminForCompany === company.id ? (
                       <div className="mb-3 p-3 bg-blue-50 rounded border border-blue-200">
                         <label className="block text-xs font-semibold text-gray-700 mb-2">
-                          Search Employee:
+                          Search Employee (e.g., "Amit" or "Patel"):
                         </label>
                         <div className="relative mb-2">
                           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -534,7 +814,7 @@ export default function SuperAdminPage() {
                             value={adminSearchTerm}
                             onChange={(e) => {
                               setAdminSearchTerm(e.target.value)
-                              setSelectedEmployeeIdForAdmin('')
+                              setSelectedEmployeeIdForAdmin('') // Clear selection when search changes
                             }}
                             className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                           />
@@ -556,17 +836,30 @@ export default function SuperAdminPage() {
                                 <div
                                   key={emp.id}
                                   onClick={() => {
-                                    setSelectedEmployeeIdForAdmin(emp.id)
+                                    // Use employee.id as primary, fallback to employee.employeeId
+                                    const employeeIdToSelect = emp.id || emp.employeeId
+                                    setSelectedEmployeeIdForAdmin(employeeIdToSelect)
                                     setAdminSearchTerm(`${emp.firstName} ${emp.lastName} (${emp.email})`)
+                                    console.log('Selected employee for admin:', {
+                                      id: emp.id,
+                                      employeeId: emp.employeeId,
+                                      name: `${emp.firstName} ${emp.lastName}`,
+                                      email: emp.email,
+                                      companyId: emp.companyId,
+                                      companyName: emp.companyName,
+                                      targetCompany: company.name,
+                                      selectedId: employeeIdToSelect,
+                                      belongsToCompany: emp.companyId === company.id || emp.companyName === company.name
+                                    })
                                   }}
                                   className={`px-3 py-2 cursor-pointer hover:bg-blue-100 transition-colors ${
-                                    selectedEmployeeIdForAdmin === emp.id ? 'bg-blue-200' : ''
+                                    selectedEmployeeIdForAdmin === (emp.id || emp.employeeId) ? 'bg-blue-200' : ''
                                   }`}
                                 >
                                   <p className="text-sm font-medium text-gray-900">
                                     {emp.firstName} {emp.lastName}
                                   </p>
-                                  <p className="text-xs font-mono text-blue-600 font-semibold">{emp.employeeId || 'N/A'}</p>
+                                  <p className="text-xs font-mono text-blue-600 font-semibold">{emp.employeeId || emp.id || 'N/A'}</p>
                                   <p className="text-xs text-gray-600">{emp.email}</p>
                                 </div>
                               ))}
@@ -585,19 +878,26 @@ export default function SuperAdminPage() {
                             )}
                           </div>
                         )}
-                        {selectedEmployeeIdForAdmin && (
-                          <div className="mb-2 p-2 bg-green-50 border border-green-200 rounded text-sm">
-                            <p className="font-semibold text-green-900">Selected:</p>
-                            <p className="text-green-700">
-                              {companyEmployees.find((e) => e.id === selectedEmployeeIdForAdmin)?.firstName}{' '}
-                              {companyEmployees.find((e) => e.id === selectedEmployeeIdForAdmin)?.lastName}
-                            </p>
-                            <p className="text-xs font-mono text-green-600 font-semibold mt-1">
-                              ID: {companyEmployees.find((e) => e.id === selectedEmployeeIdForAdmin)?.employeeId || 'N/A'}
-                            </p>
-                            <p className="text-xs text-green-600 mt-1">
-                              {companyEmployees.find((e) => e.id === selectedEmployeeIdForAdmin)?.email}
-                            </p>
+                        {selectedEmployeeIdForAdmin && (() => {
+                          const selectedEmployee = companyEmployees.find((e) => 
+                            e.id === selectedEmployeeIdForAdmin || 
+                            e.employeeId === selectedEmployeeIdForAdmin
+                          )
+                          return selectedEmployee ? (
+                            <div className="mb-2 p-2 bg-green-50 border border-green-200 rounded text-sm">
+                              <p className="font-semibold text-green-900">Selected:</p>
+                              <p className="text-green-700 font-medium">
+                                {selectedEmployee.firstName} {selectedEmployee.lastName}
+                              </p>
+                              <p className="text-xs font-mono text-green-600 font-semibold mt-1">
+                                Employee ID: {selectedEmployee.employeeId || selectedEmployee.id || 'N/A'}
+                              </p>
+                              <p className="text-xs text-green-600 mt-1">
+                                {selectedEmployee.email}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Internal ID: {selectedEmployee.id}
+                              </p>
                             <div className="mt-2">
                               <label className="flex items-center space-x-2 cursor-pointer">
                                 <input
@@ -611,8 +911,9 @@ export default function SuperAdminPage() {
                                 </span>
                               </label>
                             </div>
-                          </div>
-                        )}
+                            </div>
+                          ) : null
+                        })()}
                         <div className="flex space-x-2">
                           <button
                             onClick={async () => {
@@ -620,8 +921,58 @@ export default function SuperAdminPage() {
                                 alert('Please search and select an employee')
                                 return
                               }
+                              
+                              // Get the selected employee to verify
+                              const selectedEmployee = companyEmployees.find((e) => 
+                                e.id === selectedEmployeeIdForAdmin || 
+                                e.employeeId === selectedEmployeeIdForAdmin
+                              )
+                              
+                              if (!selectedEmployee) {
+                                alert('Selected employee not found. Please try again.')
+                                return
+                              }
+                              
+                              // Verify employee belongs to this company
+                              let empCompanyId: string | null = null
+                              if (selectedEmployee.companyId) {
+                                if (typeof selectedEmployee.companyId === 'object' && selectedEmployee.companyId !== null) {
+                                  empCompanyId = (selectedEmployee.companyId as any).id || (selectedEmployee.companyId as any).toString()
+                                } else {
+                                  empCompanyId = String(selectedEmployee.companyId)
+                                }
+                              }
+                              
+                              // Also check companyName as fallback
+                              if (empCompanyId !== company.id && selectedEmployee.companyName !== company.name) {
+                                // Try to find matching company by name
+                                const matchingCompany = companies.find(c => 
+                                  c.name === selectedEmployee.companyName || 
+                                  c.id === empCompanyId
+                                )
+                                if (!matchingCompany || matchingCompany.id !== company.id) {
+                                  alert(`Error: Employee ${selectedEmployee.firstName} ${selectedEmployee.lastName} (${selectedEmployee.employeeId}) does not belong to ${company.name}. They belong to ${selectedEmployee.companyName || 'unknown company'}.`)
+                                  return
+                                }
+                              }
+                              
+                              // Use employee.id as primary identifier
+                              const employeeIdToAdd = selectedEmployee.id || selectedEmployee.employeeId || selectedEmployeeIdForAdmin
+                              
+                              console.log('Adding admin:', {
+                                companyId: company.id,
+                                companyName: company.name,
+                                employeeIdToAdd: employeeIdToAdd,
+                                selectedEmployeeIdForAdmin: selectedEmployeeIdForAdmin,
+                                employeeName: `${selectedEmployee.firstName} ${selectedEmployee.lastName}`,
+                                employeeEmployeeId: selectedEmployee.employeeId,
+                                employeeCompanyId: empCompanyId,
+                                employeeCompanyName: selectedEmployee.companyName,
+                                verification: empCompanyId === company.id ? 'PASS' : 'FAIL'
+                              })
+                              
                               try {
-                                await addCompanyAdmin(company.id, selectedEmployeeIdForAdmin, canApproveOrders)
+                                await addCompanyAdmin(company.id, employeeIdToAdd, canApproveOrders)
                                 // Reload admins
                                 const updatedAdmins = await getCompanyAdmins(company.id)
                                 setCompanyAdmins({ ...companyAdmins, [company.id]: updatedAdmins })
@@ -629,8 +980,9 @@ export default function SuperAdminPage() {
                                 setSelectedEmployeeIdForAdmin('')
                                 setAdminSearchTerm('')
                                 setCanApproveOrders(false)
-                                alert('Admin added successfully!')
+                                alert(`Admin added successfully! ${selectedEmployee.firstName} ${selectedEmployee.lastName} is now an admin.`)
                               } catch (error: any) {
+                                console.error('Error adding admin:', error)
                                 alert(`Error: ${error.message}`)
                               }
                             }}
@@ -715,8 +1067,8 @@ export default function SuperAdminPage() {
                           {employee.employeeId || 'N/A'}
                         </span>
                       </td>
-                      <td className="py-3 px-4">{employee.firstName} {employee.lastName}</td>
-                      <td className="py-3 px-4">{employee.email}</td>
+                      <td className="py-3 px-4">{maskEmployeeData(employee).firstName} {maskEmployeeData(employee).lastName}</td>
+                      <td className="py-3 px-4">{maskEmail(employee.email)}</td>
                       <td className="py-3 px-4">{employee.companyName}</td>
                       <td className="py-3 px-4">
                         <span className={`px-2 py-1 rounded text-xs font-semibold ${
@@ -740,7 +1092,34 @@ export default function SuperAdminPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Manage Relationships</h2>
             
+            {/* Sub-tabs for relationships */}
+            <div className="mb-6 border-b border-gray-200">
+              <nav className="flex space-x-8">
+                <button
+                  onClick={() => setRelationshipSubTab('productToCompany')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    relationshipSubTab === 'productToCompany'
+                      ? 'border-primary-500 text-primary-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Product to Company
+                </button>
+                <button
+                  onClick={() => setRelationshipSubTab('productToVendor')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                    relationshipSubTab === 'productToVendor'
+                      ? 'border-primary-500 text-primary-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Product to Vendor
+                </button>
+              </nav>
+            </div>
+            
             {/* Link Product to Companies */}
+            {relationshipSubTab === 'productToCompany' && (
             <div className="mb-8 p-6 border border-gray-200 rounded-lg">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Link Product to Companies</h3>
               <div className="grid md:grid-cols-3 gap-4 mb-4">
@@ -798,9 +1177,91 @@ export default function SuperAdminPage() {
                 </div>
               </div>
               
+              {/* Display all companies linked to selected product */}
+              {selectedProductId && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">All Companies Linked to Selected Product</h4>
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    {(() => {
+                      const product = products.find(p => p.id === selectedProductId)
+                      const linkedCompanies = productCompanies
+                        .filter(pc => pc.productId === selectedProductId)
+                        .map(pc => {
+                          const company = companies.find(c => c.id === pc.companyId)
+                          return company
+                        })
+                        .filter(Boolean)
+                      
+                      return (
+                        <>
+                          <h5 className="font-semibold text-gray-900 mb-2">
+                            {product?.name || selectedProductId}
+                            {product?.sku && <span className="text-gray-600 font-normal ml-2">(SKU: {product.sku})</span>}
+                          </h5>
+                          {linkedCompanies.length === 0 ? (
+                            <p className="text-gray-500 text-sm">This product is not linked to any companies</p>
+                          ) : (
+                            <div className="space-y-1">
+                              {linkedCompanies.map((company, idx) => (
+                                <div key={idx} className="flex justify-between items-center bg-white p-2 rounded text-sm">
+                                  <span className="text-gray-700 font-medium">{company?.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )
+                    })()}
+                  </div>
+                </div>
+              )}
+
+              {/* Display all products linked to selected company */}
+              {selectedCompanyIds.length > 0 && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                    Products Linked to Selected {selectedCompanyIds.length === 1 ? 'Company' : 'Companies'}
+                  </h4>
+                  <div className="space-y-3">
+                    {selectedCompanyIds.map(companyId => {
+                      const company = companies.find(c => c.id === companyId)
+                      const linkedProducts = productCompanies
+                        .filter(pc => pc.companyId === companyId)
+                        .map(pc => {
+                          const product = products.find(p => p.id === pc.productId)
+                          return product
+                        })
+                        .filter(Boolean)
+                      
+                      return (
+                        <div key={companyId} className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                          <h5 className="font-semibold text-gray-900 mb-2">
+                            {company?.name || companyId}
+                          </h5>
+                          {linkedProducts.length === 0 ? (
+                            <p className="text-gray-500 text-sm">No products linked to this company</p>
+                          ) : (
+                            <div className="space-y-1">
+                              {linkedProducts.map((product, idx) => (
+                                <div key={idx} className="flex justify-between items-center bg-white p-2 rounded text-sm">
+                                  <span className="text-gray-700">
+                                    <span className="font-medium">{product?.name}</span>
+                                    {product?.sku && <span className="text-gray-500 ml-2">(SKU: {product.sku})</span>}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
               {/* Display existing Product-Company relationships */}
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Existing Product-Company Links</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">All Product-Company Links</h4>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {productCompanies.length === 0 ? (
                     <p className="text-gray-500 text-sm">No product-company links yet</p>
@@ -816,17 +1277,21 @@ export default function SuperAdminPage() {
                           </span>
                           <button
                             onClick={async () => {
+                              if (!confirm(`Are you sure you want to remove the link between "${product?.name || pc.productId}" and "${company?.name || pc.companyId}"?`)) {
+                                return
+                              }
                               try {
                                 await deleteProductCompany(pc.productId, pc.companyId)
                                 const updated = await getProductCompanies()
                                 setProductCompanies(updated)
                                 alert('Link removed successfully!')
-                              } catch (error) {
+                              } catch (error: any) {
                                 console.error('Error deleting relationship:', error)
-                                alert('Error removing link. Please try again.')
+                                alert(`Error removing link: ${error.message || 'Please try again.'}`)
                               }
                             }}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-600 hover:text-red-800 cursor-pointer transition-colors p-1 rounded hover:bg-red-50"
+                            title="Delete relationship"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -837,8 +1302,10 @@ export default function SuperAdminPage() {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Link Product to Vendor */}
+            {relationshipSubTab === 'productToVendor' && (
             <div className="mb-8 p-6 border border-gray-200 rounded-lg">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Link Product to Vendor</h3>
               <div className="grid md:grid-cols-3 gap-4 mb-4">
@@ -889,9 +1356,51 @@ export default function SuperAdminPage() {
                 </div>
               </div>
               
+              {/* Display all vendors selling selected product */}
+              {selectedProductId && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-3">All Vendors Selling Selected Product</h4>
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    {(() => {
+                      const product = products.find(p => p.id === selectedProductId)
+                      const linkedVendors = productVendors
+                        .filter(pv => pv.productId === selectedProductId)
+                        .map(pv => {
+                          const vendor = vendors.find(v => v.id === pv.vendorId)
+                          return vendor
+                        })
+                        .filter(Boolean)
+                      
+                      return (
+                        <>
+                          <h5 className="font-semibold text-gray-900 mb-2">
+                            {product?.name || selectedProductId}
+                            {product?.sku && <span className="text-gray-600 font-normal ml-2">(SKU: {product.sku})</span>}
+                          </h5>
+                          {linkedVendors.length === 0 ? (
+                            <p className="text-gray-500 text-sm">No vendors are selling this product</p>
+                          ) : (
+                            <div className="space-y-1">
+                              {linkedVendors.map((vendor, idx) => (
+                                <div key={idx} className="flex justify-between items-center bg-white p-2 rounded text-sm">
+                                  <span className="text-gray-700">
+                                    <span className="font-medium">{vendor?.name}</span>
+                                    {vendor?.email && <span className="text-gray-500 ml-2">({vendor.email})</span>}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      )
+                    })()}
+                  </div>
+                </div>
+              )}
+
               {/* Display existing Product-Vendor relationships */}
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Existing Product-Vendor Links</h4>
+                <h4 className="text-lg font-semibold text-gray-900 mb-3">All Product-Vendor Links</h4>
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   {productVendors.length === 0 ? (
                     <p className="text-gray-500 text-sm">No product-vendor links yet</p>
@@ -907,17 +1416,21 @@ export default function SuperAdminPage() {
                           </span>
                           <button
                             onClick={async () => {
+                              if (!confirm(`Are you sure you want to remove the link between "${product?.name || pv.productId}" and "${vendor?.name || pv.vendorId}"?`)) {
+                                return
+                              }
                               try {
                                 await deleteProductVendor(pv.productId, pv.vendorId)
                                 const updated = await getProductVendors()
                                 setProductVendors(updated)
                                 alert('Link removed successfully!')
-                              } catch (error) {
+                              } catch (error: any) {
                                 console.error('Error deleting relationship:', error)
-                                alert('Error removing link. Please try again.')
+                                alert(`Error removing link: ${error.message || 'Please try again.'}`)
                               }
                             }}
-                            className="text-red-600 hover:text-red-800"
+                            className="text-red-600 hover:text-red-800 cursor-pointer transition-colors p-1 rounded hover:bg-red-50"
+                            title="Delete relationship"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -928,6 +1441,8 @@ export default function SuperAdminPage() {
                 </div>
               </div>
             </div>
+            )}
+
 
           </div>
         )}

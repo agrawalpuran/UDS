@@ -38,11 +38,21 @@ async function connectDB(): Promise<typeof mongoose> {
     console.log('🔌 Attempting MongoDB connection...')
     console.log(`📍 URI: ${maskedUri}`)
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts)
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      ...opts,
+      // Disable strict populate to allow populating fields that may not be strictly defined
+    })
       .then((mongoose) => {
         console.log('✅ MongoDB Connected Successfully')
         if (mongoose.connection.db) {
           console.log(`📊 Database: ${mongoose.connection.db.databaseName}`)
+        }
+        // Ensure models are registered
+        if (!mongoose.models.Branch) {
+          require('../models/Branch')
+        }
+        if (!mongoose.models.DesignationProductEligibility) {
+          require('../models/DesignationProductEligibility')
         }
         return mongoose
       })

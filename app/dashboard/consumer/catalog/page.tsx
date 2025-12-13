@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
 import { Search, ShoppingCart, Plus, Minus, AlertCircle, Package, RefreshCw } from 'lucide-react'
-import { getProductsByCompany, getEmployeeByEmail, getConsumedEligibility, Uniform } from '@/lib/data-mongodb'
+import { getProductsByCompany, getEmployeeByEmail, getConsumedEligibility, getCompanyById, Uniform } from '@/lib/data-mongodb'
 import { getCurrentCycleDates, getNextCycleStartDate, formatCycleDate, getDaysRemainingInCycle } from '@/lib/utils/eligibility-cycles'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { maskEmail } from '@/lib/utils/data-masking'
 
 // Helper function to get Indigo Airlines-style uniform images
 // Using local images stored in public/images/uniforms/
@@ -74,6 +75,7 @@ export default function ConsumerCatalogPage() {
     shoe: number
     jacket: number
   }>({ shirt: 0, pant: 0, shoe: 0, jacket: 0 })
+  const [company, setCompany] = useState<any>(null)
   
   // Get current employee and load products - SINGLE useEffect to avoid race conditions
   useEffect(() => {
@@ -103,40 +105,69 @@ export default function ConsumerCatalogPage() {
         // Set employee first
         setCurrentEmployee(employee)
         
-        // Ensure companyId is a string (handle populated objects, ObjectIds, and strings)
+        // Ensure companyId is a string (handle populated objects, ObjectIds, numbers, and strings)
         let companyId: string | undefined
-        if (employee.companyId) {
-          if (typeof employee.companyId === 'object') {
-            // Populated object with id field
-            companyId = employee.companyId.id || employee.companyId._id?.toString()
-          } else {
-            // Already a string (ObjectId string or company id string)
-            companyId = employee.companyId.toString()
+        if (employee.companyId !== null && employee.companyId !== undefined) {
+          if (typeof employee.companyId === 'object' && employee.companyId !== null) {
+            // Populated object - check for id field first (company string ID like 'COMP-INDIGO')
+            if (employee.companyId.id) {
+              companyId = String(employee.companyId.id) // Convert to string
+            } else if (employee.companyId._id) {
+              // Only _id present - this shouldn't happen if populate worked, but handle it
+              companyId = employee.companyId._id.toString()
+            }
+          } else if (typeof employee.companyId === 'number') {
+            // companyId is a number (like 3) - convert to string
+            companyId = String(employee.companyId)
+            console.log('Consumer Catalog - companyId is number, converted to string:', companyId)
+          } else if (typeof employee.companyId === 'string') {
+            // Already a string - check if it's an ObjectId (24 hex chars) or company string ID
+            if (/^[0-9a-fA-F]{24}$/.test(employee.companyId)) {
+              // It's an ObjectId string - this shouldn't happen after our fixes, but handle it
+              console.warn('Consumer Catalog - companyId is ObjectId string, should be converted by backend')
+              companyId = employee.companyId // Will need to be looked up, but for now use as-is
+            } else {
+              // It's already a company string ID (like 'COMP-INDIGO' or numeric string like '3')
+              companyId = employee.companyId
+            }
           }
         }
         
         // Get employee ID for consumed eligibility
-        const employeeId = typeof employee.id === 'string' 
-          ? employee.id 
-          : employee._id?.toString() || employee.id
+        // Use employeeId field instead of id field
+        const employeeId = employee.employeeId || employee.id
         
         console.log('Consumer Catalog - Employee companyId raw:', employee.companyId)
+        console.log('Consumer Catalog - Employee companyId type:', typeof employee.companyId)
+        console.log('Consumer Catalog - Employee companyId isObject:', typeof employee.companyId === 'object')
         console.log('Consumer Catalog - Company ID extracted:', companyId, 'Company Name:', employee.companyName)
+        console.log('Consumer Catalog - Employee designation:', employee.designation)
+        console.log('Consumer Catalog - Full employee object keys:', Object.keys(employee))
         
+        // If companyId is still not found, employee is not properly linked to a company
+        // This should not happen - all employees must have a companyId
         if (!companyId) {
-          console.error('Consumer Catalog - No companyId found for employee:', employee.id)
+          console.error('Consumer Catalog - Employee has no companyId. Employee must be linked to a company using companyId.')
+          console.error('Consumer Catalog - Employee object:', JSON.stringify(employee, null, 2))
           setLoading(false)
           return
         }
         
-        // Load products and consumed eligibility in parallel
-        const [products, consumed] = await Promise.all([
-          getProductsByCompany(companyId),
-          getConsumedEligibility(employeeId)
+        // Get products filtered by company AND designation
+        // Employee designation should already be decrypted by Mongoose hooks
+        const employeeDesignation = employee.designation || ''
+        console.log('Consumer Catalog - Using designation for filtering:', employeeDesignation)
+        
+        // Load products (filtered by designation and gender), consumed eligibility, and company settings in parallel
+        const [products, consumed, companyData] = await Promise.all([
+          getProductsByCompany(companyId, employeeDesignation, employee.gender as 'male' | 'female'),
+          getConsumedEligibility(employeeId),
+          getCompanyById(companyId)
         ])
         
-        console.log('Consumer Catalog - Products loaded:', products.length, 'products')
+        console.log('Consumer Catalog - Products loaded:', products.length, 'products (filtered by designation:', employeeDesignation, ')')
         console.log('Consumer Catalog - Consumed eligibility:', consumed)
+        console.log('Consumer Catalog - Company settings:', companyData ? { showPrices: companyData.showPrices, allowPersonalPayments: companyData.allowPersonalPayments } : 'not loaded')
         if (products.length > 0) {
           console.log('Consumer Catalog - Product names:', products.map(p => p.name).join(', '))
         }
@@ -144,6 +175,7 @@ export default function ConsumerCatalogPage() {
         // Always set uniforms, even if empty
         setUniforms(products)
         setConsumedEligibility(consumed)
+        setCompany(companyData)
         
         if (products.length === 0) {
           console.warn('Consumer Catalog - ⚠️ No products found for company:', employee.companyId)
@@ -182,11 +214,19 @@ export default function ConsumerCatalogPage() {
     if (!currentEmployee) return
     
     const reloadProducts = async () => {
-      const companyId = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
-        ? currentEmployee.companyId.id 
-        : currentEmployee.companyId
+      // Handle companyId extraction - support object, number, and string
+      let companyId: string | undefined
+      if (currentEmployee.companyId !== null && currentEmployee.companyId !== undefined) {
+        if (typeof currentEmployee.companyId === 'object' && currentEmployee.companyId !== null) {
+          companyId = currentEmployee.companyId.id ? String(currentEmployee.companyId.id) : undefined
+        } else if (typeof currentEmployee.companyId === 'number') {
+          companyId = String(currentEmployee.companyId)
+        } else if (typeof currentEmployee.companyId === 'string') {
+          companyId = currentEmployee.companyId
+        }
+      }
       console.log('Consumer Catalog - Employee changed, reloading products for:', companyId)
-      const products = await getProductsByCompany(companyId)
+      const products = await getProductsByCompany(companyId, currentEmployee?.designation, currentEmployee?.gender as 'male' | 'female')
       console.log('Consumer Catalog - Reloaded products:', products.length)
       setUniforms(products)
     }
@@ -296,11 +336,24 @@ export default function ConsumerCatalogPage() {
     // Prevent negative quantities
     if (newQuantity < 0) return
     
-    // Strict check: total should never exceed eligibility
+    // Check eligibility limit - allow exceeding if personal payments are enabled
     if (totalAfterChange > eligibility) {
-      const remaining = Math.max(0, eligibility - otherItemsQuantity)
-      alert(`You can only order up to ${eligibility} ${uniform.category}(s) total. You have already selected ${otherItemsQuantity} other ${uniform.category}(s). Maximum allowed for this item: ${remaining}.`)
-      return
+      console.log('Catalog - Eligibility exceeded:', {
+        category: uniform.category,
+        totalAfterChange,
+        eligibility,
+        allowPersonalPayments: company?.allowPersonalPayments,
+        company: company ? 'loaded' : 'not loaded'
+      })
+      
+      if (!company?.allowPersonalPayments) {
+        const remaining = Math.max(0, eligibility - otherItemsQuantity)
+        alert(`You can only order up to ${eligibility} ${uniform.category}(s) total. You have already selected ${otherItemsQuantity} other ${uniform.category}(s). Maximum allowed for this item: ${remaining}.\n\nPersonal payment orders are not enabled for your company.`)
+        return
+      }
+      // Personal payments are enabled - allow adding beyond eligibility
+      // The personal payment amount will be calculated on the review page
+      console.log('Catalog - Allowing addition beyond eligibility (personal payment enabled)')
     }
 
     if (newQuantity === 0) {
@@ -332,7 +385,7 @@ export default function ConsumerCatalogPage() {
       return
     }
     
-    // Validate eligibility before checkout
+    // Calculate category totals
     const categoryTotals: Record<string, number> = {}
     Object.entries(cart).forEach(([uniformId, item]) => {
       const uniform = uniforms.find(u => u.id === uniformId)
@@ -341,13 +394,25 @@ export default function ConsumerCatalogPage() {
       }
     })
     
-    // Check each category doesn't exceed eligibility
+    // Check if any category exceeds eligibility
+    const exceededCategories: Array<{ category: string; requested: number; eligible: number }> = []
     for (const [category, total] of Object.entries(categoryTotals)) {
       const eligibility = getEligibilityForCategory(category)
       if (total > eligibility) {
-        alert(`Error: Your cart contains ${total} ${category}(s), but you are only eligible for ${eligibility}. Please adjust your order.`)
+        exceededCategories.push({ category, requested: total, eligible: eligibility })
+      }
+    }
+    
+    // If eligibility is exceeded, check if personal payments are allowed
+    if (exceededCategories.length > 0) {
+      if (!company?.allowPersonalPayments) {
+        const errorMsg = exceededCategories.map(
+          e => `${e.category}: ${e.requested} requested, ${e.eligible} eligible`
+        ).join('\n')
+        alert(`Error: Your cart exceeds eligibility limits:\n${errorMsg}\n\nPersonal payment orders are not enabled for your company. Please adjust your order.`)
         return
       }
+      // Personal payments are allowed - proceed to review page where personal payment will be calculated
     }
     
     // Navigate to order confirmation
@@ -358,7 +423,8 @@ export default function ConsumerCatalogPage() {
           uniformId,
           uniformName: uniform?.name || '',
           size: item.size,
-          quantity: item.quantity
+          quantity: item.quantity,
+          price: uniform?.price || 0
         }
       })
     }
@@ -391,7 +457,7 @@ export default function ConsumerCatalogPage() {
                     ? currentEmployee.companyId.id 
                     : currentEmployee.companyId
                   console.log('Manual refresh triggered - Company ID:', companyId)
-                  const products = await getProductsByCompany(companyId)
+                  const products = await getProductsByCompany(companyId, currentEmployee?.designation || '', currentEmployee?.gender as 'male' | 'female')
                   console.log('Manual refresh - Products loaded:', products.length, products.map(p => p.name))
                   setUniforms(products)
                   if (products.length > 0) {
@@ -419,7 +485,7 @@ export default function ConsumerCatalogPage() {
                     const companyId = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
                       ? currentEmployee.companyId.id 
                       : currentEmployee.companyId
-                    const products = await getProductsByCompany(companyId)
+                    const products = await getProductsByCompany(companyId, currentEmployee?.designation || '', currentEmployee?.gender as 'male' | 'female')
                     setUniforms(products)
                     alert(`Cleared localStorage. Found ${products.length} products (using MongoDB now).`)
                   }
@@ -433,7 +499,8 @@ export default function ConsumerCatalogPage() {
             {getCartTotalItems() > 0 && (
               <button
                 onClick={handleCheckout}
-                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-md"
+                style={{ backgroundColor: company?.primaryColor || '#f76b1c' }}
+                className="text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center space-x-2 shadow-md"
               >
                 <ShoppingCart className="h-5 w-5" />
                 <span>Checkout ({getCartTotalItems()} items)</span>
@@ -511,8 +578,14 @@ export default function ConsumerCatalogPage() {
           return (
             <div className="glass rounded-2xl shadow-modern-lg border border-slate-200/50 p-6 mb-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/30">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="p-2 bg-blue-100 rounded-xl">
-                  <AlertCircle className="h-5 w-5 text-blue-600" />
+                <div 
+                  className="p-2 rounded-xl"
+                  style={{ backgroundColor: company?.primaryColor ? `${company.primaryColor}20` : 'rgba(247, 107, 28, 0.2)' }}
+                >
+                  <AlertCircle 
+                    className="h-5 w-5" 
+                    style={{ color: company?.primaryColor || '#f76b1c' }}
+                  />
                 </div>
                 <h3 className="font-bold text-slate-900 text-lg">Your Eligibility</h3>
               </div>
@@ -546,7 +619,12 @@ export default function ConsumerCatalogPage() {
                           {shirtCycle.daysRemaining > 0 ? (
                             <span className="text-green-400 font-semibold">{shirtCycle.daysRemaining} days remaining</span>
                           ) : (
-                            <span className="text-orange-400 font-semibold">Cycle expired - Reset pending</span>
+                            <span 
+                              className="font-semibold"
+                              style={{ color: company?.primaryColor || '#f76b1c' }}
+                            >
+                              Cycle expired - Reset pending
+                            </span>
                           )}
                         </div>
                       </div>
@@ -582,7 +660,12 @@ export default function ConsumerCatalogPage() {
                           {pantCycle.daysRemaining > 0 ? (
                             <span className="text-green-400 font-semibold">{pantCycle.daysRemaining} days remaining</span>
                           ) : (
-                            <span className="text-orange-400 font-semibold">Cycle expired - Reset pending</span>
+                            <span 
+                              className="font-semibold"
+                              style={{ color: company?.primaryColor || '#f76b1c' }}
+                            >
+                              Cycle expired - Reset pending
+                            </span>
                           )}
                         </div>
                       </div>
@@ -618,7 +701,12 @@ export default function ConsumerCatalogPage() {
                           {shoeCycle.daysRemaining > 0 ? (
                             <span className="text-green-400 font-semibold">{shoeCycle.daysRemaining} days remaining</span>
                           ) : (
-                            <span className="text-orange-400 font-semibold">Cycle expired - Reset pending</span>
+                            <span 
+                              className="font-semibold"
+                              style={{ color: company?.primaryColor || '#f76b1c' }}
+                            >
+                              Cycle expired - Reset pending
+                            </span>
                           )}
                         </div>
                       </div>
@@ -654,7 +742,12 @@ export default function ConsumerCatalogPage() {
                           {jacketCycle.daysRemaining > 0 ? (
                             <span className="text-green-400 font-semibold">{jacketCycle.daysRemaining} days remaining</span>
                           ) : (
-                            <span className="text-orange-400 font-semibold">Cycle expired - Reset pending</span>
+                            <span 
+                              className="font-semibold"
+                              style={{ color: company?.primaryColor || '#f76b1c' }}
+                            >
+                              Cycle expired - Reset pending
+                            </span>
                           )}
                         </div>
                       </div>
@@ -682,7 +775,7 @@ export default function ConsumerCatalogPage() {
                 <div className="text-xs text-yellow-800 space-y-1">
                   <p>Company ID: <strong>{currentEmployee.companyId}</strong></p>
                   <p>Company Name: <strong>{currentEmployee.companyName}</strong></p>
-                  <p>Employee Email: <strong>{currentEmployee.email}</strong></p>
+                  <p>Employee Email: <strong>{maskEmail(currentEmployee.email)}</strong></p>
                   <p>Total Products Loaded: <strong>{uniforms.length}</strong></p>
                   <p className="mt-2">Check browser console (F12) for detailed logs.</p>
                   <button
@@ -695,7 +788,7 @@ export default function ConsumerCatalogPage() {
                       const companyId = typeof currentEmployee.companyId === 'object' && currentEmployee.companyId?.id 
                         ? currentEmployee.companyId.id 
                         : currentEmployee.companyId
-                      const products = await getProductsByCompany(companyId)
+                      const products = await getProductsByCompany(companyId, currentEmployee?.designation || '', currentEmployee?.gender as 'male' | 'female')
                       console.log('Products after manual call:', products)
                       setUniforms(products)
                       if (products.length > 0) {
@@ -712,9 +805,20 @@ export default function ConsumerCatalogPage() {
               </div>
             )}
             {uniforms.length > 0 && filteredUniforms.length === 0 && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg text-left max-w-md mx-auto">
-                <p className="text-sm font-semibold text-blue-900 mb-2">Products Available But Filtered</p>
-                <div className="text-xs text-blue-800 space-y-1">
+              <div 
+                className="mt-4 p-4 rounded-lg text-left max-w-md mx-auto border"
+                style={{ 
+                  backgroundColor: company?.primaryColor ? `${company.primaryColor}10` : 'rgba(247, 107, 28, 0.1)',
+                  borderColor: company?.primaryColor ? `${company.primaryColor}40` : 'rgba(247, 107, 28, 0.4)'
+                }}
+              >
+                <p 
+                  className="text-sm font-semibold mb-2"
+                  style={{ color: company?.primaryColor || '#f76b1c' }}
+                >
+                  Products Available But Filtered
+                </p>
+                <div className="text-xs text-[#dc5514] space-y-1">
                   <p>Total Products: <strong>{uniforms.length}</strong></p>
                   <p>Current Gender Filter: <strong>{filterGender}</strong></p>
                   <p>Current Category Filter: <strong>{filterCategory}</strong></p>
@@ -736,7 +840,10 @@ export default function ConsumerCatalogPage() {
             const totalForCategory = getTotalQuantityForCategory(uniform.category)
             const otherItemsQuantity = totalForCategory - currentQuantity
             const maxAllowed = Math.max(0, eligibility - otherItemsQuantity)
-            const canAddMore = currentQuantity < maxAllowed && totalForCategory < eligibility
+            // Allow adding more if personal payments are enabled, otherwise restrict to eligibility
+            const canAddMore = company?.allowPersonalPayments 
+              ? true // No limit when personal payments are enabled
+              : (currentQuantity < maxAllowed && totalForCategory < eligibility)
 
             return (
               <div key={uniform.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
@@ -797,14 +904,22 @@ export default function ConsumerCatalogPage() {
                         <Plus className="h-4 w-4" />
                       </button>
                     </div>
-                    {!canAddMore && currentQuantity > 0 && (
+                    {!canAddMore && currentQuantity > 0 && !company?.allowPersonalPayments && (
                       <p className="text-xs text-red-600 mt-1">
                         Maximum {maxAllowed} allowed for {uniform.category}
                       </p>
                     )}
                     {currentQuantity === 0 && (
                       <p className="text-xs text-gray-500 mt-1">
-                        You can order up to {eligibility} {uniform.category}(s)
+                        {company?.allowPersonalPayments 
+                          ? `You can order ${eligibility} ${uniform.category}(s) under eligibility. Additional items can be purchased with personal payment.`
+                          : `You can order up to ${eligibility} ${uniform.category}(s)`
+                        }
+                      </p>
+                    )}
+                    {company?.allowPersonalPayments && totalForCategory >= eligibility && currentQuantity > 0 && (
+                      <p className="text-xs text-yellow-600 mt-1">
+                        ⚠️ Items beyond eligibility will require personal payment
                       </p>
                     )}
                   </div>

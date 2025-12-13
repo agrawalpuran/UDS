@@ -26,6 +26,7 @@
     "backup-db": "node scripts/backup-database.js",
     "backup-full": "powershell -ExecutionPolicy Bypass -File scripts/create-full-backup.ps1",
     "backup-today": "powershell -ExecutionPolicy Bypass -File scripts/create-backup-with-date.ps1",
+    "backup-complete": "powershell -ExecutionPolicy Bypass -File scripts/create-complete-backup-today.ps1",
     "backup-code": "powershell -ExecutionPolicy Bypass -File scripts/create-code-backup.ps1",
     "restore-db": "node scripts/restore-database.js",
     "migrate-to-atlas": "node scripts/migrate-to-atlas.js",
@@ -33,7 +34,11 @@
     "push-github": "powershell -ExecutionPolicy Bypass -File push-to-github.ps1",
     "verify-deployment": "node scripts/verify-vercel-deployment.js",
     "auto-fix-deployment": "node scripts/auto-fix-deployment.js",
-    "check-vercel-env": "node scripts/check-vercel-env.js"
+    "check-vercel-env": "node scripts/check-vercel-env.js",
+    "create-presentation": "node scripts/create-presentation.js",
+    "add-icici-bank": "node scripts/add-icici-bank-company.js",
+    "add-icici-employees": "node scripts/add-icici-bank-employees.js",
+    "setup-icici-branches": "node scripts/setup-icici-branches-and-employees.js"
   },
   "dependencies": {
     "lucide-react": "^0.553.0",
@@ -48,7 +53,9 @@
     "@types/react": "^19.2.4",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.16",
+    "baseline-browser-mapping": "^2.9.7",
     "postcss": "^8.4.31",
+    "pptxgenjs": "^4.0.1",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2"
   }

@@ -6,16 +6,18 @@
 
 :root {
   --foreground-rgb: 15, 23, 42;
-  --background-start-rgb: 248, 250, 252;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 248, 250, 252;
   
-  /* Modern color palette */
-  --primary: 99, 102, 241;
-  --primary-dark: 79, 70, 229;
-  --accent: 139, 92, 246;
+  /* ICICI Bank color palette - Orange theme */
+  --primary: 247, 107, 28; /* ICICI Orange #f76b1c */
+  --primary-dark: 220, 85, 20; /* Darker orange */
+  --primary-light: 255, 130, 60; /* Lighter orange */
+  --accent: 220, 38, 38; /* Accent red */
+  --accent-blue: 0, 61, 130; /* ICICI Blue for accents */
   --success: 34, 197, 94;
   --warning: 251, 191, 36;
-  --error: 239, 68, 68;
+  --error: 220, 38, 38;
 }
 
 body {
@@ -60,17 +62,17 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.08);
   }
   
-  /* Gradient backgrounds */
+  /* Gradient backgrounds - ICICI Bank Orange theme */
   .gradient-primary {
-    background: linear-gradient(135deg, rgb(99, 102, 241) 0%, rgb(139, 92, 246) 100%);
+    background: linear-gradient(135deg, rgb(247, 107, 28) 0%, rgb(255, 130, 60) 100%);
   }
   
-  .gradient-purple {
-    background: linear-gradient(135deg, rgb(139, 92, 246) 0%, rgb(168, 85, 247) 100%);
+  .gradient-orange {
+    background: linear-gradient(135deg, rgb(247, 107, 28) 0%, rgb(255, 150, 80) 100%);
   }
   
-  .gradient-green {
-    background: linear-gradient(135deg, rgb(34, 197, 94) 0%, rgb(59, 130, 246) 100%);
+  .gradient-orange-dark {
+    background: linear-gradient(135deg, rgb(220, 85, 20) 0%, rgb(247, 107, 28) 100%);
   }
   
   /* Smooth transitions */

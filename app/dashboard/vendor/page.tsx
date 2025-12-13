@@ -3,8 +3,9 @@
 import DashboardLayout from '@/components/DashboardLayout'
 import { Package, ShoppingCart, TrendingUp, AlertCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { getAllProducts, getAllOrders, getProductsByVendor } from '@/lib/data-mongodb'
+import { getAllProducts, getAllOrders, getProductsByVendor, getOrdersByVendor } from '@/lib/data-mongodb'
 import Link from 'next/link'
+import { maskEmployeeName } from '@/lib/utils/data-masking'
 
 export default function VendorDashboard() {
   const [vendorId, setVendorId] = useState<string>('')
@@ -28,8 +29,15 @@ export default function VendorDashboard() {
           setProducts(allProducts)
         }
         
-        const allOrders = await getAllOrders()
-        setOrders(allOrders)
+        // Load orders for this vendor only
+        if (storedVendorId) {
+          const vendorOrders = await getOrdersByVendor(storedVendorId)
+          setOrders(vendorOrders)
+        } else {
+          // Fallback: get all orders if no vendor ID
+          const allOrders = await getAllOrders()
+          setOrders(allOrders)
+        }
       } catch (error) {
         console.error('Error loading vendor data:', error)
       } finally {
@@ -60,16 +68,16 @@ export default function VendorDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => {
             const Icon = stat.icon
-            const getColorClasses = (color: string) => {
+            const getColorClasses = (color: string | undefined) => {
               const colors: Record<string, { bg: string; text: string }> = {
                 blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
                 orange: { bg: 'bg-orange-100', text: 'text-orange-600' },
                 red: { bg: 'bg-red-100', text: 'text-red-600' },
                 green: { bg: 'bg-green-100', text: 'text-green-600' },
               }
-              return colors[color] || colors.blue
+              return colors[color || 'blue'] || colors.blue
             }
-            const colorClasses = getColorClasses(stat.color)
+            const colorClasses = getColorClasses(stat.color) || { bg: 'bg-blue-100', text: 'text-blue-600' }
             
             // Determine if card is clickable and get link
             let isClickable = false
@@ -196,7 +204,7 @@ export default function VendorDashboard() {
                       {ordersList.map((order: any, idx: number) => (
                         <div key={idx} className="text-xs">
                           <div className="font-semibold text-white mb-1">Order #{order.id}</div>
-                          <div className="text-gray-300">Employee: {order.employeeName}</div>
+                          <div className="text-gray-300">Employee: {maskEmployeeName(order.employeeName || 'N/A')}</div>
                           <div className="text-gray-300">Items: {order.itemsCount}</div>
                           <div className="text-gray-300">Amount: ₹{order.total.toFixed(2)}</div>
                           <div className="text-gray-400">Date: {order.date}</div>
@@ -331,7 +339,7 @@ export default function VendorDashboard() {
                   orders.slice(0, 5).map((order) => (
                     <tr key={order.id} className="border-b hover:bg-gray-50">
                       <td className="py-3 px-4 text-gray-900 font-medium">{order.id}</td>
-                      <td className="py-3 px-4 text-gray-600">{order.employeeName}</td>
+                      <td className="py-3 px-4 text-gray-600">{maskEmployeeName(order.employeeName || 'N/A')}</td>
                       <td className="py-3 px-4 text-gray-600">{order.items?.length || 0} items</td>
                       <td className="py-3 px-4 text-gray-900 font-semibold">₹{order.total?.toFixed(2) || '0.00'}</td>
                       <td className="py-3 px-4">
