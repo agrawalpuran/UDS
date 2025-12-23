@@ -3666,9 +3666,8 @@ export async function getEmployeeByEmail(email: string): Promise<any | null> {
       console.log(`[getEmployeeByEmail] Raw employee companyId:`, rawEmployee.companyId, 'Type:', typeof rawEmployee.companyId)
       
       // Now fetch with Mongoose to get populated fields and decryption
-      // Use the email from rawEmployee (could be encrypted or plain text)
-      const emailToSearch = rawEmployee.email
-      employee = await Employee.findOne({ email: emailToSearch })
+      // Use _id instead of email to ensure we get the correct employee (email might be encrypted differently)
+      employee = await Employee.findById(rawEmployee._id)
         .populate('companyId', 'id name')
         .populate('locationId', 'id name address city state pincode')
         .lean()
@@ -3884,6 +3883,27 @@ export async function getEmployeeByEmail(email: string): Promise<any | null> {
         if (companyDoc && companyDoc.id) {
           employee.companyId = companyDoc.id
           console.log(`[getEmployeeByEmail] Pre-converted companyId from ObjectId string: ${companyDoc.id}`)
+        }
+      }
+    }
+  }
+  
+  // CRITICAL: Since we use .lean(), Mongoose post hooks don't run, so we must manually decrypt
+  // Decrypt email and other sensitive fields if they're still encrypted
+  if (employee) {
+    const { decrypt } = require('../utils/encryption')
+    const sensitiveFields = ['email', 'mobile', 'address', 'firstName', 'lastName', 'designation']
+    for (const field of sensitiveFields) {
+      if (employee[field] && typeof employee[field] === 'string' && employee[field].includes(':')) {
+        try {
+          const decrypted = decrypt(employee[field])
+          // Only use decrypted value if decryption succeeded (different from original and reasonable length)
+          if (decrypted !== employee[field] && !decrypted.includes(':') && decrypted.length < 200) {
+            employee[field] = decrypted
+          }
+        } catch (error) {
+          // Keep original if decryption fails
+          console.warn(`[getEmployeeByEmail] Failed to decrypt ${field}:`, error)
         }
       }
     }
