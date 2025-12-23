@@ -1,0 +1,290 @@
+[
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e53",
+    "id": "200005",
+    "name": "Leather Dress Shoes - Male",
+    "category": "shoe",
+    "gender": "male",
+    "sizes": [
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "price": 1299,
+    "image": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400",
+    "sku": "SHOE-M-001",
+    "stock": 100,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b",
+      "6929b9d9a2fdaf5e8d099e3c"
+    ],
+    "createdAt": "2025-11-13T07:49:45.704Z",
+    "updatedAt": "2025-12-16T08:31:33.206Z",
+    "__v": 0,
+    "attribute1_name": "Type",
+    "attribute1_value": "Leather"
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e55",
+    "id": "200007",
+    "name": "Blazer - Male",
+    "category": "jacket",
+    "gender": "male",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "price": 1499,
+    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400",
+    "sku": "JACKET-M-001",
+    "stock": 80,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a"
+    ],
+    "createdAt": "2025-11-13T07:49:45.714Z",
+    "updatedAt": "2025-11-15T14:09:52.585Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e57",
+    "id": "200009",
+    "name": "Formal Trouser - Female",
+    "category": "pant",
+    "gender": "female",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34",
+      "36"
+    ],
+    "price": 2000,
+    "image": "/images/uniforms/pant-female.jpg",
+    "sku": "PANT-F-002",
+    "stock": 150,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a"
+    ],
+    "createdAt": "2025-11-28T13:51:34.124Z",
+    "updatedAt": "2025-11-28T13:51:34.124Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e58",
+    "id": "200010",
+    "name": "Blazer - Female",
+    "category": "jacket",
+    "gender": "female",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "price": 4000,
+    "image": "/images/uniforms/jacket-female.jpg",
+    "sku": "JACKET-F-002",
+    "stock": 100,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a"
+    ],
+    "createdAt": "2025-11-28T13:51:34.152Z",
+    "updatedAt": "2025-11-28T13:51:34.152Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e50",
+    "id": "200002",
+    "name": "Formal Shirt - Female",
+    "category": "shirt",
+    "gender": "female",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "price": 499,
+    "image": "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400",
+    "sku": "SHIRT-F-001",
+    "stock": 120,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b"
+    ],
+    "createdAt": "2025-11-13T07:49:45.691Z",
+    "updatedAt": "2025-11-15T14:09:52.553Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e54",
+    "id": "200006",
+    "name": "Formal Heels - Female",
+    "category": "shoe",
+    "gender": "female",
+    "sizes": [
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "price": 1299,
+    "image": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400",
+    "sku": "SHOE-F-001",
+    "stock": 90,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b",
+      "6929b9d9a2fdaf5e8d099e3c"
+    ],
+    "createdAt": "2025-11-13T07:49:45.709Z",
+    "updatedAt": "2025-11-15T14:09:52.580Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e52",
+    "id": "200004",
+    "name": "Formal Trousers - Female",
+    "category": "pant",
+    "gender": "female",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "price": 699,
+    "image": "https://images.unsplash.com/photo-1542272604-787c3835535d?w=400",
+    "sku": "PANT-F-001",
+    "stock": 180,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b"
+    ],
+    "createdAt": "2025-11-13T07:49:45.700Z",
+    "updatedAt": "2025-11-15T14:09:52.567Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e56",
+    "id": "200008",
+    "name": "Blazer - Female",
+    "category": "jacket",
+    "gender": "female",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "price": 1499,
+    "image": "https://images.unsplash.com/photo-1591047139829-91fce775fc99?w=400",
+    "sku": "JACKET-F-001",
+    "stock": 75,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a"
+    ],
+    "createdAt": "2025-11-13T07:49:45.717Z",
+    "updatedAt": "2025-11-15T14:09:52.590Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e59",
+    "id": "200011",
+    "name": "Shoes - Female",
+    "category": "shoe",
+    "gender": "female",
+    "sizes": [
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "price": 3000,
+    "image": "http://localhost:3001/images/uniforms/shoe-female.jpg",
+    "sku": "SHOE-F-002",
+    "stock": 120,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a"
+    ],
+    "createdAt": "2025-11-28T13:51:34.165Z",
+    "updatedAt": "2025-12-16T07:40:57.679Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e4f",
+    "id": "200001",
+    "name": "Formal Shirt - Male",
+    "category": "shirt",
+    "gender": "male",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "price": 499,
+    "image": "https://localhost/public/images/uniforms/shirt-male.jpg",
+    "sku": "SHIRT-M-001",
+    "stock": 150,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b"
+    ],
+    "createdAt": "2025-11-13T07:49:45.686Z",
+    "updatedAt": "2025-12-16T11:51:59.222Z",
+    "__v": 0,
+    "attribute1_name": "GSM",
+    "attribute1_value": "200",
+    "attribute2_name": "Fabric",
+    "attribute2_value": "Cotton"
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e51",
+    "id": "200003",
+    "name": "Formal Trousers - Male",
+    "category": "pant",
+    "gender": "male",
+    "sizes": [
+      "28",
+      "30",
+      "32",
+      "34",
+      "36",
+      "38"
+    ],
+    "price": 699,
+    "image": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400",
+    "sku": "PANT-M-001",
+    "stock": 200,
+    "companyIds": [
+      "6929b9d9a2fdaf5e8d099e3a",
+      "6929b9d9a2fdaf5e8d099e3b"
+    ],
+    "createdAt": "2025-11-13T07:49:45.696Z",
+    "updatedAt": "2025-12-16T08:30:57.453Z",
+    "__v": 0,
+    "attribute1_name": "GSM",
+    "attribute1_value": "350",
+    "attribute2_name": "Fabric",
+    "attribute2_value": "Cotton",
+    "attribute3_name": "Style",
+    "attribute3_value": "Formal"
+  }
+]

@@ -1,0 +1,3949 @@
+{
+  "database": "uniform-distribution",
+  "timestamp": "2025-12-17T16:36:32.542Z",
+  "collections": {
+    "productcompanies": {
+      "documents": [
+        {
+          "_id": "69427700a060f4176e0f05c2",
+          "companyId": "693d8ce66a37697609a911b5",
+          "productId": "6942765b1cab48e899e8bfc5",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:20.421Z",
+          "updatedAt": "2025-12-17T09:25:20.421Z"
+        },
+        {
+          "_id": "69427700a060f4176e0f05c3",
+          "productId": "6942765b1cab48e899e8bfc9",
+          "companyId": "693d8ce66a37697609a911b5",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:20.495Z",
+          "updatedAt": "2025-12-17T09:25:20.495Z"
+        },
+        {
+          "_id": "69427700a060f4176e0f05c4",
+          "companyId": "693d8ce66a37697609a911b5",
+          "productId": "6942765c1cab48e899e8bfd1",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:20.567Z",
+          "updatedAt": "2025-12-17T09:25:20.567Z"
+        },
+        {
+          "_id": "69427700a060f4176e0f05c5",
+          "companyId": "693d8ce66a37697609a911b5",
+          "productId": "6942765c1cab48e899e8bfd5",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:20.632Z",
+          "updatedAt": "2025-12-17T09:27:22.554Z"
+        },
+        {
+          "_id": "6942771ea060f4176e0f05c6",
+          "productId": "6942765c1cab48e899e8bfdd",
+          "companyId": "693d8ce66a37697609a911b5",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:50.317Z",
+          "updatedAt": "2025-12-17T09:25:50.317Z"
+        },
+        {
+          "_id": "6942771ea060f4176e0f05c7",
+          "companyId": "693d8ce66a37697609a911b5",
+          "productId": "6942765c1cab48e899e8bfe9",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:25:50.382Z",
+          "updatedAt": "2025-12-17T09:25:50.382Z"
+        },
+        {
+          "_id": "69427740a060f4176e0f05cc",
+          "productId": "6942765c1cab48e899e8bfe1",
+          "companyId": "693d8ce66a37697609a911b5",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:26:24.147Z",
+          "updatedAt": "2025-12-17T09:26:24.147Z"
+        },
+        {
+          "_id": "6942777aa060f4176e0f05d3",
+          "companyId": "693d8ce66a37697609a911b5",
+          "productId": "6942765b1cab48e899e8bfcd",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:27:22.478Z",
+          "updatedAt": "2025-12-17T09:27:22.478Z"
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "productId": 1
+          },
+          "name": "productId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "productId": 1,
+            "companyId": 1
+          },
+          "name": "productId_1_companyId_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 8
+    },
+    "uniforms": {
+      "documents": [
+        {
+          "_id": "6942765b1cab48e899e8bfc5",
+          "id": "200001",
+          "name": "Oxford Shirt - Male",
+          "category": "shirt",
+          "gender": "male",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+          ],
+          "price": 1399,
+          "image": "/images/uniforms/shirt-male-oxford.jpg",
+          "sku": "SHIRT-M-O-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 360,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Cotton",
+          "attribute3_name": "Style",
+          "attribute3_value": "Classic Fit",
+          "createdAt": "2025-12-17T09:22:35.680Z",
+          "updatedAt": "2025-12-17T09:22:35.680Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765b1cab48e899e8bfc9",
+          "id": "200002",
+          "name": "Denim Shirt - Male",
+          "category": "shirt",
+          "gender": "male",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ],
+          "price": 1099,
+          "image": "/images/products/shirt-male-denim.jpg",
+          "sku": "SHIRT-M-D-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 320,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Denim",
+          "attribute3_name": "Style",
+          "attribute3_value": "Regular Fit",
+          "createdAt": "2025-12-17T09:22:35.809Z",
+          "updatedAt": "2025-12-17T09:22:35.809Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765b1cab48e899e8bfcd",
+          "id": "200003",
+          "name": "Formal Kurta- Female",
+          "category": "shirt",
+          "gender": "female",
+          "sizes": [
+            "XS",
+            "S",
+            "M",
+            "L",
+            "XL"
+          ],
+          "price": 1299,
+          "image": "/images/products/formal-female-kurta.jpg",
+          "sku": "SHIRT-F-K-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 280,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Cotton",
+          "attribute3_name": "Style",
+          "attribute3_value": "A-Line",
+          "createdAt": "2025-12-17T09:22:35.907Z",
+          "updatedAt": "2025-12-17T09:22:35.907Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfd1",
+          "id": "200004",
+          "name": "Cargo Pants - Male",
+          "category": "pant",
+          "gender": "male",
+          "sizes": [
+            "28",
+            "30",
+            "32",
+            "34",
+            "36",
+            "38"
+          ],
+          "price": 1999,
+          "image": "/images/products/pant-male-cargo.jpg",
+          "sku": "PANT-M-CG-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 300,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Cotton Twill",
+          "attribute3_name": "Style",
+          "attribute3_value": "Relaxed Fit",
+          "createdAt": "2025-12-17T09:22:36.016Z",
+          "updatedAt": "2025-12-17T09:22:36.016Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfd5",
+          "id": "200005",
+          "name": "Formal Pants - Female",
+          "category": "pant",
+          "gender": "female",
+          "sizes": [
+            "26",
+            "28",
+            "30",
+            "32",
+            "34"
+          ],
+          "price": 1599,
+          "image": "/images/products/pant-female-palazzo.jpg",
+          "sku": "PANT-F-P-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 220,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Georgette",
+          "attribute3_name": "Style",
+          "attribute3_value": "Wide Leg",
+          "createdAt": "2025-12-17T09:22:36.111Z",
+          "updatedAt": "2025-12-17T09:22:36.111Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfd9",
+          "id": "200006",
+          "name": "Loafers - Male",
+          "category": "shoe",
+          "gender": "male",
+          "sizes": [
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "price": 3299,
+          "image": "/images/products/shoe-male-loafers.jpg",
+          "sku": "SHOE-M-L-002",
+          "companyIds": [],
+          "attribute1_name": "Material",
+          "attribute1_value": "Genuine Leather",
+          "attribute2_name": "Sole",
+          "attribute2_value": "Leather",
+          "attribute3_name": "Style",
+          "attribute3_value": "Classic",
+          "createdAt": "2025-12-17T09:22:36.213Z",
+          "updatedAt": "2025-12-17T09:22:36.213Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfdd",
+          "id": "200007",
+          "name": "Heels - Female",
+          "category": "shoe",
+          "gender": "female",
+          "sizes": [
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"
+          ],
+          "price": 2799,
+          "image": "/images/products/shoe-female-heels.jpg",
+          "sku": "SHOE-F-H-002",
+          "companyIds": [],
+          "attribute1_name": "Material",
+          "attribute1_value": "Synthetic Leather",
+          "attribute2_name": "Heel Height",
+          "attribute2_value": "3 inches",
+          "attribute3_name": "Style",
+          "attribute3_value": "Stiletto",
+          "createdAt": "2025-12-17T09:22:36.302Z",
+          "updatedAt": "2025-12-17T09:22:36.302Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfe1",
+          "id": "200008",
+          "name": "Sneakers - Unisex",
+          "category": "shoe",
+          "gender": "unisex",
+          "sizes": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11"
+          ],
+          "price": 2299,
+          "image": "/images/products/shoe-unisex-sneakers.jpg",
+          "sku": "SHOE-U-SN-002",
+          "companyIds": [],
+          "attribute1_name": "Material",
+          "attribute1_value": "Mesh & Synthetic",
+          "attribute2_name": "Sole",
+          "attribute2_value": "Rubber",
+          "attribute3_name": "Style",
+          "attribute3_value": "Athletic",
+          "createdAt": "2025-12-17T09:22:36.393Z",
+          "updatedAt": "2025-12-17T09:22:36.393Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfe5",
+          "id": "200009",
+          "name": "Windbreaker - Unisex",
+          "category": "jacket",
+          "gender": "unisex",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ],
+          "price": 3799,
+          "image": "/images/products/jacket-unisex-windbreaker.jpg",
+          "sku": "JACKET-U-W-002",
+          "companyIds": [],
+          "attribute1_name": "GSM",
+          "attribute1_value": 180,
+          "attribute2_name": "Fabric",
+          "attribute2_value": "Polyester",
+          "attribute3_name": "Style",
+          "attribute3_value": "Lightweight",
+          "createdAt": "2025-12-17T09:22:36.496Z",
+          "updatedAt": "2025-12-17T09:22:36.496Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942765c1cab48e899e8bfe9",
+          "id": "200010",
+          "name": "Tie - Unisex",
+          "category": "accessory",
+          "gender": "unisex",
+          "sizes": [
+            "One Size"
+          ],
+          "price": 699,
+          "image": "/images/products/accessory-tie.jpg",
+          "sku": "ACC-U-T-002",
+          "companyIds": [],
+          "attribute1_name": "Material",
+          "attribute1_value": "Silk",
+          "attribute2_name": "Width",
+          "attribute2_value": "3 inches",
+          "attribute3_name": "Pattern",
+          "attribute3_value": "Solid",
+          "createdAt": "2025-12-17T09:22:36.637Z",
+          "updatedAt": "2025-12-17T09:22:36.637Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "sku": 1
+          },
+          "name": "sku_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyIds": 1
+          },
+          "name": "companyIds_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "category": 1,
+            "gender": 1
+          },
+          "name": "category_1_gender_1",
+          "background": true
+        }
+      ],
+      "count": 10
+    },
+    "companyadmins": {
+      "documents": [
+        {
+          "_id": "693aa34c2242f74c17e9dbd8",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "employeeId": "6929b9d9a2fdaf5e8d099e42",
+          "canApproveOrders": true,
+          "createdAt": "2025-12-11T10:56:12.278Z",
+          "updatedAt": "2025-12-11T10:56:12.278Z"
+        },
+        {
+          "_id": "693aa4e22242f74c17e9dc5c",
+          "companyId": "6929b9d9a2fdaf5e8d099e3b",
+          "employeeId": "6929b9d9a2fdaf5e8d099e43",
+          "canApproveOrders": true,
+          "createdAt": "2025-12-11T11:02:58.501Z",
+          "updatedAt": "2025-12-11T11:02:58.501Z"
+        },
+        {
+          "_id": "693dab76914cc386f616eb45",
+          "companyId": "693d8ce66a37697609a911b5",
+          "employeeId": "693da949d7198d53b0f5879d",
+          "canApproveOrders": true,
+          "createdAt": "2025-12-13T18:07:50.938Z",
+          "updatedAt": "2025-12-13T18:07:50.938Z"
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "employeeId": 1
+          },
+          "name": "companyId_1_employeeId_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 3
+    },
+    "productvendors": {
+      "documents": [
+        {
+          "_id": "69427733a060f4176e0f05ca",
+          "productId": "6942765b1cab48e899e8bfc5",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:26:11.120Z",
+          "updatedAt": "2025-12-17T09:26:11.120Z"
+        },
+        {
+          "_id": "69427733a060f4176e0f05cb",
+          "productId": "6942765b1cab48e899e8bfc9",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:26:11.405Z",
+          "updatedAt": "2025-12-17T09:26:11.405Z"
+        },
+        {
+          "_id": "6942774aa060f4176e0f05cd",
+          "productId": "6942765c1cab48e899e8bfdd",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:26:34.746Z",
+          "updatedAt": "2025-12-17T09:26:34.746Z"
+        },
+        {
+          "_id": "6942774aa060f4176e0f05ce",
+          "productId": "6942765c1cab48e899e8bfe1",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:26:34.963Z",
+          "updatedAt": "2025-12-17T09:26:34.963Z"
+        },
+        {
+          "_id": "6942776da060f4176e0f05d1",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+          "productId": "6942765b1cab48e899e8bfcd",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:27:09.774Z",
+          "updatedAt": "2025-12-17T09:27:09.774Z"
+        },
+        {
+          "_id": "6942776da060f4176e0f05d2",
+          "productId": "6942765c1cab48e899e8bfd5",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:27:09.996Z",
+          "updatedAt": "2025-12-17T09:27:09.996Z"
+        },
+        {
+          "_id": "69427830a060f4176e0f05d6",
+          "productId": "6942765c1cab48e899e8bfd9",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "__v": 0,
+          "createdAt": "2025-12-17T09:30:24.781Z",
+          "updatedAt": "2025-12-17T09:30:24.781Z"
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "productId": 1
+          },
+          "name": "productId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1
+          },
+          "name": "vendorId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "productId": 1,
+            "vendorId": 1
+          },
+          "name": "productId_1_vendorId_1",
+          "unique": true
+        }
+      ],
+      "count": 7
+    },
+    "locationadmins": {
+      "documents": [
+        {
+          "_id": "693da6f0f83b225a577694bb",
+          "employeeId": "6929b9d9a2fdaf5e8d099e40",
+          "locationId": "693da6f07b7d01ca80d4f860",
+          "createdAt": "2025-12-13T17:48:32.883Z",
+          "updatedAt": "2025-12-13T17:48:32.883Z"
+        },
+        {
+          "_id": "693da6f1f83b225a577694bc",
+          "employeeId": "6929b9d9a2fdaf5e8d099e41",
+          "locationId": "693da6f17b7d01ca80d4f861",
+          "createdAt": "2025-12-13T17:48:33.079Z",
+          "updatedAt": "2025-12-13T17:48:33.079Z"
+        },
+        {
+          "_id": "693da6f1f83b225a577694bd",
+          "employeeId": "6929b9d9a2fdaf5e8d099e42",
+          "locationId": "693da6f17b7d01ca80d4f862",
+          "createdAt": "2025-12-13T17:48:33.246Z",
+          "updatedAt": "2025-12-13T17:48:33.246Z"
+        },
+        {
+          "_id": "694001df955332cd75473501",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "employeeId": "693da94bd7198d53b0f587ac",
+          "createdAt": "2025-12-15T12:41:03.788Z",
+          "updatedAt": "2025-12-15T12:41:03.788Z",
+          "__v": 0
+        },
+        {
+          "_id": "694025a5a53235da7b1ff6ea",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "employeeId": "693da94ad7198d53b0f587a3",
+          "createdAt": "2025-12-15T15:13:41.661Z",
+          "updatedAt": "2025-12-15T15:13:41.661Z",
+          "__v": 0
+        },
+        {
+          "_id": "694025b7a53235da7b1ff709",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "employeeId": "693da949d7198d53b0f5879a",
+          "createdAt": "2025-12-15T15:13:59.064Z",
+          "updatedAt": "2025-12-15T15:13:59.064Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "locationId": 1
+          },
+          "name": "locationId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "locationId": 1,
+            "employeeId": 1
+          },
+          "name": "locationId_1_employeeId_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 6
+    },
+    "employees": {
+      "documents": [
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e43",
+          "id": "300004",
+          "firstName": "Arjun",
+          "lastName": "Menon",
+          "designation": "Pilot",
+          "gender": "male",
+          "location": "Mumbai Base",
+          "email": "arjun.menon@akasaair.com",
+          "mobile": "+91-9876543220",
+          "shirtSize": "XL",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "K-852, Juhu, Mumbai, Maharashtra 400049",
+          "companyId": "6929b9d9a2fdaf5e8d099e3b",
+          "companyName": "Akasa Air",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-13T07:49:45.750Z",
+          "updatedAt": "2025-11-14T10:12:50.677Z",
+          "__v": 0,
+          "employeeId": "300004"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e41",
+          "id": "300002",
+          "firstName": "Priya",
+          "lastName": "Sharma",
+          "designation": "Flight Attendant",
+          "gender": "female",
+          "location": "Mumbai Base",
+          "email": "priya.sharma@goindigo.in",
+          "mobile": "+91-9876543211",
+          "shirtSize": "M",
+          "pantSize": "28",
+          "shoeSize": "7",
+          "address": "B-456, Andheri West, Mumbai, Maharashtra 400053",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-13T07:49:45.741Z",
+          "updatedAt": "2025-11-14T10:12:50.653Z",
+          "__v": 0,
+          "employeeId": "300002"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e44",
+          "id": "300005",
+          "firstName": "Meera",
+          "lastName": "Krishnan",
+          "designation": "Flight Attendant",
+          "gender": "female",
+          "location": "Delhi Base",
+          "email": "meera.krishnan@akasaair.com",
+          "mobile": "+91-9876543221",
+          "shirtSize": "S",
+          "pantSize": "30",
+          "shoeSize": "6",
+          "address": "L-963, Vasant Kunj, New Delhi 110070",
+          "companyId": "6929b9d9a2fdaf5e8d099e3b",
+          "companyName": "Akasa Air",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-13T07:49:45.755Z",
+          "updatedAt": "2025-11-14T10:12:50.689Z",
+          "__v": 0,
+          "employeeId": "300005"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e46",
+          "id": "300007",
+          "firstName": "Anjali",
+          "lastName": "Verma",
+          "designation": "Flight Attendant",
+          "gender": "female",
+          "location": "Mumbai Base",
+          "email": "anjali.verma@goindigo.in",
+          "mobile": "+91-9876543231",
+          "shirtSize": "S",
+          "pantSize": "28",
+          "shoeSize": "7",
+          "address": "E-202, Andheri East, Mumbai, Maharashtra 400069",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-14T02:54:03.690Z",
+          "updatedAt": "2025-11-14T10:12:50.707Z",
+          "__v": 0,
+          "employeeId": "300007"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e45",
+          "id": "300006",
+          "firstName": "Vikram",
+          "lastName": "Singh",
+          "designation": "Pilot",
+          "gender": "male",
+          "location": "Delhi Base",
+          "email": "vikram.singh@goindigo.in",
+          "mobile": "+91-9876543230",
+          "shirtSize": "L",
+          "pantSize": "34",
+          "shoeSize": "10",
+          "address": "D-101, Sector 18, Noida, Uttar Pradesh 201301",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-14T02:54:03.656Z",
+          "updatedAt": "2025-11-14T10:12:50.699Z",
+          "__v": 0,
+          "employeeId": "300006"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e40",
+          "id": "300001",
+          "firstName": "Rajesh",
+          "lastName": "Kumar",
+          "designation": "Pilot",
+          "gender": "male",
+          "location": "Delhi Base",
+          "email": "rajesh.kumar@goindigo.in",
+          "mobile": "+91-9876543210",
+          "shirtSize": "L",
+          "pantSize": "34",
+          "shoeSize": "10",
+          "address": "A-123, Sector 15, Noida, Uttar Pradesh 201301",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-13T07:49:45.735Z",
+          "updatedAt": "2025-11-14T10:12:50.352Z",
+          "__v": 0,
+          "employeeId": "300001"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e48",
+          "id": "300009",
+          "firstName": "Neha",
+          "lastName": "Reddy",
+          "designation": "Flight Attendant",
+          "gender": "female",
+          "location": "Hyderabad Base",
+          "email": "neha.reddy@akasaair.com",
+          "mobile": "+91-9876543233",
+          "shirtSize": "M",
+          "pantSize": "30",
+          "shoeSize": "8",
+          "address": "G-404, Banjara Hills, Hyderabad, Telangana 500034",
+          "companyId": "6929b9d9a2fdaf5e8d099e3b",
+          "companyName": "Akasa Air",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-14T02:54:03.721Z",
+          "updatedAt": "2025-11-14T10:12:50.741Z",
+          "__v": 0,
+          "employeeId": "300009"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e49",
+          "id": "300010",
+          "firstName": "Suresh",
+          "lastName": "Nair",
+          "designation": "Ground Staff",
+          "gender": "male",
+          "location": "Chennai Base",
+          "email": "suresh.nair@akasaair.com",
+          "mobile": "+91-9876543234",
+          "shirtSize": "L",
+          "pantSize": "32",
+          "shoeSize": "9",
+          "address": "H-505, Anna Nagar, Chennai, Tamil Nadu 600040",
+          "companyId": "6929b9d9a2fdaf5e8d099e3b",
+          "companyName": "Akasa Air",
+          "eligibility": {
+            "shirt": 4,
+            "pant": 2,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-14T02:54:03.738Z",
+          "updatedAt": "2025-11-14T10:12:50.836Z",
+          "__v": 0,
+          "employeeId": "300010"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e42",
+          "id": "300003",
+          "firstName": "Amit",
+          "lastName": "Patel",
+          "designation": "Co-Pilot",
+          "gender": "male",
+          "location": "Bangalore Base",
+          "email": "amit.patel@goindigo.in",
+          "mobile": "+91-9876543212",
+          "shirtSize": "XL",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "C-789, Koramangala, Bangalore, Karnataka 560095",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-13T07:49:45.746Z",
+          "updatedAt": "2025-11-14T10:12:50.663Z",
+          "__v": 0,
+          "employeeId": "300003"
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e47",
+          "id": "300008",
+          "firstName": "Rohit",
+          "lastName": "Gupta",
+          "designation": "Co-Pilot",
+          "gender": "male",
+          "location": "Bangalore Base",
+          "email": "rohit.gupta@goindigo.in",
+          "mobile": "+91-9876543232",
+          "shirtSize": "XL",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "F-303, Indiranagar, Bangalore, Karnataka 560038",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "createdAt": "2025-11-14T02:54:03.705Z",
+          "updatedAt": "2025-11-14T10:12:50.718Z",
+          "__v": 0,
+          "employeeId": "300008"
+        },
+        {
+          "_id": "693da949d7198d53b0f58797",
+          "id": "300011",
+          "employeeId": "300011",
+          "firstName": "241ca154df9845e0de24486e9d8cfe6a:8a0324ba3105901b69117ab2cafa5576",
+          "lastName": "063bafde0a5b0a4ad23f96f468f40d86:a3d026717c7126d465ff0a067d8258f4",
+          "designation": "b8b079f1705e259dc868f60a535e0760:1875b61d6af460072e61dad5c54e95a97ae7254923f5dbdabfca2c257505a131",
+          "gender": "female",
+          "location": "Hyderabad",
+          "email": "26c88c3d9c16bc2ae0bb7ac61ece139f:1ceb3e941237109fc511ebdf24d123d963f3781ec152a5e2aaee5eeabd477ff6",
+          "mobile": "899a9181ee2b325e9637ac0b589e2dbf:c96eba7e716ca71f8a4e2bba77651f3e",
+          "shirtSize": "XXL",
+          "pantSize": "34",
+          "shoeSize": "8",
+          "address": "1767cffc5feef25b9c7f8decedc852a1:9b8322ff6abc9b802b2c85decefdb07851bef0f4d2e1231de0df5dc74c870e1f",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 4,
+            "pant": 2,
+            "shoe": 1,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-11-03T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.473Z",
+          "updatedAt": "2025-12-13T17:58:33.473Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f58798",
+          "id": "300012",
+          "employeeId": "300012",
+          "firstName": "aa3f5332041e9e5447be5856b5e24d83:29b2533327d3b3685fe0c5240c1c56a1",
+          "lastName": "ba1527401833564c4b3201d4b64b9f8e:81365581d83f9a3cf03d561a91181bbf",
+          "designation": "f6485ac3021e482f1d0d920f1bd18937:e05f65f0f9b0714f76499c96f9c2ec91",
+          "gender": "male",
+          "location": "Hyderabad",
+          "email": "149bdbf552ca58eec42654fdb87a1118:d58ab8fd3b3c9ca051d33ff719c12201924beb389657586d6fd252c8a4dc0a31",
+          "mobile": "765ab3e86362df6a45763c44d0c9d343:f0a513fe2f93a6ead6891497eb990d4e",
+          "shirtSize": "S",
+          "pantSize": "28",
+          "shoeSize": "7",
+          "address": "984bbd3d1e91f2d52a6063cecbb86e8c:d99266736c99a235fb0abda17ca378db1e453eb9d82aa90431933f549c93f0ad",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 4,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-02-18T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.567Z",
+          "updatedAt": "2025-12-13T17:58:33.567Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f58799",
+          "id": "300013",
+          "employeeId": "300013",
+          "firstName": "pLu7Sg6TXMR/LOMZJq6fOQ==:gY8VL7dOvTwpn1AEmtxLuQ==",
+          "lastName": "2hleUlZuLfQLdGeFmFy9xQ==:poWfrgHzlljXw0JTgnpVqg==",
+          "designation": "7karTTqPXCmpT78zBSbyxg==:/3xcvei6Qwp9S/M4j01szw==",
+          "gender": "female",
+          "location": "Chennai",
+          "email": "FUZraFsDAhybXQXdtoUVbg==:Ohmjuq0vkfsEcnMc5YMYQNupSXyJdaREf49EpewrxmA=",
+          "mobile": "HmEksaF8x3BP+0v9UKge6A==:baYdTa+26cjwBOlQh6wu0g==",
+          "shirtSize": "XXL",
+          "pantSize": "34",
+          "shoeSize": "7",
+          "address": "koDMzxcSJzvT0bPgkYzMJA==:PerX5AD9nCOK1D4PZi0ysNQ5fx1jJCjoWvlp1TtxJIc=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 3
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-10-09T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.635Z",
+          "updatedAt": "2025-12-16T08:10:56.277Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f5879a",
+          "id": "300014",
+          "employeeId": "300014",
+          "firstName": "0239d3b5c9e02dae55f7606086e73928:1fd5a63ae4cdc5768f5f57805e7584d9",
+          "lastName": "0dad09d7f02110862f17dc00d0a35495:00ad64ddb6690b0e4f6a6fde4442e3cf",
+          "designation": "2ecd29f7e8c26f109012b29cf3001752:82cd0c6ddb1cea0a8fc6a6779859ad58",
+          "gender": "male",
+          "location": "Delhi",
+          "email": "f5ae3027ab05c12756d78ac2f72bd0f9:18d8c6669e64032a29fcb0ce6c659e17d62e3b685eb9c78eb2a458823123d4eb",
+          "mobile": "fa08051e6d7034ed8c86a45f53aa7599:6ac8f2c3f8b663070b124c24f6377715",
+          "shirtSize": "XXL",
+          "pantSize": "30",
+          "shoeSize": "8",
+          "address": "188192c5b9176d72995041769cd62f6d:4f7a43e2ae69977db06b95de78c63d20f2d2d07ec8aee1830d535eaa5536add3",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 2,
+            "shoe": 2,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2020-07-02T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.701Z",
+          "updatedAt": "2025-12-13T17:58:33.701Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f5879b",
+          "id": "300015",
+          "employeeId": "300015",
+          "firstName": "639ff140b69ff132c648506e1973fdaa:7957b83bcb390410cf275002d7fb2f08",
+          "lastName": "d4e2d2e16a84baa1c54c1f901aee7b16:28a091a79e762272f364ec2ef9aaa6eb",
+          "designation": "8bfc455bd65a8c4e7457ff08c2c0445a:0172fb06c719e687abb048736d576563",
+          "gender": "female",
+          "location": "Kolkata",
+          "email": "60e525f2ae57221db902b684d60435ec:16d49a9102e337bc056381b562b09aaacf91026524c6f24c9210558d881bd7bf",
+          "mobile": "fc6a25b00bb33341e69bc4b505c3f7b2:99ae9e65e3c099ce3d0dc8e07a80741a",
+          "shirtSize": "S",
+          "pantSize": "32",
+          "shoeSize": "7",
+          "address": "30e12832c195587eeebb504ac0594290:370cbb8a5f260b8f92ae99af8ad3d0b12883c80c1a9c5ce08a0607854ea9a4a0",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 4,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-09-26T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.766Z",
+          "updatedAt": "2025-12-13T17:58:33.766Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f5879c",
+          "id": "300016",
+          "employeeId": "300016",
+          "firstName": "bd82f7e719132f771887ca1886ba8667:ce51d5e904bb1958d2095d5ce0606691",
+          "lastName": "cff2d287406ca07ff07908a0029adbde:24ffabc41fe1549bea4cb95a92ac7eb6",
+          "designation": "9e2ce9ad698f94e5e1fcb41082185545:39dea7a645b051f9eb9f677fe7422a29",
+          "gender": "male",
+          "location": "Mumbai",
+          "email": "698145bdd9860d383749cb8cabb3719b:b2564dc69104bbe3205de04551ea20c98e5597a5dd5706f580ec8a89ebe50b81",
+          "mobile": "1fb1aabc50e605cd12be309b34d87c3e:abe071b4cb9172ec2c7592a0a5791f3e",
+          "shirtSize": "XXL",
+          "pantSize": "36",
+          "shoeSize": "10",
+          "address": "60e1f5b572e03f8b5183e89406830d74:9b867a2d1b1d6deda777f1baefd85d01e1220e852fd3cb9c3d94af6e164d30bb",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-05-25T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.833Z",
+          "updatedAt": "2025-12-13T17:58:33.833Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f5879d",
+          "id": "300017",
+          "employeeId": "300017",
+          "firstName": "UQnsilCt0Sio49XE0666ng==:6SL7JVw7/9tnNh6HX2FfJA==",
+          "lastName": "bld865NZc8npMyDOYc3VHw==:MuuE/JfmExrpS7gnWb5dlw==",
+          "designation": "JxONoCXQsy+CMvA8FUfSpQ==:tSTEiuSqH4YcSUGRKchYZsAosnTXNB/u/5c5rB9uDZc=",
+          "gender": "male",
+          "location": "Hyderabad",
+          "email": "2rq9msBFhkyBtqA0DrDO6w==:UqCfkJKe0HYs6vOZyj2kdEv730knCwoEzVp9PuIs2pE=",
+          "mobile": "fKYV2MudnQLdUQ3JfiqBGQ==:1v9UGikxjSd+cVGtcrKwsA==",
+          "shirtSize": "S",
+          "pantSize": "32",
+          "shoeSize": "11",
+          "address": "/gIBe9OXMJNAEnV2i455eA==:w7GM88htg453j01OBcvZXXFTBYpOjvZhZ9jCjkF11nU=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 5,
+            "shoe": 3,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-06-13T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.901Z",
+          "updatedAt": "2025-12-17T15:03:13.857Z"
+        },
+        {
+          "_id": "693da949d7198d53b0f5879e",
+          "id": "300018",
+          "employeeId": "300018",
+          "firstName": "vqQnMHzQwRppBKQRe8OPkw==:Ii8aQTZCzVu4UoDliDYT4g==",
+          "lastName": "B95kLmdm35XOX+bUCjspOw==:8sVU+k7OMcHMPnz0rr0S4Q==",
+          "designation": "nck7mId8TFm/A3jTLOnUMw==:tTKNjKeGKhsUMX5dmvvziQ==",
+          "gender": "female",
+          "location": "Chennai",
+          "email": "ppovIVUPQVLVOdGNWAsl0Q==:iyDfwQRxwxGXxO1RayxTqRbJc7aUPC8k8D2wymhh5vw=",
+          "mobile": "2x+YJ7WnSEMUtOZwk+fzpQ==:RnHwqR1w/WRkFb3JnOuirQ==",
+          "shirtSize": "S",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "xUZIkXr9jF23Ld+ZJyiXGA==:hIDAg+nZ/iOpC4hgtVgrF1WkElKdWiQkQcHD8aG5WFo=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 3
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-06-18T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:33.974Z",
+          "updatedAt": "2025-12-16T08:10:56.340Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f5879f",
+          "id": "300019",
+          "employeeId": "300019",
+          "firstName": "7909c4a2e3c9ec4125a0dc7f4ae93532:8c21d3dbf33fe9f5b28ebe379aa84332",
+          "lastName": "8d48448af38fe0d790eab462f18ca07b:30bca030644d7bd152c2c904f2996de6",
+          "designation": "cd8b363b0594cb647f287a41b84f45f7:219d2f0125a715dceb681ec05a49b0569514b262352e0ea6061299d1f976bce2",
+          "gender": "female",
+          "location": "Mumbai",
+          "email": "d60c4ed146786126d7e2808ad582f1a1:c47d0d7f05be7f75e1d73446ff6a06c229adb21738862f009db19958d054193b",
+          "mobile": "9ea855b0a02113ba17456a00ed1ebfe3:a15d10305bd7b0c3e4f2d059abd078a5",
+          "shirtSize": "L",
+          "pantSize": "30",
+          "shoeSize": "11",
+          "address": "8123c049e266d7f3c72a5589d237af0e:7107f590926858790ffc4ec64850d2e5cc13d5c2c1cb12ddea54a47af2b427dd",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 4,
+            "pant": 5,
+            "shoe": 3,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-09-30T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.074Z",
+          "updatedAt": "2025-12-13T17:58:34.074Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a0",
+          "id": "300020",
+          "employeeId": "300020",
+          "firstName": "p/xuLcksQ8HGijwEg4OqzQ==:LNlbvDQea/vlihz1Qsjkmg==",
+          "lastName": "2Rh0AyDrb07AFCQiEczTEw==:1pVEN00rgZb11Rt2lBk96g==",
+          "designation": "jQ+cZKTI4SdznL8+nSNASw==:9se1K/kmwkP5J0KWD+AlsQ==",
+          "gender": "female",
+          "location": "Hyderabad",
+          "email": "R8NY+ny2ueNMI0v3rX1LQQ==:DNe83yVMfnbszDe4fyvXkUslwSWklLaYyg0+dq1PHH8=",
+          "mobile": "bRLhMiXfNTyzP7pZOEyi7Q==:QR73GM4qPGZTHYlUDn3TGw==",
+          "shirtSize": "L",
+          "pantSize": "28",
+          "shoeSize": "8",
+          "address": "XBYmpO6wxFqkqu9LWOoRTQ==:PA3H0Yf+VbOW/o6SWlcJZqAzs15ue5Ee7Ndc/mbYgLk=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f863",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 3
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-09-26T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.148Z",
+          "updatedAt": "2025-12-16T08:10:56.402Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a1",
+          "id": "300021",
+          "employeeId": "300021",
+          "firstName": "5b9481837040d533ffb815610c383cd5:a78a781fd5fa376253e41f00e8129f9d",
+          "lastName": "04b6b8f3ecdc326e2638e8651caabd1a:20d99b60d5edf509105694d9668ac2ba",
+          "designation": "bb277b948fddc139fa549b60768e8f6a:135ea30db9a0064a3eef5918342ed327",
+          "gender": "male",
+          "location": "Mumbai",
+          "email": "afd1677150c947c2b46b674d2eeedcb0:544b3379da26ef2fa62a2cc0c8864e081e35923e9134db9950a41ef636dbe6bf",
+          "mobile": "93e8ead48685933e186fe6504e9f8064:0c2b628ea5dda0c7aac1ee6fa9c0967d",
+          "shirtSize": "S",
+          "pantSize": "38",
+          "shoeSize": "11",
+          "address": "36e305bc4d6ac0dae3b00f7d4aabb28b:d15edab69c8c1252e8bf037f1d9a0e0a1d7abf19c4622bc3af48b44b480e6ebf",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 3,
+            "shoe": 3,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-04-17T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.222Z",
+          "updatedAt": "2025-12-13T17:58:34.222Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a2",
+          "id": "300022",
+          "employeeId": "300022",
+          "firstName": "66f30fdf63785b2e90729cce63dd09a5:e01083c00393071d45fadfd82b12e4bf",
+          "lastName": "1c557ae4ef6dccba3c6084570f884993:8a1e34585a8149004c4bf8e1459139a0",
+          "designation": "8a2b4fb18599a939803b9488b56ead17:0e693f44fbb898ab028a7043de7ae15f",
+          "gender": "female",
+          "location": "Pune",
+          "email": "fcc36b6b547168e9274404ac551c0432:ad04929e1d2a261241316bbd37920a11be18801f72212e6eaf9eca1baf7f059c",
+          "mobile": "c50079f634b762b6ad507ede9e0ff520:39e8c32ba539ac7776049af6c61f22d0",
+          "shirtSize": "L",
+          "pantSize": "34",
+          "shoeSize": "7",
+          "address": "6b990c19958e38f6ad10d2f43fa3a651:c71a01acf859529aa10631909e3727494ab09e150c394712412aedff5e55b661",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 5,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-08-15T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.320Z",
+          "updatedAt": "2025-12-13T17:58:34.320Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a3",
+          "id": "300023",
+          "employeeId": "300023",
+          "firstName": "qVLRnHRFsQ6BXZsxyV2gXw==:0PZkmrSJsl3h/G11XbhXAg==",
+          "lastName": "BrC5Q3mzSXwMN76rxVUe8A==:JZDvZtY+WX8B7dWER6qYrw==",
+          "designation": "u2O3mgxzjOIuq4JOJCWDQg==:1SE4WeE372JcMFdfy/cerAiRnZv4orE3PcoZzNRGoPU=",
+          "gender": "female",
+          "location": "Kolkata",
+          "email": "9uY3OSc33f/CLrcqxrzJ8g==:vxpQnNW1QyMeJwAEGuGYdgc1zyjNK/1t/lLnTBUql1M=",
+          "mobile": "j9fMVsAahk8k1LxG+cAgvA==:lsJxsGgMkwnn/yAnIbHkeg==",
+          "shirtSize": "XL",
+          "pantSize": "34",
+          "shoeSize": "8",
+          "address": "x5krnROXPdxbpr61fz3Wbg==:EJmVayrFeZ/06DiLx6Q81Ohx0F6sfIBmQ6ZHxP/cyBk=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 2,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-04-15T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.397Z",
+          "updatedAt": "2025-12-14T09:04:44.082Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a4",
+          "id": "300024",
+          "employeeId": "300024",
+          "firstName": "a0351f1ef2dad0003595b202dabd6358:c77588dae82ca8432d57b496a4ac1bcf",
+          "lastName": "c09fb6ef3f5d7b012b394be79ff03dde:529c70c420a11ffbabc412eb35ef398b",
+          "designation": "c3ea0d006f275abf3dc0e96e1238eb2a:52e9eae178565245bf67e1901d0c336ff5c5b9f2e073dc79fecf286774326ef6",
+          "gender": "female",
+          "location": "Bangalore",
+          "email": "d4b7f49cd65f885fa1fe17d0c7d06e73:ff776245e38a67c0e52beacfab1f0faa86ca01ad6d83b38a19a11d0e466932e2",
+          "mobile": "21f778b47f36aac405a17a325e4d3840:2ea7fe48bf1e67e9d96b1a08086702f7",
+          "shirtSize": "XXL",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "47a3a634fa0777e827d4d65703343859:6356ae670276d5d33e3f03f5b4ed19b9107afc14aaf6a728100175a19207fda9",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 2,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-01-27T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.472Z",
+          "updatedAt": "2025-12-13T17:58:34.472Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a5",
+          "id": "300025",
+          "employeeId": "300025",
+          "firstName": "cd6b2230194143fde9fbb4a971232206:2856404d085bccdfe8eb8008897315a4",
+          "lastName": "4d15cc8ee494ceab091f431a769d9c4d:e4a2ff3ce42439fc020521363bddae23",
+          "designation": "4b9ef7471645426b055c01bce4181ffa:09a282da5a41feeea59fd0cf6d10dbbb9bed5c1c2466da3ff36bdbbc6a2adc19",
+          "gender": "male",
+          "location": "Kolkata",
+          "email": "77af7744da5cd9b680670c57fbcd9ba0:6892e4e1453021a0c5ad6c048965e868849989105da718c27bb706dd9c23b6d3",
+          "mobile": "ff287224a6e3df132a32f9d4b3d0c894:6f78cbcb638efd7adc7bb9a582ae5f55",
+          "shirtSize": "XL",
+          "pantSize": "30",
+          "shoeSize": "9",
+          "address": "7dcc91c65a738d5e8f077f078f95eb83:c25d0aa01615bd836761ac98849f4dc1d3a34392242d0822dfd93caa0408911f",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2020-08-18T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.537Z",
+          "updatedAt": "2025-12-13T17:58:34.537Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a6",
+          "id": "300026",
+          "employeeId": "300026",
+          "firstName": "JpNkIRucf2bYkw0X7roFaA==:fgXfS/e01ZwTn+1k30ntDQ==",
+          "lastName": "fmvXQQYjIhNWKU3/ebsydQ==:tbaTWicZzJtdYu+hE1iG8w==",
+          "designation": "cXD2a2EbPlWkcXMxyg6Utw==:rbBjBcJRVBKbccnP6YTMcA==",
+          "gender": "female",
+          "location": "Kolkata",
+          "email": "BUvTL/rcIbkTIiYpAuMMOQ==:aqCOZFu3vG9m+sxAv67py1CXOVOX1MGpmUUeaHVFVP4=",
+          "mobile": "LoeJicfEyQA4X0VnGl83eQ==:Fhqo+4OYGOmf3wx630vbgQ==",
+          "shirtSize": "XXL",
+          "pantSize": "30",
+          "shoeSize": "9",
+          "address": "m9IlbvyuRQtTgWkNH7JC1Q==:yCkaTNKcixBMd9aB+yswoUxQSOkyB3MijWGZaH2e7wY=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 2,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-04-18T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.616Z",
+          "updatedAt": "2025-12-16T08:03:14.935Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a7",
+          "id": "300027",
+          "employeeId": "300027",
+          "firstName": "35bf1de646081615e2a4e2f1c7ff8964:8a61897695e96e75f10c6b6655dee717",
+          "lastName": "1596e743c5b90bae17a363a232f08737:984aa5fd8558598eff6abeeb629c3c57",
+          "designation": "fd7532e8f3dba8cd2554e7097d68172e:d937f8d7fbaa1c92488064084758bd4f",
+          "gender": "male",
+          "location": "Hyderabad",
+          "email": "1fa9c3233aea5ac2ef2e06046d99ae40:6ab3163af04fee2545e94c0bd86201d39a63998b79a9bee1ab2ac1437c5e7919",
+          "mobile": "428e8774b4e9c9d84c5fdcae79d408a4:87508ec8691d7daf625cd718f8e952a2",
+          "shirtSize": "L",
+          "pantSize": "28",
+          "shoeSize": "8",
+          "address": "8238afb4aa2698f5aae9acdcf0526557:bfcbdce0ec2de84c0c4d4df42c2da85c5a8ebf1f6470375382a03dab147a9bdc",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 5,
+            "shoe": 3,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-12-23T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.687Z",
+          "updatedAt": "2025-12-13T17:58:34.687Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a8",
+          "id": "300028",
+          "employeeId": "300028",
+          "firstName": "4452192a33e7f7c2efebc00d867b0dcf:4a8b25afa76667bc169b0d4ddaf40c2b",
+          "lastName": "5d02a45ac98ddd975562f4bad6c1b9be:4e186cd2bfd50edfe71e6d35bedd8de5",
+          "designation": "30f733ea25734431c66a8a567bdede79:1ada016bee9de6f65c28381a819de76f",
+          "gender": "female",
+          "location": "Bangalore",
+          "email": "7cc5462316fbff29261d5bf8957f9fe4:a5a50c4295534384c5b83d5c647d4689eb467c80189ee26462fd7bf6c1a0b45e",
+          "mobile": "f1e46963de999ead7ef5d7c23160d37a:d540c3a28b3a711d8ec1761b2f5f624e",
+          "shirtSize": "S",
+          "pantSize": "32",
+          "shoeSize": "9",
+          "address": "1a62c974889120542eade3facdf6ee47:0c07931cab54a9d107ba57695fb2e3c0056d1c0f9674a8cde111f14aec99884a",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 4,
+            "pant": 5,
+            "shoe": 3,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2021-02-14T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.763Z",
+          "updatedAt": "2025-12-13T17:58:34.763Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587a9",
+          "id": "300029",
+          "employeeId": "300029",
+          "firstName": "bb4d1f9292d13b1d915845cd81cea18e:f9f5da2bf983bac961b058bf08462cf8",
+          "lastName": "1125ae4e6af009996282f7187f18aef7:9b9a92e93ac3fb80f63a01c0a4ed58f5",
+          "designation": "ee8bba54565533b282bfefe6e08ee425:6831e654a8bad49591ed11dcf462910b",
+          "gender": "female",
+          "location": "Chennai",
+          "email": "de5b852a2e0fe66de4cf45bab5740572:33f2d84d63867cfff641769a43aa219640cf92f9d046bf7dae619bd0c41976ce",
+          "mobile": "b3f230d087a8100820ed5a2119a41d4c:0f77140c65eb4bab149e97f99cebfcc0",
+          "shirtSize": "XXL",
+          "pantSize": "36",
+          "shoeSize": "11",
+          "address": "795011c5c9493660e379f2f9359ea746:12edd3082c6979370e3e48dad3b2dba6306a1b7af84b55555684183d6010ecae",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-05-04T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.832Z",
+          "updatedAt": "2025-12-13T17:58:34.832Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587aa",
+          "id": "300030",
+          "employeeId": "300030",
+          "firstName": "341959f19a7d82c724eca124e17a1cae:f441b1f20e66fb9b997c4eff93e25dfb",
+          "lastName": "a38b0efe4bfd12313b4d579dfad48f5f:2f999bc7b43e17f55391eff8cfa72715",
+          "designation": "99338057d69b8e9269d50651e709ad1e:dd8245bc4a4b21e0c0dd9a90a9c79c02",
+          "gender": "male",
+          "location": "Delhi",
+          "email": "ec74c6ec727026e5cdfca00dd18790b6:64ee38e92a55000e7a101842716d9fea717c72eafdb74e8b12a2ea754f080dd5",
+          "mobile": "1d6203c7afeebce63cc3e23d6dde6fa4:834d5bacf8acd7d063cef84fbec92ac8",
+          "shirtSize": "L",
+          "pantSize": "36",
+          "shoeSize": "9",
+          "address": "cd919d072fb47c1c6cf44d333c7c38d0:2ce76a5d79644f7ef5fc40bc7a1583d14ee98bd20ab89bdde9b174d469d91fc1",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f864",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-01-24T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.901Z",
+          "updatedAt": "2025-12-13T17:58:34.901Z"
+        },
+        {
+          "_id": "693da94ad7198d53b0f587ab",
+          "id": "300031",
+          "employeeId": "300031",
+          "firstName": "Moc8ea7+I5NvhU7uaDGPNg==:NHlkqoBDpe3vf3scMiP+mA==",
+          "lastName": "OUbt6NMy1KAqzS1qhSAYNw==:xhCJJj4Bl2VHUOw2PtwzTw==",
+          "designation": "xbWjXhs1s+xST6ntQY0YXQ==:hzl9cObzcqSsxSrlKIlYFg==",
+          "gender": "male",
+          "location": "Chennai",
+          "email": "BvNQyMKFWQOKFdQg/tvqKg==:rAZBPZA8BHB5MqEMTCn9KNFZHJIjlOu7CBNGXir1Gvs=",
+          "mobile": "Fcji/z/y8kuXYttYX/BjLQ==:9dzN86WQq/0MDzq0YGQIPg==",
+          "shirtSize": "XXL",
+          "pantSize": "30",
+          "shoeSize": "10",
+          "address": "sjw1sVqtK9ck64J5AUpJYQ==:1sa4uGuJZByyKocWvCj/SOzdWlXl91mkP+ZIsJaz8+0=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 15,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 0
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-03-12T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:34.967Z",
+          "updatedAt": "2025-12-17T14:43:39.002Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587ac",
+          "id": "300032",
+          "employeeId": "300032",
+          "firstName": "IY6kSvuCZQ/qlgiASHFs4g==:d2Ziv9AeTdsn2mM7/x3riQ==",
+          "lastName": "Bq/4zzug1OMuu/IYg2KuWw==:sKCRiFxJlayvi3OsI+a3Cw==",
+          "designation": "KUBu9ZDX8QbqRUupIjJUYA==:ynRL54VUnMG1Qtj3xoU59g==",
+          "gender": "female",
+          "location": "Pune",
+          "email": "nm1z0JHaoTh2OAlyRO2LZA==:ySyLUzims7BxkOr5yFsnIzsx8W0hUvM2o1/3vIDofNw=",
+          "mobile": "67qJF4mCMeCUawgo416UlA==:uPf8cjNupb+OLZZSmtWRQA==",
+          "shirtSize": "XL",
+          "pantSize": "36",
+          "shoeSize": "10",
+          "address": "r/lDgPPWqoYd0b909AT7Mg==:oY+cgGLzMyrnMAHE+peOLapfTejTIXXjGR5OuyMfEAg=",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 3
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 6,
+            "jacket": 6
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2022-03-07T00:00:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.030Z",
+          "updatedAt": "2025-12-17T11:19:30.445Z",
+          "branchName": ""
+        },
+        {
+          "_id": "693da94bd7198d53b0f587ad",
+          "id": "300033",
+          "employeeId": "300033",
+          "firstName": "fe204daef0766124ce086caeb4577946:14991bd94a460b83a57e76bbd0743987",
+          "lastName": "9af8e8c39e34027f27d1d1d2f71ff1b8:d70423a458a12df89948a02c08ce3674",
+          "designation": "f1b6896247cfe468b0e5eb569e2c073d:a2b8d8e621e6a1f2768a844fca44f46f",
+          "gender": "female",
+          "location": "Chennai",
+          "email": "51dcce8501103888948fc6b331a8cb1d:caaade40e651452d3a28c6327b5d8c060daf922fa1d6ca44b07442c30e3a2bbc",
+          "mobile": "cc70cd871501b975e88696ca5ed800f1:b84d56465899321e6997f11cfee90185",
+          "shirtSize": "XL",
+          "pantSize": "32",
+          "shoeSize": "10",
+          "address": "d7e2b89b607f2235e351ff010b3a17ec:831955f3e29d6f61a013d1de6208a3ec71e9bf11fa86674a0e06359c271690b4",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 4,
+            "pant": 3,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "central",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-11-19T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.097Z",
+          "updatedAt": "2025-12-13T17:58:35.097Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587ae",
+          "id": "300034",
+          "employeeId": "300034",
+          "firstName": "0209c6a0bbe024b60d646b204f41a0c4:db7a13a013db796673a387c294e0c984",
+          "lastName": "37dd1f8a82ed097a6a01bda97e48c602:375c04a51b119ceed13acb5ea3925174",
+          "designation": "5cdfc5e0423d9b1cf0cb22f5b8e352ef:2cedfd67ca5c8d57a6bd0a687169211ba50b6640e371a32ddbe1a8b86712d440",
+          "gender": "male",
+          "location": "Kolkata",
+          "email": "59f38f4bcb6c98012f8a8ba778c665fd:523b54f8b6e94926004642969b517723457f399f50838f62eb6cb27cd42d2e75",
+          "mobile": "2615497c0a5894f9e43645a4c1273a4d:cb71857634e0c558d939868551b434e8",
+          "shirtSize": "S",
+          "pantSize": "28",
+          "shoeSize": "11",
+          "address": "c86b1817904263c015a0a327220950b6:cbff7a4899b15fb3eab764a39b2702f603101d3191915340da380a181474957e",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 6,
+            "shoe": 1,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2024-12-07T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.165Z",
+          "updatedAt": "2025-12-13T17:58:35.165Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587af",
+          "id": "300035",
+          "employeeId": "300035",
+          "firstName": "0542fd49adcad5b0c476f0d7011c21ee:58794b431840e742d295bad81b125dd7",
+          "lastName": "f470cef45c8a98a1890e642aff2cfd1e:cbd0597bde430359340fe0153efe362f",
+          "designation": "dbb4cf4ca778df6e7e66c64fcc310635:4dd4c3d5b623ac26e0769449c053fe11e3198fa6146dd2cdff571840fd195add",
+          "gender": "male",
+          "location": "Delhi",
+          "email": "b38125a487e68e28abea324f80677628:91e4daec6d9d9eed7cdfb238cecaf951a3d0d1aaaa90c7e917f4be4ee1927c73",
+          "mobile": "f994a158fc6d79e59989ca76b5be003d:2a39f7e3d74c574249b57cab2f96679b",
+          "shirtSize": "XXL",
+          "pantSize": "28",
+          "shoeSize": "10",
+          "address": "33f92f847011b8247ffe44c951c25912:87e229833ee3e1c19864be1cbbf66ee5d589834b213885c599c21260cf3effe5",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 3,
+            "pant": 2,
+            "shoe": 1,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2020-11-30T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.231Z",
+          "updatedAt": "2025-12-13T17:58:35.231Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587b0",
+          "id": "300036",
+          "employeeId": "300036",
+          "firstName": "319f722555f038c51b795de7f2fe183f:6bf1000221b68bfab02d06c711a8d9aa",
+          "lastName": "f47edca455a1eec74a5bb9083c7b6bf6:c0b9e99fde66058528abb7f22a70ba97",
+          "designation": "65c80190c667a2510593fc69e72249eb:5ac0d334de5bebd3f10f3c12707c598ca101280512e9ccdea99c903a7684e6e8",
+          "gender": "male",
+          "location": "Bangalore",
+          "email": "f8d5e9dd482631b021374d33307861b3:9d1b564c7258a3c97596e57e49b434f7c409f8155ceece8021a53aa86ca4d4bc",
+          "mobile": "387a13b7d72b43352864c713b168e530:9bc6e2703e45ebf4684b8ca8d34648e1",
+          "shirtSize": "XXL",
+          "pantSize": "32",
+          "shoeSize": "8",
+          "address": "6c44523dd436b23201d5829ad76a3220:3f1e6214c426f6f1889d60c1ddcae36d5e76a111f46e53b94eeeabbff19af126",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 6,
+            "pant": 4,
+            "shoe": 3,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2021-12-20T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.309Z",
+          "updatedAt": "2025-12-13T17:58:35.309Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587b1",
+          "id": "300037",
+          "employeeId": "300037",
+          "firstName": "721f886e7145c7b44dcea6f3a161365d:875b3c2b830a727d8429c267bf19bb8c",
+          "lastName": "98881a04f000fd6ecb03c64a340dbadc:a7b660d6298de64c96070b1a1fe06b10",
+          "designation": "5b425d990de0c970ec8cb61e61381d91:8f327c21ac8db847ca7b225ed41c491d",
+          "gender": "male",
+          "location": "Bangalore",
+          "email": "abe08e778ca585b29b3be0c0b61d3513:58cee5dbc8dffef5b81bb41f33fefd72b6f2b346b2e405719a180b8530a8e14d",
+          "mobile": "bef1bb5c2f9bb3c0fb2a62c00d975d94:ff9168c11f216bc6f83fbae4416ed0c1",
+          "shirtSize": "S",
+          "pantSize": "34",
+          "shoeSize": "11",
+          "address": "9b9eb07024f8ba6904b24edf12bdd4dd:1a4b9db3db7733855734021e783e0692dea82fc64401ef144034170dc00123cf",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 2,
+            "pant": 5,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2021-10-21T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.370Z",
+          "updatedAt": "2025-12-13T17:58:35.370Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587b2",
+          "id": "300038",
+          "employeeId": "300038",
+          "firstName": "35ff5cc9a406675a52bbbfa62f60b2e4:eb8a68eb1914831b89d12a4b917f3f69",
+          "lastName": "cb3745c22671b01292b06c2cd9f9e0a7:d37986620acedbc2c64b75196f7d80c8",
+          "designation": "a4864eefc6bb9e7852a282cdbb9457a7:c6b7ea0069147f9a9fa62ee911178c988a8d9b0b288b178f4249a4dd894d7f2e",
+          "gender": "female",
+          "location": "Ahmedabad",
+          "email": "f9c08b837ac57c93a819d947fa693b5e:a372c514c041a0f6088669017bbe5c6d6263517019e233bf76c94fc5ddb5180b",
+          "mobile": "58b7d538eaf0ef204d4ca113a908c03c:2f98d14baea703f4f82e91ea07e6c9f2",
+          "shirtSize": "L",
+          "pantSize": "36",
+          "shoeSize": "9",
+          "address": "9ec01bd335dddced879deb1d1106b6ce:563a17b35800c782f1c51e045c526f80c2d28423d055c4ddd523ee69b103e732",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 2,
+            "shoe": 2,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "direct",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2020-09-19T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.436Z",
+          "updatedAt": "2025-12-13T17:58:35.436Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587b3",
+          "id": "300039",
+          "employeeId": "300039",
+          "firstName": "d1b7ac522e1a34d46ac0ef3f620de447:e36950300dad1598275188cc3c69c142",
+          "lastName": "f0a3168f51562a4f8e841d6db577c1fa:ddc8e8e74172ad1a1cb60c10eaf5b1ca",
+          "designation": "14ac26b01d76b0aaf3a430670b51c70c:8290d0051c4783ed2a8fe745df044cfb8994d8d49414de6174f4bec0715088a2",
+          "gender": "male",
+          "location": "Hyderabad",
+          "email": "fd36c21ffd860bbc5bfc4980f76ae7c9:759036564200b816334819c7d00b16f39a0a5c2e57a4cb60d4a070607165d1aa",
+          "mobile": "e4239b0e2291efee73f281648f55393d:690eaf83dae39499e3f265bb771e62b6",
+          "shirtSize": "XL",
+          "pantSize": "30",
+          "shoeSize": "7",
+          "address": "ddbb83ae382990a1024438a530f4f75f:9f7451d3f17a32fe28542729521e7d8ef863f79cf577096744f2a4ee36ec392b",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 3,
+            "shoe": 2,
+            "jacket": 2
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2023-05-04T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.507Z",
+          "updatedAt": "2025-12-13T17:58:35.507Z"
+        },
+        {
+          "_id": "693da94bd7198d53b0f587b4",
+          "id": "300040",
+          "employeeId": "300040",
+          "firstName": "61af994381a6e1cfd5b99f68f761889f:288bcd1e22057b091665a1057bfff4b4",
+          "lastName": "c4382d5705bda05726e0071f772d018c:57f3abb3e555932a0243c208220a979f",
+          "designation": "3500ceaf00cc4ea91cc5cb611dab6965:47703f0c1cdd3ccf0705576332f017a3",
+          "gender": "female",
+          "location": "Pune",
+          "email": "bcf6a8679908603a50423b764e572999:d689248f5c77880b3730c69ffe3bf7b3365ec44c9aec6e89d636fbf7042b22bf",
+          "mobile": "c9481b8d5fbc8daa4b2f103e116ac312:ba9073af8c13d67e17385826bdee9608",
+          "shirtSize": "XL",
+          "pantSize": "28",
+          "shoeSize": "10",
+          "address": "fbb14132211a57f2121a2e37340b9e2c:423e2ea4eabf56700d2606c63d562e18c3e0612daf78602f30f5b699b56bf012",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "locationId": "693da6f17b7d01ca80d4f865",
+          "eligibility": {
+            "shirt": 5,
+            "pant": 2,
+            "shoe": 3,
+            "jacket": 1
+          },
+          "cycleDuration": {
+            "shirt": 6,
+            "pant": 6,
+            "shoe": 12,
+            "jacket": 12
+          },
+          "dispatchPreference": "regional",
+          "status": "active",
+          "period": "2024-2025",
+          "dateOfJoining": "2021-07-07T18:30:00.000Z",
+          "createdAt": "2025-12-13T17:58:35.568Z",
+          "updatedAt": "2025-12-13T17:58:35.568Z"
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "email": 1
+          },
+          "name": "email_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "branchId": 1
+          },
+          "name": "branchId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "status": 1
+          },
+          "name": "companyId_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "locationId": 1
+          },
+          "name": "locationId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "locationId": 1,
+            "status": 1
+          },
+          "name": "locationId_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "locationId": 1
+          },
+          "name": "companyId_1_locationId_1",
+          "background": true
+        }
+      ],
+      "count": 40
+    },
+    "designationproducteligibilities": {
+      "documents": [
+        {
+          "_id": "693d7c796a37697609a90876",
+          "id": "DESIG-ELIG-000001",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "designation": "ZFyZ8SX7Cpu5mhQDabhv8g==:u3xQnPYvbpQ/ZlotX0TzMg==",
+          "gender": "male",
+          "allowedProductCategories": [
+            "blazer",
+            "shirt",
+            "shoe",
+            "trouser"
+          ],
+          "itemEligibility": {
+            "shirt": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "trouser": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "pant": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "shoe": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "blazer": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "jacket": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "_id": "693d7c796a37697609a90877"
+          },
+          "status": "active",
+          "createdAt": "2025-12-13T14:47:21.362Z",
+          "updatedAt": "2025-12-13T14:47:21.362Z",
+          "__v": 0
+        },
+        {
+          "_id": "693d7ca46a37697609a90882",
+          "id": "DESIG-ELIG-000002",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "designation": "71ymTdcy6s/MnhViN0U4jg==:9v/UBoiiBNiEeWyqWscrXg==",
+          "gender": "female",
+          "allowedProductCategories": [
+            "blazer",
+            "shirt",
+            "shoe",
+            "trouser"
+          ],
+          "itemEligibility": {
+            "shirt": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "trouser": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "pant": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "shoe": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "blazer": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "jacket": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "_id": "693d7ca46a37697609a90883"
+          },
+          "status": "active",
+          "createdAt": "2025-12-13T14:48:04.257Z",
+          "updatedAt": "2025-12-13T14:48:04.257Z",
+          "__v": 0
+        },
+        {
+          "_id": "693d7cbc6a37697609a9088e",
+          "id": "DESIG-ELIG-000003",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "designation": "pLcuDHkqqCIjuRbV2OiLsg==:I/74B56nOrjjLLhpdTXRjA==",
+          "gender": "male",
+          "allowedProductCategories": [
+            "shirt",
+            "shoe",
+            "trouser"
+          ],
+          "itemEligibility": {
+            "shirt": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "trouser": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "pant": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "shoe": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "_id": "693d7cbc6a37697609a9088f"
+          },
+          "status": "active",
+          "createdAt": "2025-12-13T14:48:28.900Z",
+          "updatedAt": "2025-12-13T14:48:28.900Z",
+          "__v": 0
+        },
+        {
+          "_id": "693d7ccc6a37697609a9089a",
+          "id": "DESIG-ELIG-000004",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyName": "Indigo",
+          "designation": "FmjiMskSrNBjLq4bOpkwjQ==:p3FRm9WJ7coufTsEfulzzw==",
+          "gender": "female",
+          "allowedProductCategories": [
+            "shirt",
+            "shoe",
+            "trouser"
+          ],
+          "itemEligibility": {
+            "shirt": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "trouser": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "pant": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "shoe": {
+              "quantity": 2,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "_id": "693d7ccc6a37697609a9089b"
+          },
+          "status": "active",
+          "createdAt": "2025-12-13T14:48:44.740Z",
+          "updatedAt": "2025-12-13T14:48:44.740Z",
+          "__v": 0
+        },
+        {
+          "_id": "694278c050a2f9b1515292f9",
+          "id": "DESIG-ELIG-000005",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyName": "ICICI Bank",
+          "designation": "Cashier",
+          "gender": "male",
+          "allowedProductCategories": [
+            "shirt",
+            "shoe",
+            "trouser",
+            "accessory"
+          ],
+          "itemEligibility": {
+            "shirt": {
+              "quantity": 15,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "trouser": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "pant": {
+              "quantity": 3,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "shoe": {
+              "quantity": 1,
+              "renewalFrequency": 6,
+              "renewalUnit": "months"
+            },
+            "_id": "694278c050a2f9b1515292fa"
+          },
+          "status": "active",
+          "createdAt": "2025-12-17T09:32:48.274Z",
+          "updatedAt": "2025-12-17T11:33:21.331Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "designation": 1,
+            "gender": 1,
+            "status": 1
+          },
+          "name": "companyId_1_designation_1_gender_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "designation": 1,
+            "status": 1
+          },
+          "name": "companyId_1_designation_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "status": 1
+          },
+          "name": "companyId_1_status_1",
+          "background": true
+        }
+      ],
+      "count": 5
+    },
+    "locations": {
+      "documents": [
+        {
+          "_id": "693da6f07b7d01ca80d4f860",
+          "id": "400001",
+          "name": "Indigo Mumbai Office",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "adminId": "6929b9d9a2fdaf5e8d099e40",
+          "address": "Terminal 2, Chhatrapati Shivaji Maharaj International Airport",
+          "city": "Mumbai",
+          "state": "Maharashtra",
+          "pincode": "400099",
+          "phone": "+91-22-6670-3000",
+          "email": "mumbai.office@indigo.in",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:32.818Z",
+          "updatedAt": "2025-12-13T17:48:32.818Z"
+        },
+        {
+          "_id": "693da6f17b7d01ca80d4f861",
+          "id": "400002",
+          "name": "Indigo Delhi Office",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "adminId": "6929b9d9a2fdaf5e8d099e41",
+          "address": "Terminal 3, Indira Gandhi International Airport",
+          "city": "New Delhi",
+          "state": "Delhi",
+          "pincode": "110037",
+          "phone": "+91-11-4166-6000",
+          "email": "delhi.office@indigo.in",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:33.032Z",
+          "updatedAt": "2025-12-13T17:48:33.032Z"
+        },
+        {
+          "_id": "693da6f17b7d01ca80d4f862",
+          "id": "400003",
+          "name": "Indigo Bangalore Office",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "adminId": "6929b9d9a2fdaf5e8d099e42",
+          "address": "Terminal 1, Kempegowda International Airport",
+          "city": "Bangalore",
+          "state": "Karnataka",
+          "pincode": "560300",
+          "phone": "+91-80-6678-4000",
+          "email": "bangalore.office@indigo.in",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:33.208Z",
+          "updatedAt": "2025-12-13T17:48:33.208Z"
+        },
+        {
+          "_id": "693da6f17b7d01ca80d4f863",
+          "id": "400004",
+          "name": "ICICI Bank Mumbai Branch",
+          "companyId": "693d8ce66a37697609a911b5",
+          "adminId": "693da949d7198d53b0f5879a",
+          "address": "ICICI Bank Tower, Bandra Kurla Complex",
+          "city": "Mumbai",
+          "state": "Maharashtra",
+          "pincode": "400051",
+          "phone": "+91-22-2653-1414",
+          "email": "mumbai.branch@icicibank.com",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:33.408Z",
+          "updatedAt": "2025-12-15T15:13:59.121Z"
+        },
+        {
+          "_id": "693da6f17b7d01ca80d4f864",
+          "id": "400005",
+          "name": "ICICI Bank Delhi Branch",
+          "companyId": "693d8ce66a37697609a911b5",
+          "adminId": "693da94ad7198d53b0f587a3",
+          "address": "ICICI Bank Building, Connaught Place",
+          "city": "New Delhi",
+          "state": "Delhi",
+          "pincode": "110001",
+          "phone": "+91-11-4150-1414",
+          "email": "delhi.branch@icicibank.com",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:33.554Z",
+          "updatedAt": "2025-12-15T15:13:41.721Z"
+        },
+        {
+          "_id": "693da6f17b7d01ca80d4f865",
+          "id": "400006",
+          "name": "ICICI Bank Chennai Branch",
+          "companyId": "693d8ce66a37697609a911b5",
+          "adminId": "693da94bd7198d53b0f587ac",
+          "address": "ICICI Bank, T Nagar",
+          "city": "Chennai",
+          "state": "Tamil Nadu",
+          "pincode": "600017",
+          "phone": "+91-44-2834-1414",
+          "email": "chennai.branch@icicibank.com",
+          "status": "active",
+          "createdAt": "2025-12-13T17:48:33.687Z",
+          "updatedAt": "2025-12-15T12:41:03.853Z"
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "adminId": 1
+          },
+          "name": "adminId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "status": 1
+          },
+          "name": "companyId_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "name": 1
+          },
+          "name": "companyId_1_name_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 6
+    },
+    "orders": {
+      "documents": [
+        {
+          "_id": "693d81eb6a37697609a90b35",
+          "id": "ORD-1765638635900-LU1V6AE90-100001",
+          "employeeId": "6929b9d9a2fdaf5e8d099e42",
+          "employeeIdNum": "300003",
+          "employeeName": "Amit Patel",
+          "items": [
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e4f",
+              "productId": "200001",
+              "uniformName": "Formal Shirt - Male",
+              "size": "XL",
+              "quantity": 1,
+              "price": 499,
+              "_id": "693d81eb6a37697609a90b36"
+            },
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e51",
+              "productId": "200003",
+              "uniformName": "Formal Trousers - Male",
+              "size": "36",
+              "quantity": 1,
+              "price": 699,
+              "_id": "693d81eb6a37697609a90b37"
+            }
+          ],
+          "total": 1198,
+          "status": "Delivered",
+          "orderDate": "2025-12-13T15:10:35.900Z",
+          "dispatchLocation": "regional",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyIdNum": 100001,
+          "deliveryAddress": "C-789, Koramangala, Bangalore, Karnataka 560095",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765638635900-LU1V6AE90",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-13T15:10:35.903Z",
+          "updatedAt": "2025-12-13T15:21:21.555Z",
+          "__v": 0
+        },
+        {
+          "_id": "693d81ec6a37697609a90b3e",
+          "id": "ORD-1765638635900-LU1V6AE90-100002",
+          "employeeId": "6929b9d9a2fdaf5e8d099e42",
+          "employeeIdNum": "300003",
+          "employeeName": "Amit Patel",
+          "items": [
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e53",
+              "productId": "200005",
+              "uniformName": "Leather Dress Shoes - Male",
+              "size": "11",
+              "quantity": 1,
+              "price": 1299,
+              "_id": "693d81ec6a37697609a90b3f"
+            }
+          ],
+          "total": 1299,
+          "status": "Delivered",
+          "orderDate": "2025-12-13T15:10:36.008Z",
+          "dispatchLocation": "regional",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyIdNum": 100001,
+          "deliveryAddress": "C-789, Koramangala, Bangalore, Karnataka 560095",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765638635900-LU1V6AE90",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "vendorName": "Footwear Plus",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-13T15:10:36.010Z",
+          "updatedAt": "2025-12-13T15:22:24.807Z",
+          "__v": 0
+        },
+        {
+          "_id": "693d862f6a37697609a90e29",
+          "id": "ORD-1765639727906-K1ZMZYU1E-100001",
+          "employeeId": "6929b9d9a2fdaf5e8d099e47",
+          "employeeIdNum": "300008",
+          "employeeName": "Rohit Gupta",
+          "items": [
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e4f",
+              "productId": "200001",
+              "uniformName": "Formal Shirt - Male",
+              "size": "XL",
+              "quantity": 1,
+              "price": 499,
+              "_id": "693d862f6a37697609a90e2a"
+            }
+          ],
+          "total": 499,
+          "status": "Delivered",
+          "orderDate": "2025-12-13T15:28:47.907Z",
+          "dispatchLocation": "regional",
+          "companyId": "6929b9d9a2fdaf5e8d099e3a",
+          "companyIdNum": 100001,
+          "deliveryAddress": "F-303, Indiranagar, Bangalore, Karnataka 560038",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765639727906-K1ZMZYU1E",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-13T15:28:47.913Z",
+          "updatedAt": "2025-12-13T15:36:22.751Z",
+          "__v": 0
+        },
+        {
+          "_id": "693db9e1d6ce9c13449cd9ef",
+          "id": "ORD-1765652961649-4ZMRWCRMB-100001",
+          "employeeId": "693da94bd7198d53b0f587ac",
+          "employeeIdNum": "300032",
+          "employeeName": "Anjali Singh",
+          "items": [
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e50",
+              "productId": "200002",
+              "uniformName": "Formal Shirt - Female",
+              "size": "XL",
+              "quantity": 1,
+              "price": 499,
+              "_id": "693db9e1d6ce9c13449cd9f0"
+            }
+          ],
+          "total": 499,
+          "status": "Delivered",
+          "orderDate": "2025-12-13T19:09:21.649Z",
+          "dispatchLocation": "central",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "5-7 business days",
+          "parentOrderId": "ORD-1765652961649-4ZMRWCRMB",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-13T19:09:21.658Z",
+          "updatedAt": "2025-12-14T07:18:46.297Z",
+          "__v": 0
+        },
+        {
+          "_id": "694119142ad735c08c105845",
+          "id": "ORD-1765873940685-ZZM6XCD9J-100001",
+          "employeeId": "693da949d7198d53b0f5879d",
+          "employeeIdNum": "300017",
+          "employeeName": "Vikram Gupta",
+          "items": [
+            {
+              "uniformId": "6929b9d9a2fdaf5e8d099e4f",
+              "productId": "200001",
+              "uniformName": "Formal Shirt - Male",
+              "size": "S",
+              "quantity": 2,
+              "price": 499,
+              "_id": "694119142ad735c08c105846"
+            }
+          ],
+          "total": 998,
+          "status": "Delivered",
+          "orderDate": "2025-12-16T08:32:20.685Z",
+          "dispatchLocation": "regional",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank Tower, Bandra Kurla Complex, Mumbai, Maharashtra, 400051",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765873940685-ZZM6XCD9J",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-16T08:32:20.694Z",
+          "updatedAt": "2025-12-16T08:42:58.089Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942790650a2f9b1515293d9",
+          "id": "ORD-1765964037998-B4C557TUS-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 1,
+              "price": 1399,
+              "_id": "6942790650a2f9b1515293da"
+            },
+            {
+              "uniformId": "6942765b1cab48e899e8bfc9",
+              "productId": "200002",
+              "uniformName": "Denim Shirt - Male",
+              "size": "XXL",
+              "quantity": 1,
+              "price": 1099,
+              "_id": "6942790650a2f9b1515293db"
+            }
+          ],
+          "total": 2498,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T09:33:57.998Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765964037998-B4C557TUS",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T09:33:58.011Z",
+          "updatedAt": "2025-12-17T09:36:10.173Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942790650a2f9b1515293e2",
+          "id": "ORD-1765964037998-B4C557TUS-100002",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765c1cab48e899e8bfe1",
+              "productId": "200008",
+              "uniformName": "Sneakers - Unisex",
+              "size": "10",
+              "quantity": 1,
+              "price": 2299,
+              "_id": "6942790650a2f9b1515293e3"
+            }
+          ],
+          "total": 2299,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T09:33:58.144Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765964037998-B4C557TUS",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "vendorName": "Footwear Plus",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T09:33:58.147Z",
+          "updatedAt": "2025-12-17T09:36:58.940Z",
+          "__v": 0
+        },
+        {
+          "_id": "694293ba89d75bd61488bd7f",
+          "id": "ORD-1765970874026-DRZTSEIZ5-100001",
+          "employeeId": "693da949d7198d53b0f5879d",
+          "employeeIdNum": "300017",
+          "employeeName": "Vikram Gupta",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 4,
+              "price": 1399,
+              "_id": "694293ba89d75bd61488bd80"
+            }
+          ],
+          "total": 5596,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T11:27:54.026Z",
+          "dispatchLocation": "regional",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank Tower, Bandra Kurla Complex, Mumbai, Maharashtra, 400051",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765970874026-DRZTSEIZ5",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T11:27:54.041Z",
+          "updatedAt": "2025-12-17T11:28:45.860Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942952289d75bd61488c027",
+          "id": "ORD-1765971234423-4XLJC3CV5-100001",
+          "employeeId": "693da949d7198d53b0f5879d",
+          "employeeIdNum": "300017",
+          "employeeName": "Vikram Gupta",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 3,
+              "price": 1399,
+              "_id": "6942952289d75bd61488c028"
+            }
+          ],
+          "total": 4197,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T11:33:54.423Z",
+          "dispatchLocation": "regional",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank Tower, Bandra Kurla Complex, Mumbai, Maharashtra, 400051",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765971234423-4XLJC3CV5",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T11:33:54.429Z",
+          "updatedAt": "2025-12-17T11:34:28.741Z",
+          "__v": 0
+        },
+        {
+          "_id": "69429bc889d75bd61488c279",
+          "id": "ORD-1765972936046-MK77PX5YV-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 3,
+              "price": 1399,
+              "_id": "69429bc889d75bd61488c27a"
+            }
+          ],
+          "total": 4197,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T12:02:16.046Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765972936046-MK77PX5YV",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T12:02:16.051Z",
+          "updatedAt": "2025-12-17T12:03:02.666Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942a0a5400250488037b8a3",
+          "id": "ORD-1765974181943-7KS0CZ9Q2-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1399,
+              "_id": "6942a0a5400250488037b8a4"
+            }
+          ],
+          "total": 2798,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T12:23:01.944Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765974181943-7KS0CZ9Q2",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T12:23:01.955Z",
+          "updatedAt": "2025-12-17T12:23:51.338Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942aeeb400250488037bb17",
+          "id": "ORD-1765977835074-BOGZR0GGC-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 3,
+              "price": 1399,
+              "_id": "6942aeeb400250488037bb18"
+            }
+          ],
+          "total": 4197,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T13:23:55.074Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765977835074-BOGZR0GGC",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T13:23:55.078Z",
+          "updatedAt": "2025-12-17T13:24:44.044Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942b686dd7484dd8e101a07",
+          "id": "ORD-1765979782714-TTY4R1CLJ-100001",
+          "employeeId": "693da949d7198d53b0f5879d",
+          "employeeIdNum": "300017",
+          "employeeName": "Vikram Gupta",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1399,
+              "_id": "6942b686dd7484dd8e101a08"
+            }
+          ],
+          "total": 2798,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T13:56:22.714Z",
+          "dispatchLocation": "regional",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank Tower, Bandra Kurla Complex, Mumbai, Maharashtra, 400051",
+          "estimatedDeliveryTime": "7-10 business days",
+          "parentOrderId": "ORD-1765979782714-TTY4R1CLJ",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T13:56:22.720Z",
+          "updatedAt": "2025-12-17T14:08:30.382Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942b6c6dd7484dd8e101b45",
+          "id": "ORD-1765979846179-A7R0I0K0I-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1399,
+              "_id": "6942b6c6dd7484dd8e101b46"
+            }
+          ],
+          "total": 2798,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T13:57:26.179Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765979846179-A7R0I0K0I",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T13:57:26.183Z",
+          "updatedAt": "2025-12-17T13:58:26.313Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942ba07dd7484dd8e101f34",
+          "id": "ORD-1765980679699-43PK35O9Q-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1399,
+              "_id": "6942ba07dd7484dd8e101f35"
+            }
+          ],
+          "total": 2798,
+          "status": "Dispatched",
+          "orderDate": "2025-12-17T14:11:19.699Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765980679699-43PK35O9Q",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T14:11:19.708Z",
+          "updatedAt": "2025-12-17T14:12:11.798Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942bc36dd7484dd8e1020c4",
+          "id": "ORD-1765981238450-MTQ2OS4LB-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 1,
+              "price": 1399,
+              "_id": "6942bc36dd7484dd8e1020c5"
+            }
+          ],
+          "total": 1399,
+          "status": "Dispatched",
+          "orderDate": "2025-12-17T14:20:38.451Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765981238450-MTQ2OS4LB",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": false,
+          "personalPaymentAmount": 0,
+          "createdAt": "2025-12-17T14:20:38.456Z",
+          "updatedAt": "2025-12-17T14:21:27.624Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942bfd1481aca7f4e8ee25e",
+          "id": "ORD-1765982161217-2HBGK7YW9-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1399,
+              "_id": "6942bfd1481aca7f4e8ee25f"
+            },
+            {
+              "uniformId": "6942765b1cab48e899e8bfc9",
+              "productId": "200002",
+              "uniformName": "Denim Shirt - Male",
+              "size": "XXL",
+              "quantity": 2,
+              "price": 1099,
+              "_id": "6942bfd1481aca7f4e8ee260"
+            }
+          ],
+          "total": 4996,
+          "status": "Dispatched",
+          "orderDate": "2025-12-17T14:36:01.217Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765982161217-2HBGK7YW9",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": true,
+          "personalPaymentAmount": 9594,
+          "createdAt": "2025-12-17T14:36:01.234Z",
+          "updatedAt": "2025-12-17T14:39:16.599Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942bfd1481aca7f4e8ee267",
+          "id": "ORD-1765982161217-2HBGK7YW9-100002",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765c1cab48e899e8bfe1",
+              "productId": "200008",
+              "uniformName": "Sneakers - Unisex",
+              "size": "10",
+              "quantity": 2,
+              "price": 2299,
+              "_id": "6942bfd1481aca7f4e8ee268"
+            }
+          ],
+          "total": 4598,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T14:36:01.366Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765982161217-2HBGK7YW9",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "vendorName": "Footwear Plus",
+          "isPersonalPayment": true,
+          "personalPaymentAmount": 9594,
+          "createdAt": "2025-12-17T14:36:01.369Z",
+          "updatedAt": "2025-12-17T14:53:19.465Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942c19d481aca7f4e8ee55b",
+          "id": "ORD-1765982621280-6HBY1KE84-100001",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765b1cab48e899e8bfc5",
+              "productId": "200001",
+              "uniformName": "Oxford Shirt - Male",
+              "size": "XXL",
+              "quantity": 1,
+              "price": 1399,
+              "_id": "6942c19d481aca7f4e8ee55c"
+            },
+            {
+              "uniformId": "6942765b1cab48e899e8bfc9",
+              "productId": "200002",
+              "uniformName": "Denim Shirt - Male",
+              "size": "XXL",
+              "quantity": 1,
+              "price": 1099,
+              "_id": "6942c19d481aca7f4e8ee55d"
+            }
+          ],
+          "total": 2498,
+          "status": "Awaiting fulfilment",
+          "orderDate": "2025-12-17T14:43:41.280Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765982621280-6HBY1KE84",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "vendorName": "UniformPro Inc",
+          "isPersonalPayment": true,
+          "personalPaymentAmount": 4797,
+          "createdAt": "2025-12-17T14:43:41.287Z",
+          "updatedAt": "2025-12-17T14:44:58.522Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942c19d481aca7f4e8ee564",
+          "id": "ORD-1765982621280-6HBY1KE84-100002",
+          "employeeId": "693da94ad7198d53b0f587ab",
+          "employeeIdNum": "300031",
+          "employeeName": "Ajay Jain",
+          "items": [
+            {
+              "uniformId": "6942765c1cab48e899e8bfe1",
+              "productId": "200008",
+              "uniformName": "Sneakers - Unisex",
+              "size": "10",
+              "quantity": 1,
+              "price": 2299,
+              "_id": "6942c19d481aca7f4e8ee565"
+            }
+          ],
+          "total": 2299,
+          "status": "Delivered",
+          "orderDate": "2025-12-17T14:43:41.491Z",
+          "dispatchLocation": "direct",
+          "companyId": "693d8ce66a37697609a911b5",
+          "companyIdNum": 100004,
+          "deliveryAddress": "ICICI Bank, T Nagar, Chennai, Tamil Nadu, 600017",
+          "estimatedDeliveryTime": "3-5 business days",
+          "parentOrderId": "ORD-1765982621280-6HBY1KE84",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "vendorName": "Footwear Plus",
+          "isPersonalPayment": true,
+          "personalPaymentAmount": 4797,
+          "createdAt": "2025-12-17T14:43:41.494Z",
+          "updatedAt": "2025-12-17T14:53:23.466Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1
+          },
+          "name": "employeeId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "parentOrderId": 1
+          },
+          "name": "parentOrderId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1
+          },
+          "name": "vendorId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeId": 1,
+            "companyId": 1
+          },
+          "name": "employeeId_1_companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1,
+            "status": 1
+          },
+          "name": "companyId_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "orderDate": -1
+          },
+          "name": "orderDate_-1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeIdNum": 1
+          },
+          "name": "employeeIdNum_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "items.productId": 1
+          },
+          "name": "items.productId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyIdNum": 1
+          },
+          "name": "companyIdNum_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "employeeIdNum": 1,
+            "companyIdNum": 1
+          },
+          "name": "employeeIdNum_1_companyIdNum_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyIdNum": 1,
+            "status": 1
+          },
+          "name": "companyIdNum_1_status_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "parentOrderId": 1,
+            "vendorId": 1
+          },
+          "name": "parentOrderId_1_vendorId_1",
+          "background": true
+        }
+      ],
+      "count": 20
+    },
+    "vendorcompanies": {
+      "documents": [],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1
+          },
+          "name": "vendorId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1,
+            "companyId": 1
+          },
+          "name": "vendorId_1_companyId_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 0
+    },
+    "vendors": {
+      "documents": [
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3f",
+          "id": "100003",
+          "name": "Elite Uniforms",
+          "email": "sales@eliteuniforms.com",
+          "phone": "+1-555-0103",
+          "logo": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200",
+          "website": "https://eliteuniforms.com",
+          "primaryColor": "#7c3aed",
+          "secondaryColor": "#6d28d9",
+          "accentColor": "#8b5cf6",
+          "theme": "light",
+          "createdAt": "2025-11-13T07:49:45.648Z",
+          "updatedAt": "2025-11-13T07:49:45.648Z",
+          "__v": 0
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3e",
+          "id": "100002",
+          "name": "Footwear Plus",
+          "email": "info@footwearplus.com",
+          "phone": "+1-555-0102",
+          "logo": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200",
+          "website": "https://footwearplus.com",
+          "primaryColor": "#059669",
+          "secondaryColor": "#047857",
+          "accentColor": "#10b981",
+          "theme": "light",
+          "createdAt": "2025-11-13T07:49:45.640Z",
+          "updatedAt": "2025-11-13T07:49:45.640Z",
+          "__v": 0
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3d",
+          "id": "100001",
+          "name": "UniformPro Inc",
+          "email": "contact@uniformpro.com",
+          "phone": "+1-555-0101",
+          "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200",
+          "website": "https://uniformpro.com",
+          "primaryColor": "#2563eb",
+          "secondaryColor": "#1e40af",
+          "accentColor": "#3b82f6",
+          "theme": "light",
+          "createdAt": "2025-11-13T07:49:45.113Z",
+          "updatedAt": "2025-11-13T07:49:45.113Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "email": 1
+          },
+          "name": "email_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 3
+    },
+    "branches": {
+      "documents": [],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "companyId": 1
+          },
+          "name": "companyId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "adminId": 1
+          },
+          "name": "adminId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "status": 1
+          },
+          "name": "status_1",
+          "background": true
+        }
+      ],
+      "count": 0
+    },
+    "companies": {
+      "documents": [
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3c",
+          "id": "100003",
+          "name": "Air India",
+          "logo": "https://www.airindia.com/images/air-india-logo.svg",
+          "website": "https://www.airindia.com",
+          "primaryColor": "#FF0000",
+          "createdAt": "2025-11-13T07:49:45.673Z",
+          "updatedAt": "2025-11-14T10:29:28.908Z",
+          "__v": 0,
+          "showPrices": false
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3b",
+          "id": "100002",
+          "name": "Akasa Air",
+          "logo": "https://www.akasaair.com/images/akasa-logo.svg",
+          "website": "https://www.akasaair.com",
+          "primaryColor": "#FF6B35",
+          "createdAt": "2025-11-13T07:49:45.667Z",
+          "updatedAt": "2025-11-14T10:29:28.908Z",
+          "__v": 0,
+          "showPrices": false
+        },
+        {
+          "_id": "6929b9d9a2fdaf5e8d099e3a",
+          "id": "100001",
+          "name": "Indigo",
+          "logo": "https://www.goindigo.in/content/dam/indigov2/6e-website/global/logo.svg",
+          "website": "https://www.goindigo.in",
+          "primaryColor": "#004080",
+          "createdAt": "2025-11-13T07:49:45.660Z",
+          "updatedAt": "2025-11-14T11:00:19.082Z",
+          "__v": 0,
+          "showPrices": false,
+          "adminId": "69158d991c5e59daf77a0c79"
+        },
+        {
+          "_id": "693d8ce66a37697609a911b5",
+          "id": "100004",
+          "name": "ICICI Bank",
+          "logo": "https://www.icicibank.com/logo.png",
+          "website": "https://www.icicibank.com",
+          "primaryColor": "#f76b1c",
+          "secondaryColor": "#f3b712",
+          "showPrices": false,
+          "allowPersonalPayments": true,
+          "createdAt": "2025-12-13T15:57:26.402Z",
+          "updatedAt": "2025-12-17T14:23:16.726Z",
+          "__v": 0,
+          "allowPersonalAddressDelivery": false,
+          "enableEmployeeOrder": true
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "adminId": 1
+          },
+          "name": "adminId_1",
+          "background": true
+        }
+      ],
+      "count": 4
+    },
+    "vendorinventories": {
+      "documents": [
+        {
+          "_id": "6942773350a2f9b1515291a3",
+          "id": "VEND-INV-1765963571230-NLKUG",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "productId": "6942765b1cab48e899e8bfc5",
+          "sizeInventory": {
+            "S": 100,
+            "M": 100,
+            "L": 100,
+            "XL": 100,
+            "XXL": 97
+          },
+          "totalStock": 497,
+          "lowInventoryThreshold": {
+            "S": 20,
+            "M": 20,
+            "L": 20,
+            "XL": 20,
+            "XXL": 20
+          },
+          "createdAt": "2025-12-17T09:26:11.270Z",
+          "updatedAt": "2025-12-17T14:39:16.904Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942773350a2f9b1515291aa",
+          "id": "VEND-INV-1765963571495-WDXCZ",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "productId": "6942765b1cab48e899e8bfc9",
+          "sizeInventory": {
+            "S": 50,
+            "M": 50,
+            "L": 50,
+            "XL": 50,
+            "XXL": 0
+          },
+          "totalStock": 200,
+          "lowInventoryThreshold": {
+            "S": 10,
+            "M": 10,
+            "L": 10,
+            "XL": 10
+          },
+          "createdAt": "2025-12-17T09:26:11.532Z",
+          "updatedAt": "2025-12-17T14:39:17.402Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942774a50a2f9b1515291b5",
+          "id": "VEND-INV-1765963594823-DTO4O",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "productId": "6942765c1cab48e899e8bfdd",
+          "sizeInventory": {
+            "5": 50,
+            "6": 10,
+            "7": 10,
+            "8": 10,
+            "9": 10
+          },
+          "totalStock": 90,
+          "lowInventoryThreshold": {
+            "5": 3,
+            "6": 3,
+            "7": 3,
+            "8": 3,
+            "9": 3
+          },
+          "createdAt": "2025-12-17T09:26:34.851Z",
+          "updatedAt": "2025-12-17T14:55:43.062Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942774b50a2f9b1515291bc",
+          "id": "VEND-INV-1765963595048-IDQFO",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+          "productId": "6942765c1cab48e899e8bfe1",
+          "sizeInventory": {
+            "6": 50,
+            "7": 50,
+            "8": 50,
+            "9": 50,
+            "10": 44,
+            "11": 50
+          },
+          "totalStock": 294,
+          "lowInventoryThreshold": {
+            "6": 10,
+            "7": 10,
+            "8": 10,
+            "9": 10,
+            "10": 10,
+            "11": 10
+          },
+          "createdAt": "2025-12-17T09:26:35.080Z",
+          "updatedAt": "2025-12-17T14:53:23.671Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942776d50a2f9b1515291c4",
+          "id": "VEND-INV-1765963629856-28GN0",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+          "productId": "6942765b1cab48e899e8bfcd",
+          "sizeInventory": {
+            "XS": 0,
+            "S": 0,
+            "M": 0,
+            "L": 0,
+            "XL": 0
+          },
+          "totalStock": 0,
+          "lowInventoryThreshold": {
+            "XS": 0,
+            "S": 0,
+            "M": 0,
+            "L": 0,
+            "XL": 0
+          },
+          "createdAt": "2025-12-17T09:27:09.884Z",
+          "updatedAt": "2025-12-17T09:27:09.884Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942776e50a2f9b1515291cb",
+          "id": "VEND-INV-1765963630074-P4EUU",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+          "productId": "6942765c1cab48e899e8bfd5",
+          "sizeInventory": {
+            "26": 0,
+            "28": 0,
+            "30": 0,
+            "32": 0,
+            "34": 0
+          },
+          "totalStock": 0,
+          "lowInventoryThreshold": {
+            "26": 0,
+            "28": 0,
+            "30": 0,
+            "32": 0,
+            "34": 0
+          },
+          "createdAt": "2025-12-17T09:27:10.100Z",
+          "updatedAt": "2025-12-17T09:27:10.100Z",
+          "__v": 0
+        },
+        {
+          "_id": "6942783050a2f9b151529279",
+          "id": "VEND-INV-1765963824883-OS2JX",
+          "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+          "productId": "6942765c1cab48e899e8bfd9",
+          "sizeInventory": {
+            "7": 25,
+            "8": 25,
+            "9": 25,
+            "10": 25,
+            "11": 25
+          },
+          "totalStock": 125,
+          "lowInventoryThreshold": {
+            "7": 5,
+            "8": 5,
+            "9": 5,
+            "10": 5,
+            "11": 5
+          },
+          "createdAt": "2025-12-17T09:30:24.918Z",
+          "updatedAt": "2025-12-17T09:31:38.789Z",
+          "__v": 0
+        }
+      ],
+      "indexes": [
+        {
+          "v": 2,
+          "key": {
+            "_id": 1
+          },
+          "name": "_id_"
+        },
+        {
+          "v": 2,
+          "key": {
+            "id": 1
+          },
+          "name": "id_1",
+          "background": true,
+          "unique": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1
+          },
+          "name": "vendorId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "productId": 1
+          },
+          "name": "productId_1",
+          "background": true
+        },
+        {
+          "v": 2,
+          "key": {
+            "vendorId": 1,
+            "productId": 1
+          },
+          "name": "vendorId_1_productId_1",
+          "background": true,
+          "unique": true
+        }
+      ],
+      "count": 7
+    }
+  }
+}

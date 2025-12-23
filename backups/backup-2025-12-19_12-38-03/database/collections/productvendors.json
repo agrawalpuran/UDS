@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "69427733a060f4176e0f05ca",
+    "productId": "6942765b1cab48e899e8bfc5",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:26:11.120Z",
+    "updatedAt": "2025-12-17T09:26:11.120Z"
+  },
+  {
+    "_id": "69427733a060f4176e0f05cb",
+    "productId": "6942765b1cab48e899e8bfc9",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:26:11.405Z",
+    "updatedAt": "2025-12-17T09:26:11.405Z"
+  },
+  {
+    "_id": "6942774aa060f4176e0f05cd",
+    "productId": "6942765c1cab48e899e8bfdd",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:26:34.746Z",
+    "updatedAt": "2025-12-17T09:26:34.746Z"
+  },
+  {
+    "_id": "6942774aa060f4176e0f05ce",
+    "productId": "6942765c1cab48e899e8bfe1",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3e",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:26:34.963Z",
+    "updatedAt": "2025-12-17T09:26:34.963Z"
+  },
+  {
+    "_id": "6942776da060f4176e0f05d1",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+    "productId": "6942765b1cab48e899e8bfcd",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:27:09.774Z",
+    "updatedAt": "2025-12-17T09:27:09.774Z"
+  },
+  {
+    "_id": "6942776da060f4176e0f05d2",
+    "productId": "6942765c1cab48e899e8bfd5",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3f",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:27:09.996Z",
+    "updatedAt": "2025-12-17T09:27:09.996Z"
+  },
+  {
+    "_id": "69427830a060f4176e0f05d6",
+    "productId": "6942765c1cab48e899e8bfd9",
+    "vendorId": "6929b9d9a2fdaf5e8d099e3d",
+    "__v": 0,
+    "createdAt": "2025-12-17T09:30:24.781Z",
+    "updatedAt": "2025-12-17T09:30:24.781Z"
+  }
+]

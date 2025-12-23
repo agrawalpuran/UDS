@@ -17,8 +17,18 @@ export async function GET(request: Request) {
     }
 
     if (vendorId) {
+      // 🔍 INSTRUMENTATION: API boundary
+      console.log('[API] /api/products GET - vendorId received:', vendorId, 'type:', typeof vendorId)
+      
       // Get products linked to this vendor via ProductVendor relationships
       const products = await getProductsByVendor(vendorId)
+      
+      console.log('[API] /api/products GET - products returned:', {
+        count: products?.length || 0,
+        isArray: Array.isArray(products),
+        sample: products?.[0] || null
+      })
+      
       return NextResponse.json(products)
     }
 
@@ -79,6 +89,27 @@ export async function PUT(request: Request) {
     }
     
     const updateData = await request.json()
+    
+    // If vendorId is provided in updateData, validate vendor ownership
+    if (updateData.vendorId) {
+      console.log(`[API] /api/products PUT - Validating vendor ownership for product ${productId}, vendor ${updateData.vendorId}`)
+      
+      // Get products for this vendor
+      const vendorProducts = await getProductsByVendor(updateData.vendorId)
+      const productBelongsToVendor = vendorProducts.some((p: any) => p.id === productId)
+      
+      if (!productBelongsToVendor) {
+        console.error(`[API] /api/products PUT - Vendor ${updateData.vendorId} does not own product ${productId}`)
+        return NextResponse.json({ 
+          error: 'You do not have permission to update this product. It does not belong to your vendor.' 
+        }, { status: 403 })
+      }
+      
+      // Remove vendorId from updateData before passing to updateProduct (vendors cannot change ownership)
+      delete updateData.vendorId
+      console.log(`[API] /api/products PUT - Vendor ownership validated, proceeding with update`)
+    }
+    
     const updatedProduct = await updateProduct(productId, updateData)
     return NextResponse.json(updatedProduct)
   } catch (error: any) {

@@ -1,0 +1,18 @@
+[
+  {
+    "_id": "693aa34c2242f74c17e9dbd8",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "employeeId": "6929b9d9a2fdaf5e8d099e42",
+    "canApproveOrders": true,
+    "createdAt": "2025-12-11T10:56:12.278Z",
+    "updatedAt": "2025-12-11T10:56:12.278Z"
+  },
+  {
+    "_id": "693dab76914cc386f616eb45",
+    "companyId": "693d8ce66a37697609a911b5",
+    "employeeId": "693da949d7198d53b0f5879d",
+    "canApproveOrders": true,
+    "createdAt": "2025-12-13T18:07:50.938Z",
+    "updatedAt": "2025-12-13T18:07:50.938Z"
+  }
+]

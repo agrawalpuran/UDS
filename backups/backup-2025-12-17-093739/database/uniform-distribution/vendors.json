@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e3f",
+    "id": "100003",
+    "name": "Elite Uniforms",
+    "email": "sales@eliteuniforms.com",
+    "phone": "+1-555-0103",
+    "logo": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200",
+    "website": "https://eliteuniforms.com",
+    "primaryColor": "#7c3aed",
+    "secondaryColor": "#6d28d9",
+    "accentColor": "#8b5cf6",
+    "theme": "light",
+    "createdAt": "2025-11-13T07:49:45.648Z",
+    "updatedAt": "2025-11-13T07:49:45.648Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e3e",
+    "id": "100002",
+    "name": "Footwear Plus",
+    "email": "info@footwearplus.com",
+    "phone": "+1-555-0102",
+    "logo": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200",
+    "website": "https://footwearplus.com",
+    "primaryColor": "#059669",
+    "secondaryColor": "#047857",
+    "accentColor": "#10b981",
+    "theme": "light",
+    "createdAt": "2025-11-13T07:49:45.640Z",
+    "updatedAt": "2025-11-13T07:49:45.640Z",
+    "__v": 0
+  },
+  {
+    "_id": "6929b9d9a2fdaf5e8d099e3d",
+    "id": "100001",
+    "name": "UniformPro Inc",
+    "email": "contact@uniformpro.com",
+    "phone": "+1-555-0101",
+    "logo": "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=200",
+    "website": "https://uniformpro.com",
+    "primaryColor": "#2563eb",
+    "secondaryColor": "#1e40af",
+    "accentColor": "#3b82f6",
+    "theme": "light",
+    "createdAt": "2025-11-13T07:49:45.113Z",
+    "updatedAt": "2025-11-13T07:49:45.113Z",
+    "__v": 0
+  }
+]

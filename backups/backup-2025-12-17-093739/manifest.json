@@ -1,0 +1,38 @@
+{
+  "timestamp": "2025-12-17T04:07:39.343Z",
+  "date": "2025-12-17",
+  "time": "093739",
+  "backupType": "full",
+  "application": {
+    "filesCopied": 282,
+    "directories": [
+      "app",
+      "components",
+      "lib",
+      "public",
+      "scripts",
+      "styles",
+      "types"
+    ],
+    "files": [
+      "package.json",
+      "package-lock.json",
+      "next.config.js",
+      "tsconfig.json",
+      "tailwind.config.js",
+      "postcss.config.js",
+      ".eslintrc.json",
+      "README.md"
+    ]
+  },
+  "database": {
+    "name": "uniform-distribution",
+    "backupMethod": "mongodump",
+    "collections": []
+  },
+  "restoreInstructions": {
+    "application": "Copy files from application/ directory to project root",
+    "database": "Use mongorestore to restore database from database/ directory",
+    "notes": "See RESTORE_INSTRUCTIONS.md for detailed steps"
+  }
+}

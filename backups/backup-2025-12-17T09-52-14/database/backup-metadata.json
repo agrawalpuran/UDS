@@ -1,0 +1,76 @@
+{
+  "database": "uniform-distribution",
+  "timestamp": "2025-12-17T09:52:19.009Z",
+  "collections": [
+    {
+      "name": "productcompanies",
+      "count": 8,
+      "indexes": 4
+    },
+    {
+      "name": "uniforms",
+      "count": 10,
+      "indexes": 5
+    },
+    {
+      "name": "companyadmins",
+      "count": 3,
+      "indexes": 4
+    },
+    {
+      "name": "productvendors",
+      "count": 7,
+      "indexes": 4
+    },
+    {
+      "name": "locationadmins",
+      "count": 6,
+      "indexes": 4
+    },
+    {
+      "name": "employees",
+      "count": 40,
+      "indexes": 11
+    },
+    {
+      "name": "designationproducteligibilities",
+      "count": 5,
+      "indexes": 6
+    },
+    {
+      "name": "locations",
+      "count": 6,
+      "indexes": 7
+    },
+    {
+      "name": "orders",
+      "count": 7,
+      "indexes": 16
+    },
+    {
+      "name": "vendorcompanies",
+      "count": 0,
+      "indexes": 4
+    },
+    {
+      "name": "vendors",
+      "count": 3,
+      "indexes": 3
+    },
+    {
+      "name": "branches",
+      "count": 0,
+      "indexes": 5
+    },
+    {
+      "name": "companies",
+      "count": 4,
+      "indexes": 3
+    },
+    {
+      "name": "vendorinventories",
+      "count": 7,
+      "indexes": 5
+    }
+  ]
+}

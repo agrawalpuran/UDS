@@ -1,0 +1,236 @@
+[
+  {
+    "_id": "693d7c796a37697609a90876",
+    "id": "DESIG-ELIG-000001",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "companyName": "Indigo",
+    "designation": "ZFyZ8SX7Cpu5mhQDabhv8g==:u3xQnPYvbpQ/ZlotX0TzMg==",
+    "gender": "male",
+    "allowedProductCategories": [
+      "blazer",
+      "shirt",
+      "shoe",
+      "trouser"
+    ],
+    "itemEligibility": {
+      "shirt": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "trouser": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "pant": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "shoe": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "blazer": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "jacket": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "_id": "693d7c796a37697609a90877"
+    },
+    "status": "active",
+    "createdAt": "2025-12-13T14:47:21.362Z",
+    "updatedAt": "2025-12-13T14:47:21.362Z",
+    "__v": 0
+  },
+  {
+    "_id": "693d7ca46a37697609a90882",
+    "id": "DESIG-ELIG-000002",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "companyName": "Indigo",
+    "designation": "71ymTdcy6s/MnhViN0U4jg==:9v/UBoiiBNiEeWyqWscrXg==",
+    "gender": "female",
+    "allowedProductCategories": [
+      "blazer",
+      "shirt",
+      "shoe",
+      "trouser"
+    ],
+    "itemEligibility": {
+      "shirt": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "trouser": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "pant": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "shoe": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "blazer": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "jacket": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "_id": "693d7ca46a37697609a90883"
+    },
+    "status": "active",
+    "createdAt": "2025-12-13T14:48:04.257Z",
+    "updatedAt": "2025-12-13T14:48:04.257Z",
+    "__v": 0
+  },
+  {
+    "_id": "693d7cbc6a37697609a9088e",
+    "id": "DESIG-ELIG-000003",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "companyName": "Indigo",
+    "designation": "pLcuDHkqqCIjuRbV2OiLsg==:I/74B56nOrjjLLhpdTXRjA==",
+    "gender": "male",
+    "allowedProductCategories": [
+      "shirt",
+      "shoe",
+      "trouser"
+    ],
+    "itemEligibility": {
+      "shirt": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "trouser": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "pant": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "shoe": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "_id": "693d7cbc6a37697609a9088f"
+    },
+    "status": "active",
+    "createdAt": "2025-12-13T14:48:28.900Z",
+    "updatedAt": "2025-12-13T14:48:28.900Z",
+    "__v": 0
+  },
+  {
+    "_id": "693d7ccc6a37697609a9089a",
+    "id": "DESIG-ELIG-000004",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "companyName": "Indigo",
+    "designation": "FmjiMskSrNBjLq4bOpkwjQ==:p3FRm9WJ7coufTsEfulzzw==",
+    "gender": "female",
+    "allowedProductCategories": [
+      "shirt",
+      "shoe",
+      "trouser"
+    ],
+    "itemEligibility": {
+      "shirt": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "trouser": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "pant": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "shoe": {
+        "quantity": 2,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "_id": "693d7ccc6a37697609a9089b"
+    },
+    "status": "active",
+    "createdAt": "2025-12-13T14:48:44.740Z",
+    "updatedAt": "2025-12-13T14:48:44.740Z",
+    "__v": 0
+  },
+  {
+    "_id": "69410d9c2ad735c08c104c19",
+    "id": "DESIG-ELIG-000006",
+    "companyId": "693d8ce66a37697609a911b5",
+    "companyName": "ICICI Bank",
+    "designation": "bNRco9gJ7pvocXqYbUOYkA==:ZflT/S5AHrHqAPUWH+e7Tw==",
+    "gender": "unisex",
+    "allowedProductCategories": [
+      "accessory",
+      "blazer",
+      "shirt",
+      "shoe",
+      "trouser"
+    ],
+    "itemEligibility": {
+      "shirt": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "trouser": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "pant": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "shoe": {
+        "quantity": 1,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "blazer": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "jacket": {
+        "quantity": 3,
+        "renewalFrequency": 6,
+        "renewalUnit": "months"
+      },
+      "_id": "69410d9c2ad735c08c104c1a"
+    },
+    "status": "active",
+    "createdAt": "2025-12-16T07:43:24.721Z",
+    "updatedAt": "2025-12-16T08:10:55.968Z",
+    "__v": 0
+  }
+]

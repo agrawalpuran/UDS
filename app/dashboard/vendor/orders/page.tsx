@@ -62,15 +62,33 @@ export default function VendorOrdersPage() {
 
     try {
       const newStatus = confirmDialog.action === 'shipped' ? 'Dispatched' : 'Delivered'
-      await updateOrderStatus(confirmDialog.orderId, newStatus)
+      console.log(`[Frontend] 🚀 Marking order as ${newStatus}:`, {
+        orderId: confirmDialog.orderId,
+        action: confirmDialog.action,
+        newStatus,
+        timestamp: new Date().toISOString()
+      })
+      
+      const result = await updateOrderStatus(confirmDialog.orderId, newStatus)
+      console.log(`[Frontend] ✅ Order status updated successfully:`, {
+        orderId: confirmDialog.orderId,
+        result: result?.id || result?.status || 'N/A'
+      })
       
       // Reload orders to get updated data
+      console.log(`[Frontend] 🔄 Reloading orders...`)
       await loadOrders()
+      console.log(`[Frontend] ✅ Orders reloaded`)
       
       setConfirmDialog({ show: false, orderId: null, action: null })
-    } catch (error) {
-      console.error('Error updating order status:', error)
-      alert('Failed to update order status. Please try again.')
+    } catch (error: any) {
+      console.error(`[Frontend] ❌ Error updating order status:`, error)
+      console.error(`[Frontend] ❌ Error details:`, {
+        message: error?.message,
+        stack: error?.stack,
+        name: error?.name
+      })
+      alert(`Failed to update order status: ${error?.message || 'Unknown error'}`)
     }
   }
 
@@ -98,14 +116,14 @@ export default function VendorOrdersPage() {
         </div>
 
         {/* Orders */}
-        <div className="space-y-4">
-          {loading ? (
-            <p className="text-gray-600 text-center py-8">Loading orders...</p>
-          ) : filteredOrders.length === 0 ? (
-            <p className="text-gray-600 text-center py-8">No orders found</p>
-          ) : (
-            filteredOrders.map((order) => (
-              <div key={order.id} className="bg-white rounded-xl shadow-lg p-6">
+        {loading ? (
+          <p className="text-gray-600 text-center py-8">Loading orders...</p>
+        ) : filteredOrders.length === 0 ? (
+          <p className="text-gray-600 text-center py-8">No orders found</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredOrders.map((order) => (
+              <div key={order.id} className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Order #{order.id}</h3>
@@ -174,9 +192,9 @@ export default function VendorOrdersPage() {
                 </button>
               </div>
             </div>
-          ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Confirmation Dialog */}
         {confirmDialog.show && (

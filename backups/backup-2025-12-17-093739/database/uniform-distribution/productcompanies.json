@@ -1,0 +1,138 @@
+[
+  {
+    "_id": "693d7bb5f83b225a577694a2",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e4f",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:05.726Z",
+    "updatedAt": "2025-12-13T14:44:05.726Z"
+  },
+  {
+    "_id": "693d7bb5f83b225a577694a3",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e50",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:05.817Z",
+    "updatedAt": "2025-12-13T14:44:05.817Z"
+  },
+  {
+    "_id": "693d7bb5f83b225a577694a4",
+    "productId": "6929b9d9a2fdaf5e8d099e51",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:05.917Z",
+    "updatedAt": "2025-12-13T14:44:05.917Z"
+  },
+  {
+    "_id": "693d7bb5f83b225a577694a5",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e52",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:05.993Z",
+    "updatedAt": "2025-12-13T14:44:05.993Z"
+  },
+  {
+    "_id": "693d7bb6f83b225a577694a6",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e53",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:06.068Z",
+    "updatedAt": "2025-12-13T14:44:06.068Z"
+  },
+  {
+    "_id": "693d7bb6f83b225a577694a8",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e55",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:06.255Z",
+    "updatedAt": "2025-12-13T14:44:06.255Z"
+  },
+  {
+    "_id": "693d7bb6f83b225a577694a9",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e56",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:06.328Z",
+    "updatedAt": "2025-12-13T14:44:06.328Z"
+  },
+  {
+    "_id": "693d7bcff83b225a577694aa",
+    "productId": "6929b9d9a2fdaf5e8d099e57",
+    "companyId": "6929b9d9a2fdaf5e8d099e3b",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:31.210Z",
+    "updatedAt": "2025-12-13T14:44:31.210Z"
+  },
+  {
+    "_id": "693d7bcff83b225a577694ab",
+    "productId": "6929b9d9a2fdaf5e8d099e58",
+    "companyId": "6929b9d9a2fdaf5e8d099e3b",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:31.291Z",
+    "updatedAt": "2025-12-13T14:44:31.291Z"
+  },
+  {
+    "_id": "693d7bcff83b225a577694ac",
+    "productId": "6929b9d9a2fdaf5e8d099e59",
+    "companyId": "6929b9d9a2fdaf5e8d099e3b",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:44:31.373Z",
+    "updatedAt": "2025-12-13T14:44:31.373Z"
+  },
+  {
+    "_id": "693d7d1bf83b225a577694b8",
+    "companyId": "6929b9d9a2fdaf5e8d099e3a",
+    "productId": "6929b9d9a2fdaf5e8d099e54",
+    "__v": 0,
+    "createdAt": "2025-12-13T14:50:03.443Z",
+    "updatedAt": "2025-12-13T14:50:03.443Z"
+  },
+  {
+    "_id": "693db93ff83b225a577694c3",
+    "companyId": "693d8ce66a37697609a911b5",
+    "productId": "6929b9d9a2fdaf5e8d099e4f",
+    "__v": 0,
+    "createdAt": "2025-12-13T19:06:39.214Z",
+    "updatedAt": "2025-12-13T19:06:39.214Z"
+  },
+  {
+    "_id": "693db93ff83b225a577694c4",
+    "companyId": "693d8ce66a37697609a911b5",
+    "productId": "6929b9d9a2fdaf5e8d099e50",
+    "__v": 0,
+    "createdAt": "2025-12-13T19:06:39.326Z",
+    "updatedAt": "2025-12-13T19:06:39.326Z"
+  },
+  {
+    "_id": "693db958f83b225a577694c5",
+    "companyId": "693d8ce66a37697609a911b5",
+    "productId": "6929b9d9a2fdaf5e8d099e53",
+    "__v": 0,
+    "createdAt": "2025-12-13T19:07:04.670Z",
+    "updatedAt": "2025-12-13T19:07:04.670Z"
+  },
+  {
+    "_id": "693db958f83b225a577694c6",
+    "productId": "6929b9d9a2fdaf5e8d099e59",
+    "companyId": "693d8ce66a37697609a911b5",
+    "__v": 0,
+    "createdAt": "2025-12-13T19:07:04.792Z",
+    "updatedAt": "2025-12-13T19:07:04.792Z"
+  },
+  {
+    "_id": "69411852f83b225a57769ffa",
+    "productId": "6929b9d9a2fdaf5e8d099e51",
+    "companyId": "693d8ce66a37697609a911b5",
+    "__v": 0,
+    "createdAt": "2025-12-16T08:29:06.179Z",
+    "updatedAt": "2025-12-16T08:29:06.179Z"
+  },
+  {
+    "_id": "69411852f83b225a57769ffb",
+    "companyId": "693d8ce66a37697609a911b5",
+    "productId": "6929b9d9a2fdaf5e8d099e52",
+    "__v": 0,
+    "createdAt": "2025-12-16T08:29:06.243Z",
+    "updatedAt": "2025-12-16T08:29:06.243Z"
+  }
+]
