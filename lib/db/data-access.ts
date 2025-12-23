@@ -3647,14 +3647,28 @@ export async function getEmployeeByEmail(email: string): Promise<any | null> {
   let employee: any = null
   
   if (db && encryptedEmail) {
-    // First, get the raw employee document to ensure we have the companyId ObjectId
-    const rawEmployee = await db.collection('employees').findOne({ email: encryptedEmail })
+    // First, try with encrypted email (for encrypted data)
+    let rawEmployee = await db.collection('employees').findOne({ email: encryptedEmail })
+    
+    // If not found with encrypted email, try with plain text email (for plain text data)
+    if (!rawEmployee) {
+      rawEmployee = await db.collection('employees').findOne({ email: trimmedEmail })
+    }
+    
+    // Also try case-insensitive plain text search
+    if (!rawEmployee) {
+      rawEmployee = await db.collection('employees').findOne({ 
+        email: { $regex: new RegExp(`^${trimmedEmail.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') }
+      })
+    }
     
     if (rawEmployee) {
       console.log(`[getEmployeeByEmail] Raw employee companyId:`, rawEmployee.companyId, 'Type:', typeof rawEmployee.companyId)
       
       // Now fetch with Mongoose to get populated fields and decryption
-      employee = await Employee.findOne({ email: encryptedEmail })
+      // Use the email from rawEmployee (could be encrypted or plain text)
+      const emailToSearch = rawEmployee.email
+      employee = await Employee.findOne({ email: emailToSearch })
         .populate('companyId', 'id name')
         .populate('locationId', 'id name address city state pincode')
         .lean()
