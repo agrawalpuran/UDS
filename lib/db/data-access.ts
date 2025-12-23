@@ -3772,7 +3772,9 @@ export async function getEmployeeByEmail(email: string): Promise<any | null> {
       if (emp.email && typeof emp.email === 'string') {
         try {
           const decryptedEmail = decrypt(emp.email)
-          if (decryptedEmail.toLowerCase() === trimmedEmail.toLowerCase()) {
+          // Check if decryption succeeded (decrypted should be different from encrypted and not contain ':')
+          const isDecrypted = decryptedEmail !== emp.email && !decryptedEmail.includes(':') && decryptedEmail.length < 200
+          if (isDecrypted && decryptedEmail.toLowerCase() === trimmedEmail.toLowerCase()) {
             employee = emp
             // Decrypt all sensitive fields for this employee
             if (employee.firstName && typeof employee.firstName === 'string' && employee.firstName.includes(':')) {
